@@ -22,6 +22,7 @@ Source5:      ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20031224.tar.gz
 Patch0:		%{name}-info.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
@@ -32,6 +33,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ruby-doc
 Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
+
+%define		_ulibdir	%{_prefix}/lib
 
 %description
 Ruby is the interpreted scripting language for quick and easy
@@ -91,6 +94,7 @@ Biblioteki programistyczne interpretera jêzyka Ruby.
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
 %build
+cp /usr/share/automake/config.sub .
 cd oniguruma
 %configure --with-rubydir=..
 %{__make} 18
@@ -174,8 +178,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/[a-s]*
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/[u-z]*
 %dir %{_libdir}/%{name}/site_ruby
-%dir %{_libdir}/%{name}/site_ruby/1.8
-%dir %{_libdir}/%{name}/site_ruby/1.8/*-linux
+%dir %{_ulibdir}/%{name}/site_ruby/1.8
+%dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux
 
 %{_mandir}/*/*
 %{_infodir}/*.info*
