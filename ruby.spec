@@ -28,7 +28,8 @@ Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040821.tar.gz
 # Source5-md5:	ed8e12118b0d39d6d8581128ad36276f
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
-#Patch2:		%{name}-ia64.patch
+Patch2:		%{name}-ia64.patch
+Patch3:		%{name}-onig-types.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -117,20 +118,19 @@ Biblioteki statyczne Ruby.
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
 %patch1 -p1
-#%patch2 -p1
+%patch2 -p1
+%patch3 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
 %build
 cp -f /usr/share/automake/config.sub .
 
-%ifnarch alpha sparc
 cd oniguruma
 %configure \
 	--with-rubydir=..
 %{__make} 18
 cd ..
-%endif
 
 %{__autoconf}
 %configure \
