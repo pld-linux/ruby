@@ -19,8 +19,8 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040724.tar.gz
-# Source5-md5:	06db0cda42b9034807ee14e91e6246fe
+Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040821.tar.gz
+# Source5-md5:	ed8e12118b0d39d6d8581128ad36276f
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
