@@ -21,6 +21,7 @@ Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040610.tar.gz
 # Source5-md5:	a23b6be300dc8bf97c6a1dfc993edb3c
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
+Patch2:		%{name}-ia64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -36,6 +37,9 @@ Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
 
 %define		_ulibdir	%{_prefix}/lib
+
+# bleh, some nasty (gcc or ruby) bug still not fixed
+%define		specflags_ia64	-O0
 
 %description
 Ruby is the interpreted scripting language for quick and easy
@@ -69,7 +73,7 @@ processamento de texto. É simples, extensível e direta.
 Summary:	Ruby/Tk bindings
 Summary(pl):	Wi±zania Ruby/Tk
 Group:		Development/Languages
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description tk
 This pachage contains Ruby/Tk bindings.
@@ -92,17 +96,19 @@ Biblioteki programistyczne interpretera jêzyka Ruby.
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
 %build
-cp /usr/share/automake/config.sub .
+cp -f /usr/share/automake/config.sub .
 cd oniguruma
-%configure --with-rubydir=..
+%configure \
+	--with-rubydir=..
 %{__make} 18
 cd ..
 
-#%{__autoconf}
+%{__autoconf}
 %configure \
 	--enable-shared \
 	--with-X11-lib=/usr/X11R6/%{_lib}
