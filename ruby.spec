@@ -5,14 +5,13 @@ Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - Ò»ÖÖ¿ìËÙ¸ßÐ§µÄÃæÏò¶ÔÏó½Å±¾±à³ÌÓïÑÔ
 Name:		ruby
-Version:	1.8.2
-%define pre preview2
-Release:	2
+Version:	1.8.1
+Release:	1
+Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-#Source0:	http://www.ruby-lang.org/%{name}-%{version}.tar.gz
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-%{pre}.tar.gz
-# Source0-md5:	f40dae2bd20fd41d681197f1229f25e0
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}.tar.gz
+# Source0-md5:	5d52c7d0e6a6eb6e3bc68d77e794898e
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -77,7 +76,7 @@ processamento de texto. É simples, extensível e direta.
 Summary:	Ruby/Tk bindings
 Summary(pl):	Wi±zania Ruby/Tk
 Group:		Development/Languages
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description tk
 This pachage contains Ruby/Tk bindings.
@@ -89,7 +88,7 @@ Ten pakiet zawiera wi±zania Ruby/Tk.
 Summary:	Ruby development libraries
 Summary(pl):	Biblioteki programistyczne interpretera jêzyka Ruby
 Group:		Development/Languages
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description devel
 Ruby development libraries.
@@ -101,7 +100,7 @@ Biblioteki programistyczne interpretera jêzyka Ruby.
 Summary:	Ruby static libraries
 Summary(pl):	Biblioteki statyczne Ruby
 Group:		Development/Languages
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description static
 Ruby static libraries.
@@ -113,7 +112,7 @@ Biblioteki statyczne Ruby.
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
 %patch1 -p1
-#%patch2 -p1
+%patch2 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
@@ -134,8 +133,8 @@ cd ..
 
 %{__make} info -C %{name}-texi-1.4-en
 
-./miniruby -I lib bin/rdoc -o rdoc
-./miniruby -I lib -I ext/syck bin/rdoc --ri -o ri
+#./miniruby -I lib bin/rdoc -o rdoc
+#./miniruby -I lib -I ext/syck bin/rdoc --ri -o ri
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -151,7 +150,7 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 mv -f ruby-uguide guide
 mv -f rubyfaq faq
 
-cp -a ri/ri/* $RPM_BUILD_ROOT%{ruby_ridir}
+#cp -a ri/ri/* $RPM_BUILD_ROOT%{ruby_ridir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -166,7 +165,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc guide faq misc README README.EXT ChangeLog ToDo rdoc
+%doc guide faq misc README README.EXT ChangeLog ToDo 
+#%doc rdoc
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 %dir %{_libdir}/%{name}
@@ -185,7 +185,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/1.8/rdoc
 %{_libdir}/%{name}/1.8/rexml
 %{_libdir}/%{name}/1.8/rinda
-%{_libdir}/%{name}/1.8/rss
+#%{_libdir}/%{name}/1.8/rss
 %{_libdir}/%{name}/1.8/runit
 %{_libdir}/%{name}/1.8/shell
 %{_libdir}/%{name}/1.8/soap
@@ -217,7 +217,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_ulibdir}/%{name}/site_ruby/1.8
 %dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux*
 %dir %{ruby_ridir}
-%{ruby_ridir}/*
+#%{ruby_ridir}/*
 %{_mandir}/*/*
 %{_infodir}/*.info*
 %{_examplesdir}/%{name}-%{version}
@@ -235,6 +235,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/%{name}/1.8/tcltk.rb
 %{_libdir}/%{name}/1.8/tk*.rb
-%{_libdir}/%{name}/1.8/tk
-%{_libdir}/%{name}/1.8/tkextlib
+#%{_libdir}/%{name}/1.8/tk
+#%{_libdir}/%{name}/1.8/tkextlib
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/t*.so
