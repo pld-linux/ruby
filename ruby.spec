@@ -139,8 +139,7 @@ cd ..
 %configure \
 	--enable-shared \
 	--enable-pthread \
-	--with-X11-lib=/usr/X11R6/%{_lib} \
-	--with-sitedir=%{_libdir}/ruby/site_ruby
+	--with-X11-lib=/usr/X11R6/%{_lib}
 %{__make}
 
 %{__make} info -C %{name}-texi-1.4-en
