@@ -11,11 +11,13 @@ Source0:	ftp://ftp.netlab.co.jp/pub/lang/ruby/%{name}-%{version}.tar.gz
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
 Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
-BuildRequires:	tk-devel
-BuildRequires:	readline-devel
-BuildRequires:	ncurses-devel
+Patch0:		%{name}-info.patch
 BuildRequires:	gdbm-devel
-
+BuildRequires:	ncurses-devel
+BuildRequires:	readline-devel
+BuildRequires:	texinfo
+BuildRequires:	tk-devel
+Prereq:		/sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -29,19 +31,25 @@ straight-forward, extensible, and portable.
 %setup -q -T -D -a 1
 %setup -q -T -D -a 2
 %setup -q -T -D -a 3
+%patch -p1
 
 %build
-%configure --enable-shared
+%configure \
+	--enable-shared
 %{__make}
+%{__make} -C ruby-texi-1.4-en
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_examplesdir}/%{name}}
+install -d $RPM_BUILD_ROOT{%{_infodir},%{_examplesdir}/%{name}-%{version}}
+
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
-install sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}
+
+install sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
 mv -f ruby-uguide guide
 mv -f rubyfaq faq
+
 gzip -9nf README README.EXT ChangeLog ToDo
 
 %clean
@@ -57,15 +65,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%doc guide faq misc *.gz
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/%{name}
 %{_infodir}/*
-%{_examplesdir}/%{name}
-%doc {README,ToDo}.gz
-%doc guide
-%doc faq
-%doc misc
+%{_examplesdir}/%{name}-%{version}
 
 %{_mandir}/*/*
