@@ -2,7 +2,7 @@ Summary:	Ruby - interpreted scripting language
 Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Name:		ruby
 Version:	1.6.4
-Release:	1
+Release:	3
 License:	GPL
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
@@ -12,6 +12,7 @@ Source0:	ftp://ftp.netlab.co.jp/pub/lang/ruby/%{name}-%{version}.tar.gz
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
 Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
+Source4:	irb.1
 Patch0:		%{name}-info.patch
 BuildRequires:	autoconf
 BuildRequires:	gdbm-devel
@@ -51,12 +52,14 @@ autoconf
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_examplesdir}/%{name}-%{version}}
+install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version}}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
 install sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
+install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
+
 mv -f ruby-uguide guide
 mv -f rubyfaq faq
 
@@ -80,6 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/%{name}
+%{_mandir}/man1/*
 %{_infodir}/*
 %{_examplesdir}/%{name}-%{version}
 
