@@ -5,7 +5,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.1
-Release:	3
+Release:	4
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/%{name}/%{name}-%{version}.tar.gz
@@ -20,6 +20,7 @@ Source4:	irb.1
 Source5:      ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20031224.tar.gz
 # Source5-md5:        8e0dd61b25ce83be9bca657fbda5a172
 Patch0:		%{name}-info.patch
+Patch1:         %{name}-tcltklib-lib64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -90,6 +91,9 @@ Biblioteki programistyczne interpretera j陑yka Ruby.
 %prep
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
+%if "%{_lib}" == "lib64"
+%patch1 -p1
+%endif
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
@@ -177,7 +181,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}/1.8/*-linux*
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[a-s]*
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[u-z]*
-%dir %{_libdir}/%{name}/site_ruby
+%dir %{_ulibdir}/%{name}/site_ruby
 %dir %{_ulibdir}/%{name}/site_ruby/1.8
 %dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux*
 
