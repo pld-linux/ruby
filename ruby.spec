@@ -5,7 +5,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.1
-Release:	4
+Release:	5
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/%{name}/%{name}-%{version}.tar.gz
