@@ -1,8 +1,8 @@
 Summary:	Ruby - interpreted scripting language
 Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Name:		ruby
-Version:	1.6.3
-Release:	2
+Version:	1.6.4
+Release:	1
 License:	GPL
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
@@ -13,7 +13,7 @@ Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
 Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
 Patch0:		%{name}-info.patch
-Patch1:		%{name}-readline.patch
+BuildRequires:	autoconf
 BuildRequires:	gdbm-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
@@ -41,9 +41,9 @@ rozszerzalny i przeno¶ny.
 %setup -q -T -D -a 2
 %setup -q -T -D -a 3
 %patch0 -p1
-%patch1 -p1
 
 %build
+autoconf
 %configure \
 	--enable-shared
 %{__make}
