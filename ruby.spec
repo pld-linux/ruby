@@ -1,3 +1,5 @@
+# TODO:
+# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1010955.html
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 
 %define		pre		preview2
