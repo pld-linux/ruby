@@ -1,4 +1,5 @@
-Summary:	Ruby is an interpreted scripting language
+Summary:	Ruby - interpreted scripting language
+Summary:	Ruby - interpretowany jêzyk skryptowy
 Name:		ruby
 Version:	1.6.3
 Release:	2
@@ -26,6 +27,13 @@ Ruby is the interpreted scripting language for quick and easy
 object-oriented programming. It has many features to process text
 files and to do system management tasks (as in Perl). It is simple,
 straight-forward, extensible, and portable.
+
+%description -l pl
+Ruby to interpretowany jêzyk skryptowy, w sam raz dla ³atwego i
+szybkiego pisania zorientowanych obiektowo programów. Ma wiele funkcji
+u³atwiaj±cych przetwarzanie plików tekstowych i wykonywanie prac
+zwi±zanych z zarz±dzaniem systemu (podobnie jak Perl). Jest prosty,
+rozszerzalny i przeno¶ny.
 
 %prep
 %setup -q -T -b 0
