@@ -28,3 +28,41 @@ diff -Nru ruby-1.6.2/ruby-texi-1.4-en/Ruby.texi.in ruby-1.6.2.new/ruby-texi-1.4-
  @end direntry
  
  @quotation
+--- ruby-1.6.7/ruby-texi-1.4-en/socket.texi.orig	Sun Sep 26 19:16:23 1999
++++ ruby-1.6.7/ruby-texi-1.4-en/socket.texi	Wed May 22 21:53:54 2002
+@@ -347,7 +347,7 @@
+ @code{recv} (@pxref{BasicSocket}).
+ 
+ @end defmethod
+-@defmethod @code{UDPSocket} send (@var{mesg}, @var{flags[, }@var{host}, @var{port}])
++@defmethod @code{UDPSocket} send (@var{mesg}, @var{flags}[, @var{host}, @var{port}])
+ 
+ Sends the @var{mesg} through the socket.  See
+ @samp{send(2)} for detail.  You have to specify the
+@@ -400,7 +400,7 @@
+ 
+ Receives data from the socket and returns the pair of data and the
+ path of the sender.  For arguments, see
+-@code{recv} (@pxref{}).
++@code{recv} (@pxref{BasicSocket}).
+ 
+ @end defmethod
+ @page
+@@ -524,5 +524,5 @@
+ 
+ Receives data from the socket and returns the pair of data and the
+ address of the sender.  For arguments, see
+-@code{recv} (@pxref{}).
++@code{recv} (@pxref{BasicSocket}).
+ @end defmethod
+--- ruby-1.6.7/ruby-texi-1.4-en/thread.texi.orig	Sun Sep 26 19:16:26 1999
++++ ruby-1.6.7/ruby-texi-1.4-en/thread.texi	Wed May 22 21:56:35 2002
+@@ -168,7 +168,7 @@
+ 
+ Waits for the thread to terminate and returns the evaluated value of
+ the block, which is given to the
+-@code{Thread.create} (@pxref{}).
++@code{Thread.create} (@pxref{Thread}).
+ 
+ @end defmethod
+ @defmethod @code{Thread} wakeup

@@ -12,6 +12,7 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
 Source4:	irb.1
 Patch0:		%{name}-info.patch
+Patch1:		%{name}-ac25x.patch
 BuildRequires:	autoconf
 BuildRequires:	gdbm-devel
 BuildRequires:	ncurses-devel
@@ -38,6 +39,7 @@ rozszerzalny i przeno¶ny.
 %prep
 %setup -q -a1 -a2 -a3
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__autoconf}
@@ -45,13 +47,11 @@ rozszerzalny i przeno¶ny.
 	--enable-shared
 %{__make}
 
+%{__make} info -C %{name}-texi-1.4-en
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version}}
-
-# workaround (rather mkconfig.rb should be fixed, but I don't know ruby)
-sed -e 's/\(@ECHO_C@,\)\\c/\1\\\\c/' config.status > config.status.new
-mv -f config.status.new config.status
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
@@ -61,8 +61,6 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
 mv -f ruby-uguide guide
 mv -f rubyfaq faq
-
-gzip -9nf README README.EXT ChangeLog ToDo
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -77,9 +75,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc guide faq misc *.gz
+%doc guide faq misc README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/lib*.so.*.*
+%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/%{name}
 %{_mandir}/*/*
