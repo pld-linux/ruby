@@ -2,7 +2,7 @@ Summary:	Ruby - interpreted scripting language
 Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Name:		ruby
 Version:	1.6.4
-Release:	4
+Release:	5
 License:	GPL
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
@@ -22,6 +22,7 @@ BuildRequires:	texinfo
 BuildRequires:	tk-devel
 Prereq:		/sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Obsoletes:	ruby-doc
 
 %description
 Ruby is the interpreted scripting language for quick and easy
