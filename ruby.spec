@@ -11,11 +11,10 @@ Source0:	ftp://ftp.netlab.co.jp/pub/lang/ruby/%{name}-%{version}.tar.gz
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
 Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
-BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	readline-devel
 BuildRequires:	ncurses-devel
-BuildRequires:	XFree86-devel
+BuildRequires:	gdbm-devel
 
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
