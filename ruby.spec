@@ -39,6 +39,7 @@ Obsoletes:	ruby-REXML
 %define		_ulibdir	%{_prefix}/lib
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
+# (SEGV or "unexpected break" on miniruby run during build)
 %define		specflags_ia64	-O0
 
 %description
