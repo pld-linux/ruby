@@ -1,4 +1,4 @@
-%define		pre		20040906
+%define		pre		20041222
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 
 Summary:	Ruby - interpreted scripting language
@@ -13,7 +13,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/stable-snapshot.tar.gz
-# Source0-md5:	56f3ecc204c81b10830cd6f3999b5e76
+# Source0-md5:	b0f4fced049a76927dbb54d87c290941
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
