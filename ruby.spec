@@ -40,7 +40,7 @@ rozszerzalny i przeno¶ny.
 %patch0 -p1
 
 %build
-autoconf
+%{__autoconf}
 %configure \
 	--enable-shared
 %{__make}
