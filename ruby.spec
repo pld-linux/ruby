@@ -2,7 +2,7 @@ Summary:	Ruby - interpreted scripting language
 Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Name:		ruby
 Version:	1.6.4
-Release:	3
+Release:	4
 License:	GPL
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
