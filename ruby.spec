@@ -28,6 +28,7 @@ Source6:	http://www.ruby-doc.org/downloads/stdlib/ruby-doc-stdlib-%{stdlibdoc_ve
 # Source6-md5:	39dab8db652dad23ad8951f851549f06
 Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 # Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
+Source8:	macros.ruby
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
@@ -149,22 +150,25 @@ mkdir rdoc
 RUBYLIB=lib:`ls ext/*/ | xargs | sed -e 's! !:!g'`
 export RUBYLIB
 
-LD_LIBRARY_PATH=. ./ruby bin/rdoc -o rdoc/core array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
+LD_LIBRARY_PATH=. ./ruby bin/rdoc --inline-source --op rdoc/core \
+	array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
 	error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c marshal.c \
 	math.c numeric.c object.c pack.c parse.c prec.c process.c random.c range.c \
 	re.c regex.c ruby.c signal.c sprintf.c st.c string.c struct.c time.c util.c \
 	variable.c version.c \
 	lib/English.rb lib/abbrev.rb lib/base64.rb lib/benchmark.rb lib/cgi.rb \
 	lib/cgi/session.rb lib/complex.rb lib/date.rb lib/fileutils.rb lib/find.rb \
-	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
-	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
-	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
+	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb \
+	lib/pathname.rb lib/set.rb lib/shellwords.rb lib/singleton.rb \
+	lib/tempfile.rb lib/test/unit.rb lib/thread.rb lib/thwait.rb \
+	lib/time.rb lib/yaml.rb
 
 mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 
 mv ri/1.8/site ri/1.8/system
 
-LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
+LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system \
+	array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
 	marshal.c math.c numeric.c object.c pack.c parse.c prec.c process.c \
 	random.c range.c re.c regex.c ruby.c signal.c sprintf.c st.c string.c \
@@ -177,7 +181,7 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system array.c bignum.c class.c
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir}}
+install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{_libdir}/rpm}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -190,6 +194,8 @@ mv -f ruby-uguide guide
 mv -f rubyfaq faq
 
 cp -a ri/1.8/system/* $RPM_BUILD_ROOT%{ruby_ridir}
+
+install %{SOURCE8} $RPM_BUILD_ROOT%{_libdir}/rpm
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -267,6 +273,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/%{name}/1.8/*/*.h
+%{_libdir}/rpm/macros.ruby
 
 %files static
 %defattr(644,root,root,755)
