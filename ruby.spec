@@ -8,7 +8,7 @@ Version:	1.8.2
 %define pre preview2
 Release:	0.%{pre}.1
 License:	The Ruby License
-Group:		Development/Languages
+Group:		1
 #Source0:	http://www.ruby-lang.org/%{name}-%{version}.tar.gz
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-%{pre}.tar.gz
 # Source0-md5:	f40dae2bd20fd41d681197f1229f25e0
@@ -119,11 +119,13 @@ cd ..
 %{__make}
 
 %{__make} info -C %{name}-texi-1.4-en
+
 ./miniruby -I lib bin/rdoc -o rdoc
+./miniruby -I lib -I ext/syck bin/rdoc --ri -o ri
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version}}
+install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -134,6 +136,8 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
 mv -f ruby-uguide guide
 mv -f rubyfaq faq
+
+cp -a ri/ri/* $RPM_BUILD_ROOT%{ruby_ridir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
