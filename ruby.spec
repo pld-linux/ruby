@@ -8,7 +8,7 @@ Version:	1.8.1
 Release:	6
 License:	GPL
 Group:		Development/Languages
-Source0:	http://www.ruby-lang.org/%{name}-%{version}.tar.gz
+Source0:	The Ruby License
 # Source0-md5:	5d52c7d0e6a6eb6e3bc68d77e794898e
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
