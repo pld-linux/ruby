@@ -5,7 +5,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - Ò»ÖÖ¿ìËÙ¸ßÐ§µÄÃæÏò¶ÔÏó½Å±¾±à³ÌÓïÑÔ
 Name:		ruby
 Version:	1.8.0
-Release:	2
+Release:	3
 License:	GPL
 Group:		Development/Languages
 Source0:	http://www.ruby-lang.org/download-%{version}.rbx/%{name}-%{version}.tar.gz
@@ -60,6 +60,13 @@ rozszerzalny i przeno¶ny.
 Ruby é uma linguagem de script interpretada de programação
 orientada a objeto. Possui diversas características para
 processamento de texto. É simples, extensível e direta.
+
+%package tk
+Summary:	Ruby/Tk bindings
+Group:	Development/Languages
+
+%description tk
+Ruby/Tk bindings
 
 %package devel
 Summary:	Ruby development libraries
@@ -123,7 +130,44 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/%{name}
+%dir %{_libdir}/%{name}
+%dir %{_libdir}/%{name}/1.8
+%{_libdir}/%{name}/1.8/bigdecimal
+%{_libdir}/%{name}/1.8/cgi
+%{_libdir}/%{name}/1.8/date
+%{_libdir}/%{name}/1.8/dl
+%{_libdir}/%{name}/1.8/drb
+%{_libdir}/%{name}/1.8/io
+%{_libdir}/%{name}/1.8/irb
+%{_libdir}/%{name}/1.8/net
+%{_libdir}/%{name}/1.8/openssl
+%{_libdir}/%{name}/1.8/optparse
+%{_libdir}/%{name}/1.8/racc
+%{_libdir}/%{name}/1.8/rexml
+%{_libdir}/%{name}/1.8/runit
+%{_libdir}/%{name}/1.8/shell
+%{_libdir}/%{name}/1.8/test
+%{_libdir}/%{name}/1.8/uri
+%{_libdir}/%{name}/1.8/webrick
+%{_libdir}/%{name}/1.8/xmlrpc
+%{_libdir}/%{name}/1.8/yaml
+%{_libdir}/%{name}/1.8/[A-Za-s]*.rb
+%{_libdir}/%{name}/1.8/tempfile.rb
+%{_libdir}/%{name}/1.8/thread.rb
+%{_libdir}/%{name}/1.8/thwait.rb
+%{_libdir}/%{name}/1.8/time.rb
+%{_libdir}/%{name}/1.8/timeout.rb
+%{_libdir}/%{name}/1.8/tmpdir.rb
+%{_libdir}/%{name}/1.8/tracer.rb
+%{_libdir}/%{name}/1.8/tsort.rb
+%{_libdir}/%{name}/1.8/[u-z]*
+%dir %{_libdir}/%{name}/1.8/*-linux
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/[a-s]*
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/[u-z]*
+%dir %{_libdir}/%{name}/site_ruby
+%dir %{_libdir}/%{name}/site_ruby/1.8
+%dir %{_libdir}/%{name}/site_ruby/1.8/*-linux
+
 %{_mandir}/*/*
 %{_infodir}/*.info*
 %{_examplesdir}/%{name}-%{version}
@@ -131,3 +175,8 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %{_libdir}/lib*a
+
+%files tk
+%{_libdir}/%{name}/1.8/tcltk.rb
+%{_libdir}/%{name}/1.8/tk*.rb
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/t*.so
