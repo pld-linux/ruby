@@ -1,6 +1,6 @@
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 
-%define		pre		preview2
+%define		pre		20040829
 
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト回羹咐胳Rubyインタプリタ
@@ -9,12 +9,12 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.2
-Release:	1.%{pre}.3
+Release:	2.%{pre}.1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-%{pre}.tar.gz
-# Source0-md5:	f40dae2bd20fd41d681197f1229f25e0
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/stable-snapshot.tar.gz
+# Source0-md5:	1482a06bd0bbeb17c7d62a4227bba94d
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -114,7 +114,7 @@ Ruby static libraries.
 Biblioteki statyczne Ruby.
 
 %prep
-%setup -q -a1 -a2 -a3 -a5
+%setup -q -a1 -a2 -a3 -a5 -n %{name}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
