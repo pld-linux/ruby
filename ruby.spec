@@ -8,7 +8,7 @@ Version:	1.8.1
 Release:	6
 License:	GPL
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/%{name}/%{name}-%{version}.tar.gz
+Source0:	http://www.ruby-lang.org/%{name}-%{version}.tar.gz
 # Source0-md5:	5d52c7d0e6a6eb6e3bc68d77e794898e
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
@@ -17,8 +17,8 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	ftp://ftp.ruby-lang.org/pub/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040525.tar.gz
-# Source5-md5:	1c1f6dec9285dda63bbcc0aca15837bc
+Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040610.tar.gz
+# Source5-md5:	a23b6be300dc8bf97c6a1dfc993edb3c
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 URL:		http://www.ruby-lang.org/
