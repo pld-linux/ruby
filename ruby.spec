@@ -1,5 +1,8 @@
 Summary:	Ruby - interpreted scripting language
+Summary(ja):	¥ª¥Ö¥¸¥§¥¯¥È»Ø¸þ¸À¸ìRuby¥¤¥ó¥¿¥×¥ê¥¿
 Summary(pl):	Ruby - interpretowany jêzyk skryptowy
+Summary(pt_BR): Linguagem de script orientada a objeto
+Summary(zh_CN):	ruby - Ò»ÖÖ¿ìËÙ¸ßÐ§µÄÃæÏò¶ÔÏó½Å±¾±à³ÌÓïÑÔ
 Name:		ruby
 Version:	1.6.7
 Release:	1
@@ -12,14 +15,14 @@ Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
 Source4:	irb.1
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-ac25x.patch
-URL:		http://www.ruby-lang.org
+URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	gdbm-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
-Requires(post,postun):	/sbin/ldconfig
+Requires(post,postun):/sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ruby-doc
 
@@ -29,12 +32,27 @@ object-oriented programming. It has many features to process text
 files and to do system management tasks (as in Perl). It is simple,
 straight-forward, extensible, and portable.
 
+%description -l ja
+Ruby¤Ï¥·¥ó¥×¥ë¤«¤Ä¶¯ÎÏ¤Ê¥ª¥Ö¥¸¥§¥¯¥È»Ø¸þ¥¹¥¯¥ê¥×¥È¸À¸ì¤Ç¤¹¡¥Ruby¤ÏºÇ½é
+¤«¤é½ã¿è¤Ê¥ª¥Ö¥¸¥§¥¯¥È»Ø¸þ¸À¸ì¤È¤·¤ÆÀß·×¤µ¤ì¤Æ¤¤¤Þ¤¹¤«¤é¡¤¥ª¥Ö¥¸¥§¥¯¥È
+»Ø¸þ¥×¥í¥°¥é¥ß¥ó¥°¤ò¼ê·Ú¤Ë¹Ô¤¦»ö¤¬½ÐÍè¤Þ¤¹¡¥¤â¤Á¤í¤óÄÌ¾ï¤Î¼êÂ³¤­·¿¤Î¥×
+¥í¥°¥é¥ß¥ó¥°¤â²ÄÇ½¤Ç¤¹¡¥
+
+Ruby¤Ï¥Æ¥­¥¹¥È½èÍý´Ø·¸¤ÎÇ½ÎÏ¤Ê¤É¤ËÍ¥¤ì¡¤Perl¤ÈÆ±¤¸¤¯¤é¤¤¶¯ÎÏ¤Ç¤¹¡¥¤µ¤é
+¤Ë¥·¥ó¥×¥ë¤ÊÊ¸Ë¡¤È¡¤Îã³°½èÍý¤ä¥¤¥Æ¥ì¡¼¥¿¤Ê¤É¤Îµ¡¹½¤Ë¤è¤Ã¤Æ¡¤¤è¤êÊ¬¤«¤ê
+¤ä¤¹¤¤¥×¥í¥°¥é¥ß¥ó¥°¤¬½ÐÍè¤Þ¤¹¡¥
+
 %description -l pl
 Ruby to interpretowany jêzyk skryptowy, w sam raz dla ³atwego i
 szybkiego pisania zorientowanych obiektowo programów. Ma wiele funkcji
 u³atwiaj±cych przetwarzanie plików tekstowych i wykonywanie prac
 zwi±zanych z zarz±dzaniem systemu (podobnie jak Perl). Jest prosty,
 rozszerzalny i przeno¶ny.
+
+%description -l pt_BR
+Ruby é uma linguagem de script interpretada de programação
+orientada a objeto. Possui diversas características para
+processamento de texto. É simples, extensível e direta.
 
 %prep
 %setup -q -a1 -a2 -a3
