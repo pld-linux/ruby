@@ -1,0 +1,11 @@
+--- ruby-1.8.2/lib/mkmf.rb.orig	2004-08-24 00:44:43.548794000 +0200
++++ ruby-1.8.2/lib/mkmf.rb	2004-08-24 00:49:37.484296107 +0200
+@@ -235,7 +235,7 @@
+ 		 'LDFLAGS' => "#$LDFLAGS #{ldflags}",
+ 		 'LIBPATH' => libpathflag(libpath),
+ 		 'LOCAL_LIBS' => "#$LOCAL_LIBS #$libs",
+-		 'LIBS' => "#$LIBRUBYARG_STATIC #{opt} #$LIBS")
++		 'LIBS' => "#$LIBRUBYARG_SHARED #{opt} #$LIBS")
+ end
+ 
+ def cc_command(opt="")
