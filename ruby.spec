@@ -161,7 +161,7 @@ rdoc -o rdoc/core array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c 
 
 mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 
-mv ri/1.8/site/* ri/1.8/system/*
+mv ri/1.8/site/* ri/1.8/system/
 
 rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
