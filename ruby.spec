@@ -1,6 +1,6 @@
 Summary:	Ruby is an interpreted scripting language
 Name:		ruby
-Version:	1.6.2
+Version:	1.6.3
 Release:	1
 License:	GPL
 Group:		Development/Languages
