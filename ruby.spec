@@ -1,7 +1,7 @@
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト回羹咐胳Rubyインタプリタ
 Summary(pl):	Ruby - interpretowany j陑yk skryptowy
-Summary(pt_BR): Linguagem de script orientada a objeto
+Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.0
