@@ -5,7 +5,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.1
-Release:	2
+Release:	3
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/%{name}/%{name}-%{version}.tar.gz
@@ -17,8 +17,8 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	ftp://ftp.ruby-lang.org/pub/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20030819.tar.gz
-# Source5-md5:	00091bd10a9986140445ae637e2a0ce2
+Source5:      ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20031224.tar.gz
+# Source5-md5:        8e0dd61b25ce83be9bca657fbda5a172
 Patch0:		%{name}-info.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
