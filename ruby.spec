@@ -17,7 +17,7 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	ftp://ftp.ruby-lang.org/pub/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:  ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20030819.tar.gz
+Source5:	ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20030819.tar.gz
 # Source5-md5:	00091bd10a9986140445ae637e2a0ce2
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-curses-terminfo.patch
@@ -63,10 +63,14 @@ processamento de texto. É simples, extensível e direta.
 
 %package tk
 Summary:	Ruby/Tk bindings
-Group:	Development/Languages
+Summary(pl):	Wi±zania Ruby/Tk
+Group:		Development/Languages
 
 %description tk
-Ruby/Tk bindings
+This pachage contains Ruby/Tk bindings.
+
+%description tk -l pl
+Ten pakiet zawiera wi±zania Ruby/Tk.
 
 %package devel
 Summary:	Ruby development libraries
