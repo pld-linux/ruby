@@ -1,4 +1,4 @@
-%define		pre		20040904
+%define		pre		20040906
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 
 Summary:	Ruby - interpreted scripting language
@@ -13,7 +13,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/stable-snapshot.tar.gz
-# Source0-md5:	70781b8f3ff41b8fecccbe5aad4c1e78
+# Source0-md5:	f8f681a1a7f8f89fb87ce41ffc0f328e
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -161,7 +161,7 @@ rdoc -o rdoc/core array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c 
 
 mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 
-mv ri/1.8/site/* ri/1.8/system/
+mv ri/1.8/site ri/1.8/system
 
 rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
