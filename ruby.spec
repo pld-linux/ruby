@@ -8,7 +8,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.2
-Release:	2.%{pre}.1
+Release:	2.%{pre}.2
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -33,6 +33,7 @@ Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
 Patch3:		%{name}-onig-types.patch
 Patch4:		%{name}-mkmf-shared.patch
+Patch5:		%{name}-cgi_dos.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -125,6 +126,7 @@ Biblioteki statyczne Ruby.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+#%patch5 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
