@@ -4,8 +4,8 @@ Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR): Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.6.7
-Release:	2
+Version:	1.6.8
+Release:	1
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{version}.tar.gz

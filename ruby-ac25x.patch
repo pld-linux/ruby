@@ -12,15 +12,6 @@
  AC_STRUCT_ST_RDEV
  
  dnl Checks for library functions.
-@@ -363,7 +363,7 @@
-   exit(0);
- }
- ], rb_cv_func_strtod=yes, rb_cv_func_strtod=no, rb_cv_func_strtod=no)])
--test $rb_cv_func_strtod = no && LIBOBJS="$LIBOBJS strtod.o"
-+test $rb_cv_func_strtod = no && AC_LIBOBJ([strtod])
- 
- AC_C_BIGENDIAN
- AC_C_CONST
 @@ -742,7 +742,7 @@
      if test "$rb_cv_missing_fconvert" = yes; then
        AC_DEFINE(MISSING_FCONVERT)
@@ -49,6 +40,6 @@
  	mingw*)
 -	    LIBOBJS="$LIBOBJS win32.o"
 +	    AC_LIBOBJ([win32])
- 	    CFLAGS="-DNT -D__MSVCRT__ $CFLAGS"
+ 	    CFLAGS="-DNT -D__NO_ISOCEXT $CFLAGS"
  	    CCDLFLAGS=-DIMPORT ;;
  	esac
