@@ -13,7 +13,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/stable-snapshot.tar.gz
-# Source0-md5:	f8f681a1a7f8f89fb87ce41ffc0f328e
+# Source0-md5:	e3161ea49c657a9e59638fec763e5946
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -21,17 +21,17 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040821.tar.gz
-# Source5-md5:	ed8e12118b0d39d6d8581128ad36276f
-%define stdlibdoc_version	0.9.8
+Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_4_0.tar.gz
+# Source5-md5:	f64bad67181b02fbd67fac16710537f3
+%define stdlibdoc_version	0.9.13
 Source6:	http://www.ruby-doc.org/downloads/stdlib/ruby-doc-stdlib-%{stdlibdoc_version}.tgz
-# Source6-md5:	d0bee682c866691061e2f76969966d7a
+# Source6-md5:	39dab8db652dad23ad8951f851549f06
 Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 # Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
-Patch3:		%{name}-onig-types.patch
+#Patch3:		%{name}-onig-types.patch
 Patch4:		%{name}-mkmf-shared.patch
 Patch5:		%{name}-cgi_dos.patch
 URL:		http://www.ruby-lang.org/
@@ -124,7 +124,7 @@ Biblioteki statyczne Ruby.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+#%patch3 -p1
 %patch4 -p1
 #%patch5 -p1
 
@@ -150,7 +150,10 @@ cd ..
 
 mkdir rdoc
 
-./ruby bin/rdoc -o rdoc/core array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
+RUBYLIB=lib:`ls ext/*/ | xargs | sed -e 's! !:!g'`
+export RUBYLIB
+
+LD_LIBRARY_PATH=. ./ruby bin/rdoc -o rdoc/core array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
 	error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c marshal.c \
 	math.c numeric.c object.c pack.c parse.c prec.c process.c random.c range.c \
 	re.c regex.c ruby.c signal.c sprintf.c st.c string.c struct.c time.c util.c \
@@ -165,7 +168,7 @@ mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 
 mv ri/1.8/site ri/1.8/system
 
-./ruby bin/rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
+LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
 	marshal.c math.c numeric.c object.c pack.c parse.c prec.c process.c \
 	random.c range.c re.c regex.c ruby.c signal.c sprintf.c st.c string.c \
