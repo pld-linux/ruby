@@ -1,7 +1,7 @@
 Summary:	Ruby is an interpreted scripting language
 Name:		ruby
 Version:	1.6.3
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
@@ -12,9 +12,10 @@ Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
 Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
 Patch0:		%{name}-info.patch
+Patch1:		%{name}-readline.patch
 BuildRequires:	gdbm-devel
 BuildRequires:	ncurses-devel
-BuildRequires:	readline-devel
+BuildRequires:	readline-devel >= 4.2
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
 Prereq:		/sbin/ldconfig
@@ -31,7 +32,8 @@ straight-forward, extensible, and portable.
 %setup -q -T -D -a 1
 %setup -q -T -D -a 2
 %setup -q -T -D -a 3
-%patch -p1
+%patch0 -p1
+%patch1 -p1
 
 %build
 %configure \
