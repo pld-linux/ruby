@@ -1,4 +1,3 @@
-#%define		pre		20041222
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 
 Summary:	Ruby - interpreted scripting language
@@ -32,9 +31,7 @@ Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
-#Patch3:		%{name}-onig-types.patch
-Patch4:		%{name}-mkmf-shared.patch
-Patch5:		%{name}-cgi_dos.patch
+Patch3:		%{name}-mkmf-shared.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -121,14 +118,11 @@ Ruby static libraries.
 Biblioteki statyczne Ruby.
 
 %prep
-#%setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}
 %setup -q -a1 -a2 -a3 -a5 -a6 -a7 
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-#%patch3 -p1
-%patch4 -p1
-#%patch5 -p1
+%patch3 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
