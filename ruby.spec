@@ -4,12 +4,12 @@ Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.0
-Release:	4
+Version:	1.8.1
+Release:	1
 License:	GPL
 Group:		Development/Languages
-Source0:	http://www.ruby-lang.org/download-%{version}.rbx/%{name}-%{version}.tar.gz
-# Source0-md5:	582a65e52598a4a1e9fce523e16e67d6
+Source0:	ftp://ftp.ruby-lang.org/pub/%{name}/%{name}-%{version}.tar.gz
+# Source0-md5:	5d52c7d0e6a6eb6e3bc68d77e794898e
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -20,7 +20,6 @@ Source4:	irb.1
 Source5:	ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20030819.tar.gz
 # Source5-md5:	00091bd10a9986140445ae637e2a0ce2
 Patch0:		%{name}-info.patch
-Patch1:		%{name}-curses-terminfo.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	gdbm-devel >= 1.8.3
@@ -87,7 +86,6 @@ Biblioteki programistyczne interpretera j陑yka Ruby.
 %prep
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
-%patch1 -p1
 
 perl -pi -e "s#local/bin/ruby#bin/ruby#" sample/*
 
@@ -111,7 +109,7 @@ install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -a sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
@@ -148,13 +146,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/1.8/openssl
 %{_libdir}/%{name}/1.8/optparse
 %{_libdir}/%{name}/1.8/racc
+%{_libdir}/%{name}/1.8/rdoc
 %{_libdir}/%{name}/1.8/rexml
+%{_libdir}/%{name}/1.8/rinda
 %{_libdir}/%{name}/1.8/runit
 %{_libdir}/%{name}/1.8/shell
+%{_libdir}/%{name}/1.8/soap
 %{_libdir}/%{name}/1.8/test
 %{_libdir}/%{name}/1.8/uri
 %{_libdir}/%{name}/1.8/webrick
+%{_libdir}/%{name}/1.8/wsdl
 %{_libdir}/%{name}/1.8/xmlrpc
+%{_libdir}/%{name}/1.8/xsd
 %{_libdir}/%{name}/1.8/yaml
 %{_libdir}/%{name}/1.8/[A-Za-s]*.rb
 %{_libdir}/%{name}/1.8/tempfile.rb
