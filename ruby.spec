@@ -1,5 +1,3 @@
-# TODO:
-# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1010955.html
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 
 %define		pre		preview2
@@ -11,7 +9,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.2
-Release:	1.%{pre}.1
+Release:	1.%{pre}.2
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
