@@ -17,10 +17,10 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	ftp://ftp.ruby-lang.org/pub/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:      ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20031224.tar.gz
-# Source5-md5:        8e0dd61b25ce83be9bca657fbda5a172
+Source5:	ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20031224.tar.gz
+# Source5-md5:	8e0dd61b25ce83be9bca657fbda5a172
 Patch0:		%{name}-info.patch
-Patch1:         %{name}-tcltklib-lib64.patch
+Patch1:		%{name}-tcltklib-lib64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
