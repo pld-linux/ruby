@@ -114,6 +114,7 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
+	--enable-pthread \
 	--with-X11-lib=/usr/X11R6/%{_lib}
 %{__make}
 
