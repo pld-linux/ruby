@@ -1,8 +1,8 @@
 Summary:	Ruby - interpreted scripting language
 Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Name:		ruby
-Version:	1.6.6
-Release:	3
+Version:	1.6.7
+Release:	1
 License:	GPL
 Group:		Development/Languages
 URL:		http://www.ruby-lang.org
@@ -44,6 +44,7 @@ autoconf
 %configure \
 	--enable-shared
 %{__make}
+%{__make} -C ruby-texi-1.4-en
 
 %install
 rm -rf $RPM_BUILD_ROOT
