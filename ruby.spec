@@ -65,6 +65,7 @@ processamento de texto. É simples, extensível e direta.
 Summary:	Ruby/Tk bindings
 Summary(pl):	Wi±zania Ruby/Tk
 Group:		Development/Languages
+Requires:	%{name} = %{version}
 
 %description tk
 This pachage contains Ruby/Tk bindings.
@@ -178,9 +179,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/lib*a
+%{_libdir}/lib*.a
 
 %files tk
+%defattr(644,root,root,755)
 %{_libdir}/%{name}/1.8/tcltk.rb
 %{_libdir}/%{name}/1.8/tk*.rb
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/t*.so
