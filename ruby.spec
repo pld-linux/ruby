@@ -168,7 +168,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc guide faq misc README README.EXT ChangeLog ToDo rdoc
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/lib*.so.*.*
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/1.8
 %{_libdir}/%{name}/1.8/bigdecimal
