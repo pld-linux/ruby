@@ -165,7 +165,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/1.8/tmpdir.rb
 %{_libdir}/%{name}/1.8/tracer.rb
 %{_libdir}/%{name}/1.8/tsort.rb
-%{_libdir}/%{name}/1.8/[u-z]*
+%{_libdir}/%{name}/1.8/[u-z]*.rb
 %dir %{_libdir}/%{name}/1.8/*-linux
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/[a-s]*
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/[u-z]*
