@@ -97,6 +97,18 @@ Ruby development libraries.
 %description devel -l pl
 Biblioteki programistyczne interpretera jêzyka Ruby.
 
+%package static
+Summary:	Ruby static libraries
+Summary(pl):	Biblioteki statyczne Ruby
+Group:		Development/Languages
+Requires:	%{name} = %{version}-%{release}
+
+%description static
+Ruby static libraries.
+
+%description devel -l pl
+Biblioteki statyczne Ruby.
+
 %prep
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
@@ -157,7 +169,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc guide faq misc README README.EXT ChangeLog ToDo rdoc
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-%attr(755,root,root) %{_libdir}/lib*.so
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/1.8
 %{_libdir}/%{name}/1.8/bigdecimal
@@ -210,6 +221,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/lib*.so
+
+%files static
 %{_libdir}/lib*.a
 
 %files tk
