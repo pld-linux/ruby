@@ -137,8 +137,8 @@ cd ..
 
 %{__make} info -C %{name}-texi-1.4-en
 
-./miniruby -I lib bin/rdoc -o rdoc
-./miniruby -I lib -I ext/syck bin/rdoc --ri -o ri
+./miniruby -I lib bin/rdoc -o rdoc lib ext/*/
+./miniruby -I lib -I ext/syck bin/rdoc --ri -o ri lib ext/*/
 
 %install
 rm -rf $RPM_BUILD_ROOT
