@@ -61,11 +61,15 @@ orientada a objeto. Possui diversas características para
 processamento de texto. É simples, extensível e direta.
 
 %package devel
-Group:		Development/Languages
 Summary:	Ruby development libraries
+Summary(pl):	Biblioteki programistyczne interpretera jêzyka Ruby
+Group:		Development/Languages
 
 %description devel
-Ruby development libraries
+Ruby development libraries.
+
+%description devel -l pl
+Biblioteki programistyczne interpretera jêzyka Ruby.
 
 %prep
 %setup -q -a1 -a2 -a3
@@ -114,8 +118,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/%{name}
 %{_mandir}/*/*
-%{_infodir}/*
+%{_infodir}/*.info*
 %{_examplesdir}/%{name}-%{version}
 
 %files devel
-%attr(644,root,root) %{_libdir}/lib*a
+%defattr(644,root,root,755)
+%{_libdir}/lib*a
