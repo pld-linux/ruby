@@ -5,7 +5,6 @@ Version:	1.6.7
 Release:	1
 License:	GPL
 Group:		Development/Languages
-URL:		http://www.ruby-lang.org
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{version}.tar.gz
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -13,13 +12,14 @@ Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
 Source4:	irb.1
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-ac25x.patch
+URL:		http://www.ruby-lang.org
 BuildRequires:	autoconf
 BuildRequires:	gdbm-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
-Prereq:		/sbin/ldconfig
+Requires(post,postun):	/sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ruby-doc
 
