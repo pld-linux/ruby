@@ -4,11 +4,12 @@ Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR): Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.0preview4
-Release:	3
+Version:	1.8.0
+%define 	prev preview4
+Release:	0.%{prev}.3
 License:	GPL
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.0-preview4.tar.gz
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-%{prev}.tar.gz
 # Source0-md5:	c6e204136a1b07fee5599f0a613234c2
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
@@ -67,7 +68,7 @@ Summary:	Ruby development libraries
 Ruby development libraries
 
 %prep
-%setup -q -a1 -a2 -a3 -n ruby-1.8.0
+%setup -q -a1 -a2 -a3
 %patch0 -p1
 %patch1 -p1
 
