@@ -89,6 +89,7 @@ Ten pakiet zawiera wi±zania Ruby/Tk.
 Summary:	Ruby development libraries
 Summary(pl):	Biblioteki programistyczne interpretera jêzyka Ruby
 Group:		Development/Languages
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Ruby development libraries.
