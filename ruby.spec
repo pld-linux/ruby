@@ -20,7 +20,7 @@ Source4:	irb.1
 Source5:	ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20031224.tar.gz
 # Source5-md5:	8e0dd61b25ce83be9bca657fbda5a172
 Patch0:		%{name}-info.patch
-Patch1:		%{name}-tcltklib-lib64.patch
+Patch1:		%{name}-LIB_PREFIX.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -91,9 +91,7 @@ Biblioteki programistyczne interpretera jêzyka Ruby.
 %prep
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
-%if "%{_lib}" == "lib64"
 %patch1 -p1
-%endif
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
@@ -106,7 +104,8 @@ cd ..
 
 #%{__autoconf}
 %configure \
-	--enable-shared
+	--enable-shared \
+	--with-X11-lib=/usr/X11R6/%{_lib}
 %{__make}
 
 %{__make} info -C %{name}-texi-1.4-en
