@@ -1,5 +1,5 @@
 Summary:	Ruby - interpreted scripting language
-Summary:	Ruby - interpretowany jêzyk skryptowy
+Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Name:		ruby
 Version:	1.6.3
 Release:	2
