@@ -4,21 +4,23 @@ Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.1
-Release:	6
+Version:	1.8.2
+%define pre preview2
+Release:	0.%{pre}.1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	http://www.ruby-lang.org/%{name}-%{version}.tar.gz
-# Source0-md5:	5d52c7d0e6a6eb6e3bc68d77e794898e
-Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
+#Source0:	http://www.ruby-lang.org/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-%{pre}.tar.gz
+# Source0-md5:	f40dae2bd20fd41d681197f1229f25e0
+Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
 # Source2-md5:	24eadcd067278901da9ad70efb146b07
-Source3:	ftp://ftp.ruby-lang.org/pub/ruby/doc/%{name}faq-990927.tar.gz
+Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040610.tar.gz
-# Source5-md5:	a23b6be300dc8bf97c6a1dfc993edb3c
+Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040724.tar.gz
+# Source5-md5:	06db0cda42b9034807ee14e91e6246fe
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
@@ -97,7 +99,7 @@ Biblioteki programistyczne interpretera j陑yka Ruby.
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
@@ -164,6 +166,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/1.8/rdoc
 %{_libdir}/%{name}/1.8/rexml
 %{_libdir}/%{name}/1.8/rinda
+%{_libdir}/%{name}/1.8/rss
 %{_libdir}/%{name}/1.8/runit
 %{_libdir}/%{name}/1.8/shell
 %{_libdir}/%{name}/1.8/soap
@@ -203,4 +206,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/%{name}/1.8/tcltk.rb
 %{_libdir}/%{name}/1.8/tk*.rb
+%{_libdir}/%{name}/1.8/tk
+%{_libdir}/%{name}/1.8/tkextlib
 %attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/t*.so
