@@ -7,7 +7,7 @@ Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.2
 %define pre preview2
-Release:	1
+Release:	2
 License:	The Ruby License
 Group:		Development/Languages
 #Source0:	http://www.ruby-lang.org/%{name}-%{version}.tar.gz
