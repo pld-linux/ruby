@@ -1,0 +1,11 @@
+--- ruby-1.8.1/gc.c.orig	2003-12-22 09:25:49.000000000 +0000
++++ ruby-1.8.1/gc.c	2004-07-25 14:08:21.551121959 +0000
+@@ -1431,7 +1431,7 @@
+ 	    STACK_LEVEL_MAX = (rlim.rlim_cur - space) / sizeof(VALUE);
+ 	}
+     }
+-#ifdef __ia64__
++#if 0 && defined(__ia64__)
+     /* ruby crashes on IA64 if compiled with optimizer on */
+     /* when if STACK_LEVEL_MAX is greater than this magic number */
+     /* I know this is a kludge.  I suspect optimizer bug */
