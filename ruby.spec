@@ -118,6 +118,7 @@ cd ..
 %{__make}
 
 %{__make} info -C %{name}-texi-1.4-en
+./miniruby -I lib bin/rdoc -o rdoc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -146,7 +147,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc guide faq misc README README.EXT ChangeLog ToDo
+%doc guide faq misc README README.EXT ChangeLog ToDo rdoc
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %attr(755,root,root) %{_libdir}/lib*.so
