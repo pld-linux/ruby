@@ -207,14 +207,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/1.8/tsort.rb
 %{_libdir}/%{name}/1.8/[u-z]*.rb
 %dir %{_libdir}/%{name}/1.8/*-linux*
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[a-s]*
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[u-z]*
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[a-s]*.so
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[u-z]*.so
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/digest/*.so
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/io/*.so
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/racc/*.so
+%{_libdir}/%{name}/1.8/*-linux*/rbconfig.rb
 %dir %{_ulibdir}/%{name}/site_ruby
 %dir %{_ulibdir}/%{name}/site_ruby/1.8
 %dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux*
 %dir %{ruby_ridir}
 %{ruby_ridir}/*
-
 %{_mandir}/*/*
 %{_infodir}/*.info*
 %{_examplesdir}/%{name}-%{version}
@@ -225,6 +228,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files static
 %{_libdir}/lib*.a
+%{_libdir}/%{name}/1.8/*/*.h
 
 %files tk
 %defattr(644,root,root,755)
