@@ -1,11 +1,13 @@
-%define ruby_ridir %{_datadir}/ri/1.8/system
+%define		ruby_ridir	%{_datadir}/ri/1.8/system
+
+%define		pre		preview2
+
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト回羹咐胳Rubyインタプリタ
 Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-%define pre preview2
 Version:	1.8.2
 Release:	1.%{pre}.1
 Epoch:		1
@@ -33,7 +35,7 @@ BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
-Requires(post,postun):/sbin/ldconfig
+Requires(post,postun): /sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ruby-doc
 Obsoletes:	rdoc
@@ -172,7 +174,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc guide faq misc README README.EXT ChangeLog ToDo 
+%doc guide faq misc README README.EXT ChangeLog ToDo
 %doc rdoc
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
