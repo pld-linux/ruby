@@ -5,7 +5,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.0
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Languages
 Source0:	http://www.ruby-lang.org/download-%{version}.rbx/%{name}-%{version}.tar.gz
@@ -17,6 +17,8 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	ftp://ftp.ruby-lang.org/pub/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
+Source5:  ftp://ftp.ruby-lang.org/pub/ruby/contrib/onigd20030819.tar.gz
+# Source5-md5:	00091bd10a9986140445ae637e2a0ce2
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-curses-terminfo.patch
 URL:		http://www.ruby-lang.org/
@@ -71,13 +73,18 @@ Ruby development libraries.
 Biblioteki programistyczne interpretera j陑yka Ruby.
 
 %prep
-%setup -q -a1 -a2 -a3
+%setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
 %patch1 -p1
 
 perl -pi -e "s#local/bin/ruby#bin/ruby#" sample/*
 
 %build
+cd oniguruma
+%configure --with-rubydir=..
+%{__make} 18
+cd ..
+
 #%{__autoconf}
 %configure \
 	--enable-shared
