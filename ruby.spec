@@ -28,6 +28,7 @@ Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
 Patch3:		%{name}-onig-types.patch
+Patch4:		%{name}-mkmf-shared.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -37,10 +38,10 @@ BuildRequires:	readline-devel >= 4.2
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
 Requires(post,postun): /sbin/ldconfig
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ruby-doc
 Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_ulibdir	%{_prefix}/lib
 
@@ -118,6 +119,7 @@ Biblioteki statyczne Ruby.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
@@ -177,7 +179,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc guide faq misc README README.EXT ChangeLog ToDo
 %doc rdoc
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/lib*.so.*.*
+%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/1.8
 %{_libdir}/%{name}/1.8/bigdecimal
