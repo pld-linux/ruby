@@ -174,12 +174,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/1.8/tracer.rb
 %{_libdir}/%{name}/1.8/tsort.rb
 %{_libdir}/%{name}/1.8/[u-z]*.rb
-%dir %{_libdir}/%{name}/1.8/*-linux
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/[a-s]*
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/[u-z]*
+%dir %{_libdir}/%{name}/1.8/*-linux*
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[a-s]*
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[u-z]*
 %dir %{_libdir}/%{name}/site_ruby
 %dir %{_ulibdir}/%{name}/site_ruby/1.8
-%dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux
+%dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux*
 
 %{_mandir}/*/*
 %{_infodir}/*.info*
@@ -193,4 +193,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/%{name}/1.8/tcltk.rb
 %{_libdir}/%{name}/1.8/tk*.rb
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux/t*.so
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/t*.so
