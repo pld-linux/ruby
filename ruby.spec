@@ -1,3 +1,4 @@
+%define ruby_ridir %{_datadir}/ri/1.8/system
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト回羹咐胳Rubyインタプリタ
 Summary(pl):	Ruby - interpretowany j陑yk skryptowy
@@ -6,9 +7,9 @@ Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.2
 %define pre preview2
-Release:	0.%{pre}.1
+Release:	1
 License:	The Ruby License
-Group:		1
+Group:		Development/Languages
 #Source0:	http://www.ruby-lang.org/%{name}-%{version}.tar.gz
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-%{pre}.tar.gz
 # Source0-md5:	f40dae2bd20fd41d681197f1229f25e0
@@ -199,6 +200,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_ulibdir}/%{name}/site_ruby
 %dir %{_ulibdir}/%{name}/site_ruby/1.8
 %dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux*
+%dir %{ruby_ridir}
+%{ruby_ridir}/*
 
 %{_mandir}/*/*
 %{_infodir}/*.info*
