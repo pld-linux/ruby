@@ -8,7 +8,7 @@ Version:	1.8.0
 Release:	1
 License:	GPL
 Group:		Development/Languages
-Source0:	http://www.ruby-lang.org/download-1.8.0.rbx/ruby-1.8.0.tar.gz
+Source0:	http://www.ruby-lang.org/download-%{version}.rbx/%{name}-%{version}.tar.gz
 # Source0-md5:	582a65e52598a4a1e9fce523e16e67d6
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
@@ -79,7 +79,7 @@ perl -pi -e "s#local/bin/ruby#bin/ruby#" sample/*
 
 %build
 #%{__autoconf}
-%configure2_13 \
+%configure \
 	--enable-shared
 %{__make}
 
@@ -89,7 +89,8 @@ perl -pi -e "s#local/bin/ruby#bin/ruby#" sample/*
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version}}
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 install sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
