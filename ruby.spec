@@ -1,14 +1,14 @@
 Summary:	Ruby - interpreted scripting language
 Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Name:		ruby
-Version:	1.6.4
-Release:	5
+Version:	1.6.6
+Release:	2
 License:	GPL
 Group:		Development/Languages
 Group(de):	Entwicklung/Sprachen
 Group(pl):	Programowanie/Jêzyki
 URL:		http://www.ruby-lang.org
-Source0:	ftp://ftp.netlab.co.jp/pub/lang/ruby/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{version}.tar.gz
 Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
 Source3:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}faq-990927.tar.gz
