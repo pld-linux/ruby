@@ -37,10 +37,7 @@ zwi±zanych z zarz±dzaniem systemu (podobnie jak Perl). Jest prosty,
 rozszerzalny i przeno¶ny.
 
 %prep
-%setup -q -T -b 0
-%setup -q -T -D -a 1
-%setup -q -T -D -a 2
-%setup -q -T -D -a 3
+%setup -q -a1 -a2 -a3
 %patch0 -p1
 
 %build
@@ -53,6 +50,10 @@ autoconf
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version}}
+
+# workaround (rather mkconfig.rb should be fixed, but I don't know ruby)
+sed -e 's/\(@ECHO_C@,\)\\c/\1\\\\c/' config.status > config.status.new
+mv -f config.status.new config.status
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
