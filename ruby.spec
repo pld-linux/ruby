@@ -83,8 +83,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/lib*.so.*.*
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/%{name}
-%{_mandir}/man1/*
+%{_mandir}/*/*
 %{_infodir}/*
 %{_examplesdir}/%{name}-%{version}
-
-%{_mandir}/*/*
