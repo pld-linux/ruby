@@ -21,8 +21,8 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_4_0.tar.gz
-# Source5-md5:	f64bad67181b02fbd67fac16710537f3
+Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_4_2.tar.gz
+# Source5-md5:	271d3d39201b3a049fa5bbed417c3f0a
 %define stdlibdoc_version	0.9.13
 Source6:	http://www.ruby-doc.org/downloads/stdlib/ruby-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source6-md5:	39dab8db652dad23ad8951f851549f06
