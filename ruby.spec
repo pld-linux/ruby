@@ -150,7 +150,7 @@ cd ..
 
 mkdir rdoc
 
-rdoc -o rdoc/core array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
+./ruby bin/rdoc -o rdoc/core array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
 	error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c marshal.c \
 	math.c numeric.c object.c pack.c parse.c prec.c process.c random.c range.c \
 	re.c regex.c ruby.c signal.c sprintf.c st.c string.c struct.c time.c util.c \
@@ -165,7 +165,7 @@ mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 
 mv ri/1.8/site ri/1.8/system
 
-rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
+./ruby bin/rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
 	marshal.c math.c numeric.c object.c pack.c parse.c prec.c process.c \
 	random.c range.c re.c regex.c ruby.c signal.c sprintf.c st.c string.c \
@@ -175,8 +175,6 @@ rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
 	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
 	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
 	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
-
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
