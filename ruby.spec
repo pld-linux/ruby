@@ -44,7 +44,6 @@ autoconf
 %configure \
 	--enable-shared
 %{__make}
-%{__make} -C ruby-texi-1.4-en
 
 %install
 rm -rf $RPM_BUILD_ROOT
