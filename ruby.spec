@@ -1,6 +1,5 @@
+%define		pre		20040904
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
-
-%define		pre		20040829
 
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト指向言語Rubyインタプリタ
@@ -14,7 +13,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/stable-snapshot.tar.gz
-# Source0-md5:	1482a06bd0bbeb17c7d62a4227bba94d
+# Source0-md5:	70781b8f3ff41b8fecccbe5aad4c1e78
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -24,6 +23,11 @@ Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 Source4:	irb.1
 Source5:	http://www.geocities.jp/kosako1/oniguruma/archive/onigd20040821.tar.gz
 # Source5-md5:	ed8e12118b0d39d6d8581128ad36276f
+%define stdlibdoc_version	0.9.8
+Source6:	http://www.ruby-doc.org/downloads/stdlib/ruby-doc-stdlib-%{stdlibdoc_version}.tgz
+# Source6-md5:	d0bee682c866691061e2f76969966d7a
+Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
+# Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
@@ -37,6 +41,7 @@ BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
+BuildRequires:	unzip
 Requires(post,postun): /sbin/ldconfig
 Obsoletes:	ruby-doc
 Obsoletes:	rdoc
@@ -114,7 +119,7 @@ Ruby static libraries.
 Biblioteki statyczne Ruby.
 
 %prep
-%setup -q -a1 -a2 -a3 -a5 -n %{name}
+%setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -143,9 +148,33 @@ cd ..
 
 mkdir rdoc
 
-./miniruby -I lib bin/rdoc -o rdoc/core .
-./miniruby -I lib bin/rdoc -o rdoc/stdlib lib ext/*/
-./miniruby -I lib -I ext/syck bin/rdoc --ri -o ri lib ext/*/
+rdoc -o rdoc/core array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
+	error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c marshal.c \
+	math.c numeric.c object.c pack.c parse.c prec.c process.c random.c range.c \
+	re.c regex.c ruby.c signal.c sprintf.c st.c string.c struct.c time.c util.c \
+	variable.c version.c \
+	lib/English.rb lib/abbrev.rb lib/base64.rb lib/benchmark.rb lib/cgi.rb \
+	lib/cgi/session.rb lib/complex.rb lib/date.rb lib/fileutils.rb lib/find.rb \
+	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
+	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
+	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
+
+mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
+
+mv ri/1.8/site/* ri/1.8/system/*
+
+rdoc --ri -o ri/1.8/system array.c bignum.c class.c compar.c dir.c dln.c \
+	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
+	marshal.c math.c numeric.c object.c pack.c parse.c prec.c process.c \
+	random.c range.c re.c regex.c ruby.c signal.c sprintf.c st.c string.c \
+	struct.c time.c util.c variable.c version.c \
+	lib/English.rb lib/abbrev.rb lib/base64.rb lib/benchmark.rb lib/cgi.rb \
+	lib/cgi/session.rb lib/complex.rb lib/date.rb lib/fileutils.rb lib/find.rb \
+	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
+	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
+	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
+
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -161,7 +190,7 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 mv -f ruby-uguide guide
 mv -f rubyfaq faq
 
-cp -a ri/ri/* $RPM_BUILD_ROOT%{ruby_ridir}
+cp -a ri/1.8/system/* $RPM_BUILD_ROOT%{ruby_ridir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -227,7 +256,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_ulibdir}/%{name}/site_ruby
 %dir %{_ulibdir}/%{name}/site_ruby/1.8
 %dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux*
-%dir %{ruby_ridir}
 %{ruby_ridir}/*
 %{_mandir}/*/*
 %{_infodir}/*.info*
