@@ -225,10 +225,11 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/lib*.so
+%{_libdir}/%{name}/1.8/*/*.h
 
 %files static
+%defattr(644,root,root,755)
 %{_libdir}/lib*.a
-%{_libdir}/%{name}/1.8/*/*.h
 
 %files tk
 %defattr(644,root,root,755)
