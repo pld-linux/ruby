@@ -5,7 +5,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.1
-Release:	1
+Release:	2
 License:	GPL
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/%{name}/%{name}-%{version}.tar.gz
@@ -30,6 +30,7 @@ BuildRequires:	tk-devel
 Requires(post,postun):/sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ruby-doc
+Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
 
 %description
@@ -87,7 +88,7 @@ Biblioteki programistyczne interpretera j陑yka Ruby.
 %setup -q -a1 -a2 -a3 -a5
 %patch0 -p1
 
-perl -pi -e "s#local/bin/ruby#bin/ruby#" sample/*
+find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
 %build
 cd oniguruma
