@@ -1,0 +1,30 @@
+diff -Nru ruby-1.6.2/ruby-texi-1.4-en/Ruby.texi ruby-1.6.2.new/ruby-texi-1.4-en/Ruby.texi
+--- ruby-1.6.2/ruby-texi-1.4-en/Ruby.texi	Sun Sep 26 19:16:22 1999
++++ ruby-1.6.2.new/ruby-texi-1.4-en/Ruby.texi	Thu Feb 15 22:01:36 2001
+@@ -23,9 +23,9 @@
+ @c ===================================================================
+ @c              Part II: Summary Description and Copyright
+ @ifinfo
+-@dircategory Languages
++@dircategory Programming Languages:
+ @direntry
+-* ruby: (ruby).                 Ruby Language Reference Manual (English)
++* ruby: (ruby).				Ruby Language Reference Manual
+ @end direntry
+ 
+ @quotation
+diff -Nru ruby-1.6.2/ruby-texi-1.4-en/Ruby.texi.in ruby-1.6.2.new/ruby-texi-1.4-en/Ruby.texi.in
+--- ruby-1.6.2/ruby-texi-1.4-en/Ruby.texi.in	Sun Sep 26 18:32:38 1999
++++ ruby-1.6.2.new/ruby-texi-1.4-en/Ruby.texi.in	Thu Feb 15 22:00:27 2001
+@@ -23,9 +23,9 @@
+ @c ===================================================================
+ @c              Part II: Summary Description and Copyright
+ @ifinfo
+-@dircategory Languages
++@dircategory Programming Languages:
+ @direntry
+-* ruby: (ruby).                 Ruby Language Reference Manual (English)
++* ruby: (ruby).				Ruby Language Reference Manual
+ @end direntry
+ 
+ @quotation
