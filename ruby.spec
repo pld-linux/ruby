@@ -4,13 +4,13 @@ Summary(pl):	Ruby - interpretowany jêzyk skryptowy
 Summary(pt_BR): Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - Ò»ÖÖ¿ìËÙ¸ßÐ§µÄÃæÏò¶ÔÏó½Å±¾±à³ÌÓïÑÔ
 Name:		ruby
-Version:	1.6.8
-Release:	2
+Version:	1.8.0preview4
+Release:	3
 License:	GPL
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{version}.tar.gz
-# Source0-md5:	bf48d49dbd94b5c0eda5f75b3bfbac16
-Source1:	ftp://ftp.ruby-lang.org/pub/ruby/doc/%{name}-texi-1.4-en.tar.gz
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.0-preview4.tar.gz
+# Source0-md5:	c6e204136a1b07fee5599f0a613234c2
+Source1:	ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
 # Source2-md5:	24eadcd067278901da9ad70efb146b07
@@ -18,17 +18,18 @@ Source3:	ftp://ftp.ruby-lang.org/pub/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
 Patch0:		%{name}-info.patch
-Patch1:		%{name}-ac25x.patch
+Patch1:		%{name}-curses-terminfo.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	texinfo
-BuildRequires:	tk-devel >= 8.4.3
+BuildRequires:	tk-devel
 Requires(post,postun):/sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Obsoletes:	ruby-doc
+Obsoletes:	ruby-REXML
 
 %description
 Ruby is the interpreted scripting language for quick and easy
@@ -58,16 +59,23 @@ Ruby é uma linguagem de script interpretada de programação
 orientada a objeto. Possui diversas características para
 processamento de texto. É simples, extensível e direta.
 
+%package devel
+Group:		Development/Languages
+Summary:	Ruby development libraries
+
+%description devel
+Ruby development libraries
+
 %prep
-%setup -q -a1 -a2 -a3
+%setup -q -a1 -a2 -a3 -n ruby-1.8.0
 %patch0 -p1
 %patch1 -p1
 
 perl -pi -e "s#local/bin/ruby#bin/ruby#" sample/*
 
 %build
-%{__autoconf}
-%configure \
+#%{__autoconf}
+%configure2_13 \
 	--enable-shared
 %{__make}
 
@@ -107,3 +115,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/*/*
 %{_infodir}/*
 %{_examplesdir}/%{name}-%{version}
+
+%files devel
+%attr(644,root,root) %{_libdir}/lib*a
