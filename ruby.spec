@@ -59,6 +59,8 @@ processamento de texto. É simples, extensível e direta.
 %patch0 -p1
 %patch1 -p1
 
+perl -pi -e "s#local/bin/ruby#bin/ruby#" sample/*
+
 %build
 %{__autoconf}
 %configure \
