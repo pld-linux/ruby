@@ -137,7 +137,10 @@ cd ..
 
 %{__make} info -C %{name}-texi-1.4-en
 
-./miniruby -I lib bin/rdoc -o rdoc lib ext/*/
+mkdir rdoc
+
+./miniruby -I lib bin/rdoc -o rdoc/core .
+./miniruby -I lib bin/rdoc -o rdoc/stdlib lib ext/*/
 ./miniruby -I lib -I ext/syck bin/rdoc --ri -o ri lib ext/*/
 
 %install
