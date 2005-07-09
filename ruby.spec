@@ -181,7 +181,7 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{_libdir}/rpm}
+install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{_libdir}/rpm,%{_datadir}/%{name}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -214,6 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc rdoc
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%dir %{_datadir}/%{name}
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/1.8
 %{_libdir}/%{name}/1.8/bigdecimal
