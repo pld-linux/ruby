@@ -8,7 +8,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - Ò»ÖÖ¿ìËÙ¸ßÐ§µÄÃæÏò¶ÔÏó½Å±¾±à³ÌÓïÑÔ
 Name:		ruby
 Version:	1.8.2
-Release:	4
+Release:	5
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -25,25 +25,27 @@ Source4:	irb.1
 Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_4_2.tar.gz
 # Source5-md5:	271d3d39201b3a049fa5bbed417c3f0a
 %define stdlibdoc_version	0.9.13
-Source6:	http://www.ruby-doc.org/downloads/stdlib/ruby-doc-stdlib-%{stdlibdoc_version}.tgz
+Source6:	http://www.ruby-doc.org/downloads/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source6-md5:	39dab8db652dad23ad8951f851549f06
 Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 # Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
-Source8:	macros.ruby
+Source8:	macros.%{name}
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-ia64.patch
 Patch3:		%{name}-mkmf-shared.patch
+Patch4:		%{name}-1.8.2-xmlrpc-ipimethods-fix.diff
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	db-devel
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
 BuildRequires:	unzip
-Requires(post,postun): /sbin/ldconfig
+Requires(post,postun):	/sbin/ldconfig
 Obsoletes:	ruby-doc
 Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
@@ -67,10 +69,6 @@ Ruby¤Ï¥·¥ó¥×¥ë¤«¤Ä¶¯ÎÏ¤Ê¥ª¥Ö¥¸¥§¥¯¥È»Ø¸þ¥¹¥¯¥ê¥×¥È¸À¸ì¤Ç¤¹¡¥Ruby¤ÏºÇ½é
 »Ø¸þ¥×¥í¥°¥é¥ß¥ó¥°¤ò¼ê·Ú¤Ë¹Ô¤¦»ö¤¬½ÐÍè¤Þ¤¹¡¥¤â¤Á¤í¤óÄÌ¾ï¤Î¼êÂ³¤­·¿¤Î¥×
 ¥í¥°¥é¥ß¥ó¥°¤â²ÄÇ½¤Ç¤¹¡¥
 
-Ruby¤Ï¥Æ¥­¥¹¥È½èÍý´Ø·¸¤ÎÇ½ÎÏ¤Ê¤É¤ËÍ¥¤ì¡¤Perl¤ÈÆ±¤¸¤¯¤é¤¤¶¯ÎÏ¤Ç¤¹¡¥¤µ¤é
-¤Ë¥·¥ó¥×¥ë¤ÊÊ¸Ë¡¤È¡¤Îã³°½èÍý¤ä¥¤¥Æ¥ì¡¼¥¿¤Ê¤É¤Îµ¡¹½¤Ë¤è¤Ã¤Æ¡¤¤è¤êÊ¬¤«¤ê
-¤ä¤¹¤¤¥×¥í¥°¥é¥ß¥ó¥°¤¬½ÐÍè¤Þ¤¹¡¥
-
 %description -l pl
 Ruby to interpretowany jêzyk skryptowy, w sam raz dla ³atwego i
 szybkiego pisania zorientowanych obiektowo programów. Ma wiele funkcji
@@ -79,9 +77,9 @@ zwi±zanych z zarz±dzaniem systemu (podobnie jak Perl). Jest prosty,
 rozszerzalny i przeno¶ny.
 
 %description -l pt_BR
-Ruby é uma linguagem de script interpretada de programação
-orientada a objeto. Possui diversas características para
-processamento de texto. É simples, extensível e direta.
+Ruby é uma linguagem de script interpretada de programação orientada a
+objeto. Possui diversas características para processamento de texto. É
+simples, extensível e direta.
 
 %package tk
 Summary:	Ruby/Tk bindings
@@ -120,11 +118,12 @@ Ruby static libraries.
 Biblioteki statyczne Ruby.
 
 %prep
-%setup -q -a1 -a2 -a3 -a5 -a6 -a7 
+%setup -q -a1 -a2 -a3 -a5 -a6 -a7
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
@@ -141,7 +140,7 @@ cd ..
 %configure \
 	--enable-shared \
 	--enable-pthread \
-	--with-X11-lib=/usr/X11R6/%{_lib}
+--with-X11-lib=%{_prefix}/X11R6/%{_lib}
 %{__make}
 
 %{__make} info -C %{name}-texi-1.4-en
