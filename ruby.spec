@@ -138,9 +138,9 @@ cd ..
 %configure \
 	--enable-shared \
 	--enable-pthread \
---with-X11-lib=%{_prefix}/X11R6/%{_lib}
-%{__make}
+	--with-X11-lib=/usr/X11R6/%{_lib}
 
+%{__make}
 %{__make} info -C %{name}-texi-1.4-en
 
 mkdir rdoc
