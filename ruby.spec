@@ -1,5 +1,3 @@
-# TODO
-# - check http://security.gentoo.org/glsa/glsa-200507-10.xml
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト指向言語Rubyインタプリタ
