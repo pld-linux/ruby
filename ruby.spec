@@ -145,7 +145,7 @@ cd ..
 
 mkdir rdoc
 
-RUBYLIB=lib:`ls ext/*/ | xargs | sed -e 's! !:!g'`
+RUBYLIB="lib:`find ext/ -type d | tr '\n' ':'`"
 export RUBYLIB
 
 LD_LIBRARY_PATH=. ./ruby bin/rdoc --inline-source --op rdoc/core \
