@@ -31,6 +31,7 @@ Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 Source8:	macros.%{name}
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
+Patch2:	%{name}-%{version}-rexml.patch
 #Patch3:		%{name}-mkmf-shared.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
@@ -118,6 +119,7 @@ Biblioteki statyczne Ruby.
 %setup -q -a1 -a2 -a3 -a5 -a6 -a7
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 #%patch3 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
