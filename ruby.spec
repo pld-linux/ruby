@@ -1,3 +1,4 @@
+%bcond_with brokendocs	# Attempt to build docs
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト回羹咐胳Rubyインタプリタ
@@ -5,14 +6,14 @@ Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.2
-Release:	6
+Version:	1.8.3
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 #Source0:	ftp://ftp.ruby-lang.org/pub/ruby/stable-snapshot.tar.gz
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{version}.tar.gz
-# Source0-md5:	8ffc79d96f336b80f2690a17601dea9b
+# Source0-md5:	63d6c2bddd6af86664e338b31f3189a6
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -20,8 +21,8 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_4_2.tar.gz
-# Source5-md5:	271d3d39201b3a049fa5bbed417c3f0a
+Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_0.tar.gz
+# Source5-md5:	40cb52605c7292373d8dfd11015cb687
 %define stdlibdoc_version	0.9.13
 Source6:	http://www.ruby-doc.org/downloads/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source6-md5:	39dab8db652dad23ad8951f851549f06
@@ -30,9 +31,7 @@ Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 Source8:	macros.%{name}
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
-Patch2:		%{name}-ia64.patch
-Patch3:		%{name}-mkmf-shared.patch
-Patch4:		%{name}-1.8.2-xmlrpc-ipimethods-fix.diff
+#Patch3:		%{name}-mkmf-shared.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -119,9 +118,7 @@ Biblioteki statyczne Ruby.
 %setup -q -a1 -a2 -a3 -a5 -a6 -a7
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
+#%patch3 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
 
@@ -165,6 +162,7 @@ mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 
 mv ri/1.8/site ri/1.8/system
 
+%if %{with brokendocs}
 LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system \
 	array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
@@ -176,6 +174,7 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system \
 	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
 	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
 	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
