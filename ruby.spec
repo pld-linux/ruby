@@ -1,4 +1,3 @@
-%bcond_with brokendocs	# Attempt to build docs
 %define		ruby_ridir	%{_datadir}/ri/1.8/system
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト指向言語Rubyインタプリタ
@@ -144,7 +143,7 @@ cd ..
 
 mkdir rdoc
 
-RUBYLIB="lib:`find ext/ -type d | tr '\n' ':'`"
+RUBYLIB="lib:`find ext/ .ext/ -type d | tr '\n' ':'`"
 export RUBYLIB
 
 LD_LIBRARY_PATH=. ./ruby bin/rdoc --inline-source --op rdoc/core \
@@ -164,7 +163,6 @@ mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 
 mv ri/1.8/site ri/1.8/system
 
-%if %{with brokendocs}
 LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system \
 	array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
@@ -176,7 +174,6 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system \
 	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
 	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
 	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
-%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
