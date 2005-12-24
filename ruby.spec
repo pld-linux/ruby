@@ -5,14 +5,14 @@ Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.3
+Version:	1.8.4
 Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 #Source0:	ftp://ftp.ruby-lang.org/pub/ruby/stable-snapshot.tar.gz
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{version}.tar.gz
-# Source0-md5:	63d6c2bddd6af86664e338b31f3189a6
+# Source0-md5:	bd8c2e593e1fa4b01fd98eaf016329bb
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -30,7 +30,6 @@ Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 Source8:	macros.%{name}
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
-Patch2:	%{name}-%{version}-rexml.patch
 #Patch3:		%{name}-mkmf-shared.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
@@ -118,7 +117,6 @@ Biblioteki statyczne Ruby.
 %setup -q -a1 -a2 -a3 -a5 -a6 -a7
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 #%patch3 -p1
 
 find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
