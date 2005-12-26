@@ -113,7 +113,7 @@ Standardowe modu³y i narzêdzia Ruby:
 Summary:	Ruby/Tk bindings
 Summary(pl):	Wi±zania Ruby/Tk
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
 %description tk
 This pachage contains Ruby/Tk bindings.
@@ -147,14 +147,20 @@ Biblioteki statyczne Ruby.
 
 %package doc 
 Summary:	Ruby HTML documentation
+Summary(pl):	Dokumentacja HTML do Ruby
 Group:		Documentation
 
 %description doc
 Ruby HTML documentation: FAQ, guide, core and standard library.
 
+%description doc -l pl
+Dokumentacja HTML do Ruby: FAQ, przewodnik, dokumentacja dla core i stdlib.
+
 %package doc-ri
 Summary:	Ruby ri documentation
+Summary(pl):	Dokumentacja Ruby w formacie ri
 Group:		Documentation
+Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
 %description doc-ri
 Ruby ri documentation.
@@ -164,6 +170,7 @@ Dokumentacja Ruby w formacie ri.
 
 %package examples
 Summary:	Ruby examples
+Summary(pl):	Przyk³ady Ruby
 Group:		Development/Languages
 
 %description examples
