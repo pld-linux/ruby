@@ -137,7 +137,7 @@ Biblioteki programistyczne interpretera jêzyka Ruby.
 Summary:	Ruby static libraries
 Summary(pl):	Biblioteki statyczne Ruby
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 Ruby static libraries.
