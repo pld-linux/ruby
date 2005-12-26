@@ -42,6 +42,7 @@ BuildRequires:	db-devel
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
+BuildRequires:	sed >= 4.0
 BuildRequires:	texinfo
 BuildRequires:	tk-devel
 BuildRequires:	unzip
@@ -99,7 +100,7 @@ Ruby standard modules and utilities:
 - rdoc - documentation tool for source code
 - irb - interactive Ruby
 - ri - Ruby interactive reference
-- testrb - automatic runnter for Test::Unit of Ruby
+- testrb - automatic runner for Test::Unit of Ruby
 
 %description modules -l pl
 Standardowe modu³y i narzêdzia Ruby:
@@ -107,7 +108,7 @@ Standardowe modu³y i narzêdzia Ruby:
 - rdoc - narzêdzie do dokumentowania kodu ¼ród³owego
 - irb - interaktywny Ruby
 - ri - interaktywna dokumentacja Ruby
-- testrb - automatyczny runnter dla Ruby Test::Unit
+- testrb - automatyczny runner dla Ruby Test::Unit
 
 %package tk
 Summary:	Ruby/Tk bindings
@@ -186,7 +187,7 @@ Przyk³ady programów Ruby.
 %patch1 -p1
 #%patch3 -p1
 
-find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs perl -pi -e "s#/usr/local/bin#bin#"
+find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs %{__sed} -i "s#/usr/local/bin/#/usr/bin/#"
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -277,8 +278,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/ruby
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-# below - what's for? (empty)
-#%%dir %{_datadir}/%{name}
 %{_mandir}/man1/ruby.1*
 %{_infodir}/*.info*
 
@@ -362,6 +361,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rdoc.1*
 %{_mandir}/man1/ri.1*
 %{_mandir}/man1/testrb.1*
+%dir %{_datadir}/%{name}
 %dir %{_datadir}/ri
 %dir %{_datadir}/ri/1.8
 %dir %{_datadir}/ri/1.8/system
