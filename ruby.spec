@@ -6,7 +6,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - Ò»ÖÖ¿ìËÙ¸ßÐ§µÄÃæÏò¶ÔÏó½Å±¾±à³ÌÓïÑÔ
 Name:		ruby
 Version:	1.8.4
-Release:	1
+Release:	1.1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -28,6 +28,10 @@ Source6:	http://www.ruby-doc.org/downloads/stdlib/%{name}-doc-stdlib-%{stdlibdoc
 Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 # Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
 Source8:	macros.%{name}
+Source9:	erb.1
+Source10:	rdoc.1
+Source11:	ri.1
+Source12:	testrb.1
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 #Patch3:		%{name}-mkmf-shared.patch
@@ -59,6 +63,9 @@ object-oriented programming. It has many features to process text
 files and to do system management tasks (as in Perl). It is simple,
 straight-forward, extensible, and portable.
 
+This package contains only shared library and ruby interpreter. To get
+full-functional ruby environment install ruby-modules package.
+
 %description -l ja
 Ruby¤Ï¥·¥ó¥×¥ë¤«¤Ä¶¯ÎÏ¤Ê¥ª¥Ö¥¸¥§¥¯¥È»Ø¸þ¥¹¥¯¥ê¥×¥È¸À¸ì¤Ç¤¹¡¥Ruby¤ÏºÇ½é
 ¤«¤é½ã¿è¤Ê¥ª¥Ö¥¸¥§¥¯¥È»Ø¸þ¸À¸ì¤È¤·¤ÆÀß·×¤µ¤ì¤Æ¤¤¤Þ¤¹¤«¤é¡¤¥ª¥Ö¥¸¥§¥¯¥È
@@ -72,10 +79,35 @@ u³atwiaj±cych przetwarzanie plików tekstowych i wykonywanie prac
 zwi±zanych z zarz±dzaniem systemu (podobnie jak Perl). Jest prosty,
 rozszerzalny i przeno¶ny.
 
+Ten pakiet zawiera tylko bibliotekê dzielon± i interpreter ruby.
+Zainstaluj pakiet ruby-modules, je¿eli potrzebujesz w pe³ni
+funkcjonalnego ¶rodowiska ruby.
+
 %description -l pt_BR
 Ruby é uma linguagem de script interpretada de programação orientada a
 objeto. Possui diversas características para processamento de texto. É
 simples, extensível e direta.
+
+%package modules
+Summary:	Ruby standard modules and utilities
+Group:		Development/Languages
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description modules
+Ruby standard modules and utilities:
+- erb - Tiny eRuby
+- rdoc - documentation tool for source code
+- irb - interactive Ruby
+- ri - Ruby interactive reference
+- testrb - automatic runnter for Test::Unit of Ruby
+
+%description modules -l pl
+Standardowe modu³y i narzêdzia Ruby:
+- erb - ma³y eRuby
+- rdoc - narzêdzie do dokumentowania kodu ¼ród³owego
+- irb - interaktywny Ruby
+- ri - interaktywna dokumentacja Ruby
+- testrb - automatyczny runnter dla Ruby Test::Unit
 
 %package tk
 Summary:	Ruby/Tk bindings
@@ -93,7 +125,7 @@ Ten pakiet zawiera wi±zania Ruby/Tk.
 Summary:	Ruby development libraries
 Summary(pl):	Biblioteki programistyczne interpretera jêzyka Ruby
 Group:		Development/Languages
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
 %description devel
 Ruby development libraries.
@@ -110,8 +142,35 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 %description static
 Ruby static libraries.
 
-%description devel -l pl
+%description static -l pl
 Biblioteki statyczne Ruby.
+
+%package doc 
+Summary:	Ruby HTML documentation
+Group:		Documentation
+
+%description doc
+Ruby HTML documentation: FAQ, guide, core and standard library.
+
+%package doc-ri
+Summary:	Ruby ri documentation
+Group:		Documentation
+
+%description doc-ri
+Ruby ri documentation.
+
+%description doc-ri -l pl
+Dokumentacja Ruby w formacie ri.
+
+%package examples
+Summary:	Ruby examples
+Group:		Development/Languages
+
+%description examples
+Ruby examples.
+
+%description examples -l pl
+Przyk³ady programów Ruby.
 
 %prep
 %setup -q -a1 -a2 -a3 -a5 -a6 -a7
@@ -158,7 +217,6 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --inline-source --op rdoc/core \
 	lib/time.rb lib/yaml.rb
 
 mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
-
 mv ri/1.8/site ri/1.8/system
 
 LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system \
@@ -180,14 +238,18 @@ install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-cp -a sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
+install %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1
+install %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1
+install %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
+install %{SOURCE12} $RPM_BUILD_ROOT%{_mandir}/man1
 
 mv -f ruby-uguide guide
 mv -f rubyfaq faq
 
-cp -a ri/1.8/system/* $RPM_BUILD_ROOT%{ruby_ridir}
+cp -Rf ri/1.8/system/* $RPM_BUILD_ROOT%{ruby_ridir}
 
 install %{SOURCE8} $RPM_BUILD_ROOT%{_libdir}/rpm
 
@@ -204,11 +266,39 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc guide faq misc README README.EXT ChangeLog ToDo
-%doc rdoc
-%attr(755,root,root) %{_bindir}/*
+%doc README README.EXT ChangeLog ToDo
+%attr(755,root,root) %{_bindir}/ruby
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-%dir %{_datadir}/%{name}
+# below - what's for? (empty)
+#%%dir %{_datadir}/%{name}
+%{_mandir}/man1/ruby.1*
+%{_infodir}/*.info*
+
+%files devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/lib*.so
+%{_libdir}/%{name}/1.8/*/*.h
+%{_libdir}/rpm/macros.ruby
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/lib*.a
+
+%files tk
+%defattr(644,root,root,755)
+%{_libdir}/%{name}/1.8/tcltk.rb
+%{_libdir}/%{name}/1.8/tk*.rb
+%{_libdir}/%{name}/1.8/tk
+%{_libdir}/%{name}/1.8/tkextlib
+%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/t*.so
+
+%files modules
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/erb
+%attr(755,root,root) %{_bindir}/irb
+%attr(755,root,root) %{_bindir}/rdoc
+%attr(755,root,root) %{_bindir}/ri
+%attr(755,root,root) %{_bindir}/testrb
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/1.8
 %{_libdir}/%{name}/1.8/bigdecimal
@@ -259,25 +349,23 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_ulibdir}/%{name}/site_ruby
 %dir %{_ulibdir}/%{name}/site_ruby/1.8
 %dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux*
-%{_datadir}/ri
-%{_mandir}/*/*
-%{_infodir}/*.info*
+%{_mandir}/man1/erb.1*
+%{_mandir}/man1/irb.1*
+%{_mandir}/man1/rdoc.1*
+%{_mandir}/man1/ri.1*
+%{_mandir}/man1/testrb.1*
+%dir %{_datadir}/ri
+%dir %{_datadir}/ri/1.8
+%dir %{_datadir}/ri/1.8/system
+
+%files doc
+%defattr(644,root,root,755)
+%doc faq guide misc rdoc
+
+%files doc-ri
+%defattr(644,root,root,755)
+%{_datadir}/ri/1.8/system/*
+
+%files examples
+%defattr(644,root,root,755)
 %{_examplesdir}/%{name}-%{version}
-
-%files devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/%{name}/1.8/*/*.h
-%{_libdir}/rpm/macros.ruby
-
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/lib*.a
-
-%files tk
-%defattr(644,root,root,755)
-%{_libdir}/%{name}/1.8/tcltk.rb
-%{_libdir}/%{name}/1.8/tk*.rb
-%{_libdir}/%{name}/1.8/tk
-%{_libdir}/%{name}/1.8/tkextlib
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/t*.so
