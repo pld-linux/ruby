@@ -47,9 +47,9 @@ BuildRequires:	texinfo
 BuildRequires:	tk-devel
 BuildRequires:	unzip
 Requires(post,postun):	/sbin/ldconfig
-Obsoletes:	ruby-doc
 Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
+Obsoletes:	ruby-doc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_ulibdir	%{_prefix}/lib
@@ -146,7 +146,7 @@ Ruby static libraries.
 %description static -l pl
 Biblioteki statyczne Ruby.
 
-%package doc 
+%package doc
 Summary:	Ruby HTML documentation
 Summary(pl):	Dokumentacja HTML do Ruby
 Group:		Documentation
@@ -187,7 +187,7 @@ Przyk³ady programów Ruby.
 %patch1 -p1
 #%patch3 -p1
 
-find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs %{__sed} -i "s#/usr/local/bin/#/usr/bin/#"
+find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs %{__sed} -i '1s,#!.*/local/bin/,#!%{_bindir}/,'
 
 %build
 cp -f /usr/share/automake/config.sub .
