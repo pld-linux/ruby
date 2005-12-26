@@ -154,7 +154,8 @@ Group:		Documentation
 Ruby HTML documentation: FAQ, guide, core and standard library.
 
 %description doc -l pl
-Dokumentacja HTML do Ruby: FAQ, przewodnik, dokumentacja dla core i stdlib.
+Dokumentacja HTML do Ruby: FAQ, przewodnik, dokumentacja dla core i
+stdlib.
 
 %package doc-ri
 Summary:	Ruby ri documentation
