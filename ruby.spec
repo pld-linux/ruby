@@ -6,7 +6,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.4
-Release:	1.1
+Release:	2	
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
