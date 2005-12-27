@@ -6,7 +6,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.4
-Release:	2	
+Release:	3
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -49,7 +49,7 @@ BuildRequires:	unzip
 Requires(post,postun):	/sbin/ldconfig
 Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
-Obsoletes:	ruby-doc
+Obsoletes:	ruby-doc < 1.8.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_ulibdir	%{_prefix}/lib
@@ -187,7 +187,9 @@ Przyk砤dy program體 Ruby.
 %patch1 -p1
 #%patch3 -p1
 
-find . -name '*.rb' -or -name '*.cgi' -or -name '*.test' | xargs %{__sed} -i '1s,#!.*/local/bin/,#!%{_bindir}/,'
+find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
+	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
+	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
 
 %build
 cp -f /usr/share/automake/config.sub .
