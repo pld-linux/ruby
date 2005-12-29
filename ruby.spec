@@ -1,4 +1,5 @@
-%define		ruby_ridir	%{_datadir}/ri/1.8/system
+%define		ruby_ver	1.8
+%define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 Summary:	Ruby - interpreted scripting language
 Summary(ja):	オブジェクト回羹咐胳Rubyインタプリタ
 Summary(pl):	Ruby - interpretowany j陑yk skryptowy
@@ -6,7 +7,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.4
-Release:	3
+Release:	4
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -47,6 +48,7 @@ BuildRequires:	texinfo
 BuildRequires:	tk-devel
 BuildRequires:	unzip
 Requires(post,postun):	/sbin/ldconfig
+Provides:	ruby(ver) = %{ruby_ver}
 Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
@@ -93,6 +95,7 @@ simples, extens韛el e direta.
 Summary:	Ruby standard modules and utilities
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Provides:	ruby-modules(ver) = %{ruby_ver}
 
 %description modules
 Ruby standard modules and utilities:
@@ -228,9 +231,9 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --inline-source --op rdoc/core \
 	lib/time.rb lib/yaml.rb
 
 mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
-mv ri/1.8/site ri/1.8/system
+mv ri/%{ruby_ver}/site ri/%{ruby_ver}/system
 
-LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/1.8/system \
+LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
 	array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
 	marshal.c math.c numeric.c object.c pack.c parse.c prec.c process.c \
@@ -257,10 +260,10 @@ install %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1
 install %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
 install %{SOURCE12} $RPM_BUILD_ROOT%{_mandir}/man1
 
-mv -f ruby-uguide guide
-mv -f rubyfaq faq
+cp -Rf ruby-uguide guide
+cp -Rf rubyfaq faq
 
-cp -Rf ri/1.8/system/* $RPM_BUILD_ROOT%{ruby_ridir}
+cp -Rf ri/%{ruby_ver}/system/* $RPM_BUILD_ROOT%{ruby_ridir}
 
 install %{SOURCE8} $RPM_BUILD_ROOT%{_libdir}/rpm
 
@@ -282,12 +285,21 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %{_mandir}/man1/ruby.1*
 %{_infodir}/*.info*
+%dir %{_libdir}/%{name}
+%dir %{_libdir}/%{name}/%{ruby_ver}
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
+%dir %{_ulibdir}/%{name}/site_ruby
+%dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}
+%dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
+%dir %{_datadir}/%{name}
+%dir %{_datadir}/ri
+%dir %{_datadir}/ri/%{ruby_ver}
+%dir %{_datadir}/ri/%{ruby_ver}/system
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/%{name}/1.8/*/*.h
-%{_libdir}/rpm/macros.ruby
+%{_libdir}/%{name}/%{ruby_ver}/*/*.h
 
 %files static
 %defattr(644,root,root,755)
@@ -295,11 +307,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files tk
 %defattr(644,root,root,755)
-%{_libdir}/%{name}/1.8/tcltk.rb
-%{_libdir}/%{name}/1.8/tk*.rb
-%{_libdir}/%{name}/1.8/tk
-%{_libdir}/%{name}/1.8/tkextlib
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/t*.so
+%{_libdir}/%{name}/%{ruby_ver}/tcltk.rb
+%{_libdir}/%{name}/%{ruby_ver}/tk*.rb
+%{_libdir}/%{name}/%{ruby_ver}/tk
+%{_libdir}/%{name}/%{ruby_ver}/tkextlib
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/t*.so
 
 %files modules
 %defattr(644,root,root,755)
@@ -308,65 +320,56 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rdoc
 %attr(755,root,root) %{_bindir}/ri
 %attr(755,root,root) %{_bindir}/testrb
-%dir %{_libdir}/%{name}
-%dir %{_libdir}/%{name}/1.8
-%{_libdir}/%{name}/1.8/bigdecimal
-%{_libdir}/%{name}/1.8/cgi
-%{_libdir}/%{name}/1.8/date
-%{_libdir}/%{name}/1.8/dl
-%{_libdir}/%{name}/1.8/drb
-%{_libdir}/%{name}/1.8/io
-%{_libdir}/%{name}/1.8/irb
-%{_libdir}/%{name}/1.8/net
-%{_libdir}/%{name}/1.8/openssl
-%{_libdir}/%{name}/1.8/optparse
-%{_libdir}/%{name}/1.8/racc
-%{_libdir}/%{name}/1.8/rdoc
-%{_libdir}/%{name}/1.8/rexml
-%{_libdir}/%{name}/1.8/rinda
-%{_libdir}/%{name}/1.8/rss
-%{_libdir}/%{name}/1.8/runit
-%{_libdir}/%{name}/1.8/shell
-%{_libdir}/%{name}/1.8/soap
-%{_libdir}/%{name}/1.8/test
-%{_libdir}/%{name}/1.8/uri
-%{_libdir}/%{name}/1.8/webrick
-%{_libdir}/%{name}/1.8/wsdl
-%{_libdir}/%{name}/1.8/xmlrpc
-%{_libdir}/%{name}/1.8/xsd
-%{_libdir}/%{name}/1.8/yaml
-%{_libdir}/%{name}/1.8/[A-Za-s]*.rb
-%{_libdir}/%{name}/1.8/tempfile.rb
-%{_libdir}/%{name}/1.8/thread.rb
-%{_libdir}/%{name}/1.8/thwait.rb
-%{_libdir}/%{name}/1.8/time.rb
-%{_libdir}/%{name}/1.8/timeout.rb
-%{_libdir}/%{name}/1.8/tmpdir.rb
-%{_libdir}/%{name}/1.8/tracer.rb
-%{_libdir}/%{name}/1.8/tsort.rb
-%{_libdir}/%{name}/1.8/[u-z]*.rb
-%dir %{_libdir}/%{name}/1.8/*-linux*
-%dir %{_libdir}/%{name}/1.8/*-linux*/digest
-%dir %{_libdir}/%{name}/1.8/*-linux*/io
-%dir %{_libdir}/%{name}/1.8/*-linux*/racc
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[a-s]*.so
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/[u-z]*.so
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/digest/*.so
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/io/*.so
-%attr(755,root,root) %{_libdir}/%{name}/1.8/*-linux*/racc/*.so
-%{_libdir}/%{name}/1.8/*-linux*/rbconfig.rb
-%dir %{_ulibdir}/%{name}/site_ruby
-%dir %{_ulibdir}/%{name}/site_ruby/1.8
-%dir %{_ulibdir}/%{name}/site_ruby/1.8/*-linux*
+%{_libdir}/rpm/macros.ruby
+%{_libdir}/%{name}/%{ruby_ver}/bigdecimal
+%{_libdir}/%{name}/%{ruby_ver}/cgi
+%{_libdir}/%{name}/%{ruby_ver}/date
+%{_libdir}/%{name}/%{ruby_ver}/dl
+%{_libdir}/%{name}/%{ruby_ver}/drb
+%{_libdir}/%{name}/%{ruby_ver}/io
+%{_libdir}/%{name}/%{ruby_ver}/irb
+%{_libdir}/%{name}/%{ruby_ver}/net
+%{_libdir}/%{name}/%{ruby_ver}/openssl
+%{_libdir}/%{name}/%{ruby_ver}/optparse
+%{_libdir}/%{name}/%{ruby_ver}/racc
+%{_libdir}/%{name}/%{ruby_ver}/rdoc
+%{_libdir}/%{name}/%{ruby_ver}/rexml
+%{_libdir}/%{name}/%{ruby_ver}/rinda
+%{_libdir}/%{name}/%{ruby_ver}/rss
+%{_libdir}/%{name}/%{ruby_ver}/runit
+%{_libdir}/%{name}/%{ruby_ver}/shell
+%{_libdir}/%{name}/%{ruby_ver}/soap
+%{_libdir}/%{name}/%{ruby_ver}/test
+%{_libdir}/%{name}/%{ruby_ver}/uri
+%{_libdir}/%{name}/%{ruby_ver}/webrick
+%{_libdir}/%{name}/%{ruby_ver}/wsdl
+%{_libdir}/%{name}/%{ruby_ver}/xmlrpc
+%{_libdir}/%{name}/%{ruby_ver}/xsd
+%{_libdir}/%{name}/%{ruby_ver}/yaml
+%{_libdir}/%{name}/%{ruby_ver}/[A-Za-s]*.rb
+%{_libdir}/%{name}/%{ruby_ver}/tempfile.rb
+%{_libdir}/%{name}/%{ruby_ver}/thread.rb
+%{_libdir}/%{name}/%{ruby_ver}/thwait.rb
+%{_libdir}/%{name}/%{ruby_ver}/time.rb
+%{_libdir}/%{name}/%{ruby_ver}/timeout.rb
+%{_libdir}/%{name}/%{ruby_ver}/tmpdir.rb
+%{_libdir}/%{name}/%{ruby_ver}/tracer.rb
+%{_libdir}/%{name}/%{ruby_ver}/tsort.rb
+%{_libdir}/%{name}/%{ruby_ver}/[u-z]*.rb
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[a-s]*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[u-z]*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest/*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io/*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc/*.so
+%{_libdir}/%{name}/%{ruby_ver}/*-linux*/rbconfig.rb
 %{_mandir}/man1/erb.1*
 %{_mandir}/man1/irb.1*
 %{_mandir}/man1/rdoc.1*
 %{_mandir}/man1/ri.1*
 %{_mandir}/man1/testrb.1*
-%dir %{_datadir}/%{name}
-%dir %{_datadir}/ri
-%dir %{_datadir}/ri/1.8
-%dir %{_datadir}/ri/1.8/system
 
 %files doc
 %defattr(644,root,root,755)
@@ -374,7 +377,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc-ri
 %defattr(644,root,root,755)
-%{_datadir}/ri/1.8/system/*
+%{_datadir}/ri/%{ruby_ver}/system/*
 
 %files examples
 %defattr(644,root,root,755)
