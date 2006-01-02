@@ -1,3 +1,6 @@
+#
+%bcond_without	emacs	# skip building package with ruby-mode for emacs
+#
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 Summary:	Ruby - interpreted scripting language
@@ -7,7 +10,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.4
-Release:	5	
+Release:	5
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -33,6 +36,7 @@ Source9:	erb.1
 Source10:	rdoc.1
 Source11:	ri.1
 Source12:	testrb.1
+Source13:	%{name}-mode-init.el
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
@@ -40,6 +44,7 @@ URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	db-devel
+%{?with_emacs:BuildRequires:	emacs}
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	ncurses-devel
 BuildRequires:	readline-devel >= 4.2
@@ -184,6 +189,19 @@ Ruby examples.
 %description examples -l pl
 Przyk砤dy program體 Ruby.
 
+%package emacs-mode
+Summary:	Ruby mode and debugger for Emacs
+Summary(pl):	Tryb Ruby i debugger dla Emacsa
+Group:	Development/Tools
+Requires:	emacs-common
+Requires:	ruby-modules = %{epoch}:%{version}-%{release}
+
+%description emacs-mode
+Ruby mode and debugger for Emacs.
+
+%description emacs-mode -l pl
+Tryb Ruby i debugger dla Emacsa.
+
 %prep
 %setup -q -a1 -a2 -a3 -a5 -a6 -a7
 %patch0 -p1
@@ -247,7 +265,8 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{_libdir}/rpm,%{_datadir}/%{name}}
+install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{_libdir}/rpm}
+install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_emacs_lispdir}/{%{name}-mode,site-start.d}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -266,6 +285,18 @@ cp -Rf rubyfaq faq
 cp -Rf ri/%{ruby_ver}/system/* $RPM_BUILD_ROOT%{ruby_ridir}
 
 install %{SOURCE8} $RPM_BUILD_ROOT%{_libdir}/rpm
+
+# ruby emacs mode - borrowed from FC-4
+%if %{with emacs}
+install misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
+rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el
+install %{SOURCE13} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d 
+cat << EOF > path.el
+(setq load-path (cons "." load-path) byte-compile-warnings nil)
+EOF
+emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/*.el
+rm -f path.el*
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -373,7 +404,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(644,root,root,755)
-%doc faq guide misc rdoc
+%doc faq guide rdoc
 
 %files doc-ri
 %defattr(644,root,root,755)
@@ -382,3 +413,12 @@ rm -rf $RPM_BUILD_ROOT
 %files examples
 %defattr(644,root,root,755)
 %{_examplesdir}/%{name}-%{version}
+
+%if %{with emacs}
+%files emacs-mode
+%defattr(644,root,root,755)
+%doc misc
+%dir %{_emacs_lispdir}/%{name}-mode
+%{_emacs_lispdir}/%{name}-mode/*
+%{_emacs_lispdir}/site-start.d/*
+%endif
