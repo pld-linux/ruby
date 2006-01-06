@@ -417,8 +417,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with emacs}
 %files emacs-mode
 %defattr(644,root,root,755)
-%doc misc
+%doc misc/*
 %dir %{_emacs_lispdir}/%{name}-mode
-%{_emacs_lispdir}/%{name}-mode/*
-%{_emacs_lispdir}/site-start.d/*
+%{_emacs_lispdir}/%{name}-mode/*.elc
+%{_emacs_lispdir}/site-start.d/*.el
 %endif
