@@ -1,4 +1,5 @@
 #
+# Conditional build:
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 #
 %define		ruby_ver	1.8
@@ -98,6 +99,7 @@ simples, extensível e direta.
 
 %package modules
 Summary:	Ruby standard modules and utilities
+Summary(pl):	Standardowe modu³y i narzêdzia dla jêzyka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Provides:	ruby-modules(ver) = %{ruby_ver}
@@ -180,21 +182,21 @@ Dokumentacja Ruby w formacie ri.
 
 %package examples
 Summary:	Ruby examples
-Summary(pl):	Przyk³ady Ruby
+Summary(pl):	Przyk³ady dla jêzyka Ruby
 Group:		Development/Languages
 
 %description examples
 Ruby examples.
 
 %description examples -l pl
-Przyk³ady programów Ruby.
+Przyk³ady programów w jêzyku Ruby.
 
 %package emacs-mode
 Summary:	Ruby mode and debugger for Emacs
 Summary(pl):	Tryb Ruby i debugger dla Emacsa
-Group:	Development/Tools
+Group:		Development/Tools
+Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 Requires:	emacs-common
-Requires:	ruby-modules = %{epoch}:%{version}-%{release}
 
 %description emacs-mode
 Ruby mode and debugger for Emacs.
