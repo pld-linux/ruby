@@ -66,3 +66,12 @@ diff -Nru ruby-1.6.2/ruby-texi-1.4-en/Ruby.texi.in ruby-1.6.2.new/ruby-texi-1.4-
  
  @end defmethod
  @defmethod @code{Thread} wakeup
+--- ruby-1.8.4/ruby-texi-1.4-en/Makefile~	1999-09-26 19:00:42.000000000 +0200
++++ ruby-1.8.4/ruby-texi-1.4-en/Makefile	2006-04-08 20:10:01.000000000 +0200
+@@ -1,5 +1,5 @@
+ MAKEINFO=makeinfo
+-MAKEINFOFLAGS=--fill-column=70 --verbose --no-validate 
++MAKEINFOFLAGS=--fill-column=70 --verbose --no-validate --no-split 
+ TEXINDEX=texindex
+ TEX=tex
+ DVIPS=dvi2ps
