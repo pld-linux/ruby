@@ -230,6 +230,7 @@ cd ..
 	--with-X11-lib=/usr/X11R6/%{_lib}
 
 %{__make}
+%{__make} clean -C %{name}-texi-1.4-en
 %{__make} info -C %{name}-texi-1.4-en
 
 mkdir rdoc
