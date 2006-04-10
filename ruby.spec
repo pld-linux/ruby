@@ -48,6 +48,7 @@ BuildRequires:	db-devel
 %{?with_emacs:BuildRequires:	emacs}
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	ncurses-devel
+BuildRequires:	openssl-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	sed >= 4.0
 BuildRequires:	texinfo
