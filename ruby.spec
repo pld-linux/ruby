@@ -11,7 +11,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.4
-Release:	5
+Release:	6
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -32,12 +32,11 @@ Source6:	http://www.ruby-doc.org/downloads/stdlib/%{name}-doc-stdlib-%{stdlibdoc
 # Source6-md5:	39dab8db652dad23ad8951f851549f06
 Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
 # Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
-Source8:	macros.%{name}
-Source9:	erb.1
-Source10:	rdoc.1
-Source11:	ri.1
-Source12:	testrb.1
-Source13:	%{name}-mode-init.el
+Source8:	erb.1
+Source9:	rdoc.1
+Source10:	ri.1
+Source11:	testrb.1
+Source12:	%{name}-mode-init.el
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
@@ -272,7 +271,7 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{_libdir}/rpm}
+install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir}
 install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_emacs_lispdir}/{%{name}-mode,site-start.d}}
 
 %{__make} install \
@@ -281,23 +280,21 @@ install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_emacs_lispdir}/{%{name}-mode,s
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 install %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
+install %{SOURCE8} $RPM_BUILD_ROOT%{_mandir}/man1
 install %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1
 install %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1
 install %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
-install %{SOURCE12} $RPM_BUILD_ROOT%{_mandir}/man1
 
 cp -Rf ruby-uguide guide
 cp -Rf rubyfaq faq
 
 cp -Rf ri/%{ruby_ver}/system/* $RPM_BUILD_ROOT%{ruby_ridir}
 
-install %{SOURCE8} $RPM_BUILD_ROOT%{_libdir}/rpm
-
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
 install misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
 rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el
-install %{SOURCE13} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d 
+install %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << EOF > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
 EOF
@@ -358,7 +355,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rdoc
 %attr(755,root,root) %{_bindir}/ri
 %attr(755,root,root) %{_bindir}/testrb
-%{_libdir}/rpm/macros.ruby
 %{_libdir}/%{name}/%{ruby_ver}/bigdecimal
 %{_libdir}/%{name}/%{ruby_ver}/cgi
 %{_libdir}/%{name}/%{ruby_ver}/date
