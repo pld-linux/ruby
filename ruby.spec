@@ -271,7 +271,7 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir}
+install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir}}
 install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_emacs_lispdir}/{%{name}-mode,site-start.d}}
 
 %{__make} install \
