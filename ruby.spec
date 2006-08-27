@@ -10,14 +10,13 @@ Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.4
-Release:	6
+Version:	1.8.5
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-#Source0:	ftp://ftp.ruby-lang.org/pub/ruby/stable-snapshot.tar.gz
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{version}.tar.gz
-# Source0-md5:	bd8c2e593e1fa4b01fd98eaf016329bb
+# Source0-md5:	3fbb02294a8ca33d4684055adba5ed6f
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -25,12 +24,12 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_0.tar.gz
-# Source5-md5:	40cb52605c7292373d8dfd11015cb687
-%define stdlibdoc_version	0.9.13
-Source6:	http://www.ruby-doc.org/downloads/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
-# Source6-md5:	39dab8db652dad23ad8951f851549f06
-Source7:	http://www.ruby-doc.org/downloads/Ruby-1.8.1_ri_data.zip
+Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_7.tar.gz
+# Source5-md5:	dcaa0b3608990791a5348e94b2f427d5
+%define stdlibdoc_version	0.10.1
+Source6:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
+# Source6-md5:	5437c281b44e7a4af142d2bd35eba407
+Source7:	http://www.ruby-doc.org/download/Ruby-1.8.1_ri_data.zip
 # Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
 Source8:	erb.1
 Source9:	rdoc.1
