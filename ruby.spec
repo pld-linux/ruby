@@ -2,6 +2,9 @@
 # Conditional build:
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 #
+
+TH-BLOCKER:	build ICEs on powerpc.
+
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 Summary:	Ruby - interpreted scripting language
