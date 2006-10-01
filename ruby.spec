@@ -14,7 +14,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.5
-Release:	1
+Release:	2
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -325,6 +325,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{ruby_ver}
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
+%dir %{_ulibdir}/%{name}
 %dir %{_ulibdir}/%{name}/site_ruby
 %dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}
 %dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
