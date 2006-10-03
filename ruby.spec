@@ -2,9 +2,6 @@
 # Conditional build:
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 #
-
-TH-BLOCKER:	build ICEs on powerpc.
-
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 Summary:	Ruby - interpreted scripting language
@@ -69,7 +66,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		specflags_ia64	-O0
 
 # ruby needs frame pointers for correct exception handling
-%define		specflags	-fno-omit-frame-pointer
+%define		specflags_ia32	-fno-omit-frame-pointer
 
 %description
 Ruby is the interpreted scripting language for quick and easy
@@ -231,8 +228,11 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
-	--enable-pthread \
-	--with-X11-lib=/usr/X11R6/%{_lib}
+%ifnarch powerpc ppc ppc64
+	--enable-pthread
+%else
+	--disable-pthread
+%endif
 
 %{__make}
 %{__make} clean -C %{name}-texi-1.4-en
