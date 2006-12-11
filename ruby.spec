@@ -10,13 +10,13 @@ Summary(pl):	Ruby - interpretowany j陑yk skryptowy
 Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.5
+Version:	1.8.5p2
 Release:	3
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{version}.tar.gz
-# Source0-md5:	3fbb02294a8ca33d4684055adba5ed6f
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-1.8.5-p2.tar.gz
+# Source0-md5:	a3517a224716f79b14196adda3e88057
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -39,7 +39,6 @@ Source12:	%{name}-mode-init.el
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
-Patch3:		%{name}-1.8.5-cgi-dos-1.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -208,11 +207,10 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -a1 -a2 -a3 -a5 -a6 -a7
+%setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}-1.8.5-p2
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p0
 
 find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
