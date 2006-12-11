@@ -325,7 +325,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{ruby_ver}
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
+%if "%{_lib}" != "lib"
 %dir %{_ulibdir}/%{name}
+%endif
 %dir %{_ulibdir}/%{name}/site_ruby
 %dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}
 %dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
