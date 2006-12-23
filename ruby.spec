@@ -11,7 +11,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.5p2
-Release:	3
+Release:	4
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -209,7 +209,7 @@ Tryb Ruby i debugger dla Emacsa.
 %prep
 %setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}-1.8.5-p2
 %patch0 -p1
-%patch1 -p1
+%patch1 -p0
 %patch2 -p1
 
 find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
