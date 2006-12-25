@@ -12,7 +12,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.5p2
-Release:	4.1
+Release:	4.2
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -229,11 +229,13 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
-%ifnarch powerpc ppc ppc64
 	--enable-pthread
-%else
+
+#%%ifnarch powerpc ppc ppc64
+#	--enable-pthread
+#%%else
 	--disable-pthread
-%endif
+#%%endif
 
 %{__make}
 %{__make} clean -C %{name}-texi-1.4-en
