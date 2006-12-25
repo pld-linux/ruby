@@ -241,11 +241,7 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
-%ifnarch powerpc ppc ppc64
 	--enable-pthread
-%else
-	--disable-pthread
-%endif
 
 %{__make}
 %{__make} clean -C %{name}-texi-1.4-en
