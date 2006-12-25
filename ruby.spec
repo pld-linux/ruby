@@ -1,4 +1,16 @@
 #
+# NOTE: - segfaults on ppc during building when is built with  `--with-pthreads'
+#	/home/users/builder/rpm/BUILD/ruby-1.8.5-p2/lib/mkmf.rb:147: [BUG] Segmentation fault
+#	ruby 1.8.5 (2006-12-04) [powerpc-linux]
+#
+#	- on the other hand when ruby is built on pcc with `--without-pthreads'
+#	compilation of tk extensions fails with message:
+#
+#	Ruby is not compiled with --enable-pthread, but your Tcl/Tk 
+#	**   library seems to be compiled with pthread support. This
+#	**   combination may cause frequent hang or segmentation fault
+#	**   errors when Ruby/Tk is working.
+#
 # Conditional build:
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
@@ -229,13 +241,11 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
+%ifnarch powerpc ppc ppc64
 	--enable-pthread
-
-#%%ifnarch powerpc ppc ppc64
-#	--enable-pthread
-#%%else
-#	--disable-pthread
-#%%endif
+%else
+	--disable-pthread
+%endif
 
 %{__make}
 %{__make} clean -C %{name}-texi-1.4-en
