@@ -60,8 +60,6 @@ Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_ulibdir	%{_prefix}/lib
-
 # bleh, some nasty (gcc or ruby) bug still not fixed
 # (SEGV or "unexpected break" on miniruby run during build)
 %define		specflags_ia64	-O0
@@ -327,12 +325,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{ruby_ver}
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
-%if "%{_lib}" != "lib"
-%dir %{_ulibdir}/%{name}
-%endif
-%dir %{_ulibdir}/%{name}/site_ruby
-%dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}
-%dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
+%dir %{_libdir}/%{name}/site_ruby
+%dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}
+%dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/ri
 %dir %{_datadir}/ri/%{ruby_ver}
