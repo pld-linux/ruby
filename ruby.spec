@@ -1,5 +1,6 @@
 #
 # Conditional build:
+%bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 #
 %define		ruby_ver	1.8
@@ -238,6 +239,7 @@ cd ..
 %{__make} clean -C %{name}-texi-1.4-en
 %{__make} info -C %{name}-texi-1.4-en
 
+%if %{with doc}
 mkdir rdoc
 
 RUBYLIB="lib:`find ext/ .ext/ -type d | tr '\n' ':'`"
@@ -270,6 +272,7 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
 	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
 	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
 	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -290,7 +293,7 @@ install %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -Rf ruby-uguide guide
 cp -Rf rubyfaq faq
 
-cp -Rf ri/%{ruby_ver}/system/* $RPM_BUILD_ROOT%{ruby_ridir}
+%{?with_doc:cp -Rf ri/%{ruby_ver}/system/* $RPM_BUILD_ROOT%{ruby_ridir}}
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
@@ -409,11 +412,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(644,root,root,755)
-%doc faq guide rdoc
+%doc faq guide
+%{?with_doc:%doc rdoc}
 
+%if %{with doc}
 %files doc-ri
 %defattr(644,root,root,755)
 %{_datadir}/ri/%{ruby_ver}/system/*
+%endif
 
 %files examples
 %defattr(644,root,root,755)
