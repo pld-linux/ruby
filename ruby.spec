@@ -234,7 +234,7 @@ cd ..
 #%%ifnarch powerpc ppc ppc64
 #	--enable-pthread
 #%%else
-	--disable-pthread
+#	--disable-pthread
 #%%endif
 
 %{__make}
