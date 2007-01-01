@@ -245,6 +245,7 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
+	--enable-pthread
 
 #%%ifnarch powerpc ppc ppc64
 #	--enable-pthread
