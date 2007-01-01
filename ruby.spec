@@ -1,5 +1,18 @@
 #
+# NOTE: - segfaults on ppc during building when is built with  `--with-pthreads'
+#	/home/users/builder/rpm/BUILD/ruby-1.8.5-p2/lib/mkmf.rb:147: [BUG] Segmentation fault
+#	ruby 1.8.5 (2006-12-04) [powerpc-linux]
+#
+#	- on the other hand when ruby is built on pcc with `--without-pthreads'
+#	compilation of tk extensions fails with message:
+#
+#	Ruby is not compiled with --enable-pthread, but your Tcl/Tk 
+#	**   library seems to be compiled with pthread support. This
+#	**   combination may cause frequent hang or segmentation fault
+#	**   errors when Ruby/Tk is working.
+#
 # Conditional build:
+%bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 #
 %define		ruby_ver	1.8
@@ -11,7 +24,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.5p2
-Release:	4
+Release:	4.3
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -39,6 +52,7 @@ Source12:	%{name}-mode-init.el
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
+Patch3:		%{name}-ac260.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -59,14 +73,16 @@ Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_ulibdir	%{_prefix}/lib
-
 # bleh, some nasty (gcc or ruby) bug still not fixed
 # (SEGV or "unexpected break" on miniruby run during build)
 %define		specflags_ia64	-O0
 
+# Segmentation fault, when ruby is built `--wth-phreads' - try `-O0'
+%define		specflags_ppc	-O0
+
 # ruby needs frame pointers for correct exception handling
 %define		specflags_ia32	-fno-omit-frame-pointer
+
 
 %description
 Ruby is the interpreted scripting language for quick and easy
@@ -209,8 +225,9 @@ Tryb Ruby i debugger dla Emacsa.
 %prep
 %setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}-1.8.5-p2
 %patch0 -p1
-%patch1 -p0
+%patch1 -p1
 %patch2 -p1
+%patch3 -p0
 
 find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
@@ -228,16 +245,19 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
-%ifnarch powerpc ppc ppc64
 	--enable-pthread
-%else
-	--disable-pthread
-%endif
+
+#%%ifnarch powerpc ppc ppc64
+#	--enable-pthread
+#%%else
+#	--disable-pthread
+#%%endif
 
 %{__make}
 %{__make} clean -C %{name}-texi-1.4-en
 %{__make} info -C %{name}-texi-1.4-en
 
+%if %{with doc}
 mkdir rdoc
 
 RUBYLIB="lib:`find ext/ .ext/ -type d | tr '\n' ':'`"
@@ -270,6 +290,7 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
 	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
 	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
 	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -290,7 +311,7 @@ install %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -Rf ruby-uguide guide
 cp -Rf rubyfaq faq
 
-cp -Rf ri/%{ruby_ver}/system/* $RPM_BUILD_ROOT%{ruby_ridir}
+%{?with_doc:cp -Rf ri/%{ruby_ver}/system/* $RPM_BUILD_ROOT%{ruby_ridir}}
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
@@ -325,12 +346,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{ruby_ver}
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
-%if "%{_lib}" != "lib"
-%dir %{_ulibdir}/%{name}
-%endif
-%dir %{_ulibdir}/%{name}/site_ruby
-%dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}
-%dir %{_ulibdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
+%dir %{_libdir}/%{name}/site_ruby
+%dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}
+%dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/ri
 %dir %{_datadir}/ri/%{ruby_ver}
@@ -412,11 +430,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(644,root,root,755)
-%doc faq guide rdoc
+%doc faq guide
+%{?with_doc:%doc rdoc}
 
+%if %{with doc}
 %files doc-ri
 %defattr(644,root,root,755)
 %{_datadir}/ri/%{ruby_ver}/system/*
+%endif
 
 %files examples
 %defattr(644,root,root,755)
