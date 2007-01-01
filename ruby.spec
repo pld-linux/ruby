@@ -24,7 +24,7 @@ Summary(pt_BR):	Linguagem de script orientada a objeto
 Summary(zh_CN):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.5p2
-Release:	4.2
+Release:	4.3
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -77,8 +77,12 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # (SEGV or "unexpected break" on miniruby run during build)
 %define		specflags_ia64	-O0
 
+# Segmentation fault, when ruby is built `--wth-phreads' - try `-O0'
+%define		specflags_ppc	-O0
+
 # ruby needs frame pointers for correct exception handling
 %define		specflags_ia32	-fno-omit-frame-pointer
+
 
 %description
 Ruby is the interpreted scripting language for quick and easy
@@ -241,11 +245,12 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
-%ifnarch powerpc ppc ppc64
-	--enable-pthread
-%else
-	--disable-pthread
-%endif
+
+#%%ifnarch powerpc ppc ppc64
+#	--enable-pthread
+#%%else
+#	--disable-pthread
+#%%endif
 
 %{__make}
 %{__make} clean -C %{name}-texi-1.4-en
