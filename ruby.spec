@@ -18,10 +18,10 @@
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 Summary:	Ruby - interpreted scripting language
-Summary(ja.UTF-8):   オブジェクト指向言語Rubyインタプリタ
-Summary(pl.UTF-8):   Ruby - interpretowany język skryptowy
-Summary(pt_BR.UTF-8):   Linguagem de script orientada a objeto
-Summary(zh_CN.UTF-8):   ruby - 一种快速高效的面向对象脚本编程语言
+Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
+Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
+Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
+Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.5p2
 Release:	4.2
@@ -113,7 +113,7 @@ simples, extensível e direta.
 
 %package modules
 Summary:	Ruby standard modules and utilities
-Summary(pl.UTF-8):   Standardowe moduły i narzędzia dla języka Ruby
+Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Provides:	ruby-modules(ver) = %{ruby_ver}
@@ -136,7 +136,7 @@ Standardowe moduły i narzędzia Ruby:
 
 %package tk
 Summary:	Ruby/Tk bindings
-Summary(pl.UTF-8):   Wiązania Ruby/Tk
+Summary(pl.UTF-8):	Wiązania Ruby/Tk
 Group:		Development/Languages
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
@@ -148,7 +148,7 @@ Ten pakiet zawiera wiązania Ruby/Tk.
 
 %package devel
 Summary:	Ruby development libraries
-Summary(pl.UTF-8):   Biblioteki programistyczne interpretera języka Ruby
+Summary(pl.UTF-8):	Biblioteki programistyczne interpretera języka Ruby
 Group:		Development/Languages
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
@@ -160,7 +160,7 @@ Biblioteki programistyczne interpretera języka Ruby.
 
 %package static
 Summary:	Ruby static libraries
-Summary(pl.UTF-8):   Biblioteki statyczne Ruby
+Summary(pl.UTF-8):	Biblioteki statyczne Ruby
 Group:		Development/Languages
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
@@ -172,7 +172,7 @@ Biblioteki statyczne Ruby.
 
 %package doc
 Summary:	Ruby HTML documentation
-Summary(pl.UTF-8):   Dokumentacja HTML do Ruby
+Summary(pl.UTF-8):	Dokumentacja HTML do Ruby
 Group:		Documentation
 
 %description doc
@@ -184,7 +184,7 @@ stdlib.
 
 %package doc-ri
 Summary:	Ruby ri documentation
-Summary(pl.UTF-8):   Dokumentacja Ruby w formacie ri
+Summary(pl.UTF-8):	Dokumentacja Ruby w formacie ri
 Group:		Documentation
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
@@ -196,7 +196,7 @@ Dokumentacja Ruby w formacie ri.
 
 %package examples
 Summary:	Ruby examples
-Summary(pl.UTF-8):   Przykłady dla języka Ruby
+Summary(pl.UTF-8):	Przykłady dla języka Ruby
 Group:		Development/Languages
 
 %description examples
@@ -207,7 +207,7 @@ Przykłady programów w języku Ruby.
 
 %package emacs-mode
 Summary:	Ruby mode and debugger for Emacs
-Summary(pl.UTF-8):   Tryb Ruby i debugger dla Emacsa
+Summary(pl.UTF-8):	Tryb Ruby i debugger dla Emacsa
 Group:		Development/Tools
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 Requires:	emacs-common
