@@ -18,10 +18,10 @@
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 Summary:	Ruby - interpreted scripting language
-Summary(ja):	¥ª¥Ö¥¸¥§¥¯¥È»Ø¸ş¸À¸ìRuby¥¤¥ó¥¿¥×¥ê¥¿
-Summary(pl):	Ruby - interpretowany jêzyk skryptowy
-Summary(pt_BR):	Linguagem de script orientada a objeto
-Summary(zh_CN):	ruby - Ò»ÖÖ¿ìËÙ¸ßĞ§µÄÃæÏò¶ÔÏó½Å±¾±à³ÌÓïÑÔ
+Summary(ja.UTF-8):   ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæŒ‡å‘è¨€èªRubyã‚¤ãƒ³ã‚¿ãƒ—ãƒªã‚¿
+Summary(pl.UTF-8):   Ruby - interpretowany jÄ™zyk skryptowy
+Summary(pt_BR.UTF-8):   Linguagem de script orientada a objeto
+Summary(zh_CN.UTF-8):   ruby - ä¸€ç§å¿«é€Ÿé«˜æ•ˆçš„é¢å‘å¯¹è±¡è„šæœ¬ç¼–ç¨‹è¯­è¨€
 Name:		ruby
 Version:	1.8.5p2
 Release:	4.2
@@ -89,31 +89,31 @@ straight-forward, extensible, and portable.
 This package contains only shared library and ruby interpreter. To get
 full-functional ruby environment install ruby-modules package.
 
-%description -l ja
-Ruby¤Ï¥·¥ó¥×¥ë¤«¤Ä¶¯ÎÏ¤Ê¥ª¥Ö¥¸¥§¥¯¥È»Ø¸ş¥¹¥¯¥ê¥×¥È¸À¸ì¤Ç¤¹¡¥Ruby¤ÏºÇ½é
-¤«¤é½ã¿è¤Ê¥ª¥Ö¥¸¥§¥¯¥È»Ø¸ş¸À¸ì¤È¤·¤ÆÀß·×¤µ¤ì¤Æ¤¤¤Ş¤¹¤«¤é¡¤¥ª¥Ö¥¸¥§¥¯¥È
-»Ø¸ş¥×¥í¥°¥é¥ß¥ó¥°¤ò¼ê·Ú¤Ë¹Ô¤¦»ö¤¬½ĞÍè¤Ş¤¹¡¥¤â¤Á¤í¤óÄÌ¾ï¤Î¼êÂ³¤­·¿¤Î¥×
-¥í¥°¥é¥ß¥ó¥°¤â²ÄÇ½¤Ç¤¹¡¥
+%description -l ja.UTF-8
+Rubyã¯ã‚·ãƒ³ãƒ—ãƒ«ã‹ã¤å¼·åŠ›ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæŒ‡å‘ã‚¹ã‚¯ãƒªãƒ—ãƒˆè¨€èªã§ã™ï¼Rubyã¯æœ€åˆ
+ã‹ã‚‰ç´”ç²‹ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæŒ‡å‘è¨€èªã¨ã—ã¦è¨­è¨ˆã•ã‚Œã¦ã„ã¾ã™ã‹ã‚‰ï¼Œã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+æŒ‡å‘ãƒ—ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°ã‚’æ‰‹è»½ã«è¡Œã†äº‹ãŒå‡ºæ¥ã¾ã™ï¼ã‚‚ã¡ã‚ã‚“é€šå¸¸ã®æ‰‹ç¶šãå‹ã®ãƒ—
+ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°ã‚‚å¯èƒ½ã§ã™ï¼
 
-%description -l pl
-Ruby to interpretowany jêzyk skryptowy, w sam raz dla ³atwego i
-szybkiego pisania zorientowanych obiektowo programów. Ma wiele funkcji
-u³atwiaj±cych przetwarzanie plików tekstowych i wykonywanie prac
-zwi±zanych z zarz±dzaniem systemu (podobnie jak Perl). Jest prosty,
-rozszerzalny i przeno¶ny.
+%description -l pl.UTF-8
+Ruby to interpretowany jÄ™zyk skryptowy, w sam raz dla Å‚atwego i
+szybkiego pisania zorientowanych obiektowo programÃ³w. Ma wiele funkcji
+uÅ‚atwiajÄ…cych przetwarzanie plikÃ³w tekstowych i wykonywanie prac
+zwiÄ…zanych z zarzÄ…dzaniem systemu (podobnie jak Perl). Jest prosty,
+rozszerzalny i przenoÅ›ny.
 
-Ten pakiet zawiera tylko bibliotekê dzielon± i interpreter ruby.
-Zainstaluj pakiet ruby-modules, je¿eli potrzebujesz w pe³ni
-funkcjonalnego ¶rodowiska ruby.
+Ten pakiet zawiera tylko bibliotekÄ™ dzielonÄ… i interpreter ruby.
+Zainstaluj pakiet ruby-modules, jeÅ¼eli potrzebujesz w peÅ‚ni
+funkcjonalnego Å›rodowiska ruby.
 
-%description -l pt_BR
-Ruby é uma linguagem de script interpretada de programação orientada a
-objeto. Possui diversas características para processamento de texto. É
-simples, extensível e direta.
+%description -l pt_BR.UTF-8
+Ruby Ã© uma linguagem de script interpretada de programaÃ§Ã£o orientada a
+objeto. Possui diversas caracterÃ­sticas para processamento de texto. Ã‰
+simples, extensÃ­vel e direta.
 
 %package modules
 Summary:	Ruby standard modules and utilities
-Summary(pl):	Standardowe modu³y i narzêdzia dla jêzyka Ruby
+Summary(pl.UTF-8):   Standardowe moduÅ‚y i narzÄ™dzia dla jÄ™zyka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Provides:	ruby-modules(ver) = %{ruby_ver}
@@ -126,88 +126,88 @@ Ruby standard modules and utilities:
 - ri - Ruby interactive reference
 - testrb - automatic runner for Test::Unit of Ruby
 
-%description modules -l pl
-Standardowe modu³y i narzêdzia Ruby:
-- erb - ma³y eRuby
-- rdoc - narzêdzie do dokumentowania kodu ¼ród³owego
+%description modules -l pl.UTF-8
+Standardowe moduÅ‚y i narzÄ™dzia Ruby:
+- erb - maÅ‚y eRuby
+- rdoc - narzÄ™dzie do dokumentowania kodu ÅºrÃ³dÅ‚owego
 - irb - interaktywny Ruby
 - ri - interaktywna dokumentacja Ruby
 - testrb - automatyczny runner dla Ruby Test::Unit
 
 %package tk
 Summary:	Ruby/Tk bindings
-Summary(pl):	Wi±zania Ruby/Tk
+Summary(pl.UTF-8):   WiÄ…zania Ruby/Tk
 Group:		Development/Languages
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
 %description tk
 This pachage contains Ruby/Tk bindings.
 
-%description tk -l pl
-Ten pakiet zawiera wi±zania Ruby/Tk.
+%description tk -l pl.UTF-8
+Ten pakiet zawiera wiÄ…zania Ruby/Tk.
 
 %package devel
 Summary:	Ruby development libraries
-Summary(pl):	Biblioteki programistyczne interpretera jêzyka Ruby
+Summary(pl.UTF-8):   Biblioteki programistyczne interpretera jÄ™zyka Ruby
 Group:		Development/Languages
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
 %description devel
 Ruby development libraries.
 
-%description devel -l pl
-Biblioteki programistyczne interpretera jêzyka Ruby.
+%description devel -l pl.UTF-8
+Biblioteki programistyczne interpretera jÄ™zyka Ruby.
 
 %package static
 Summary:	Ruby static libraries
-Summary(pl):	Biblioteki statyczne Ruby
+Summary(pl.UTF-8):   Biblioteki statyczne Ruby
 Group:		Development/Languages
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 Ruby static libraries.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Biblioteki statyczne Ruby.
 
 %package doc
 Summary:	Ruby HTML documentation
-Summary(pl):	Dokumentacja HTML do Ruby
+Summary(pl.UTF-8):   Dokumentacja HTML do Ruby
 Group:		Documentation
 
 %description doc
 Ruby HTML documentation: FAQ, guide, core and standard library.
 
-%description doc -l pl
+%description doc -l pl.UTF-8
 Dokumentacja HTML do Ruby: FAQ, przewodnik, dokumentacja dla core i
 stdlib.
 
 %package doc-ri
 Summary:	Ruby ri documentation
-Summary(pl):	Dokumentacja Ruby w formacie ri
+Summary(pl.UTF-8):   Dokumentacja Ruby w formacie ri
 Group:		Documentation
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
 %description doc-ri
 Ruby ri documentation.
 
-%description doc-ri -l pl
+%description doc-ri -l pl.UTF-8
 Dokumentacja Ruby w formacie ri.
 
 %package examples
 Summary:	Ruby examples
-Summary(pl):	Przyk³ady dla jêzyka Ruby
+Summary(pl.UTF-8):   PrzykÅ‚ady dla jÄ™zyka Ruby
 Group:		Development/Languages
 
 %description examples
 Ruby examples.
 
-%description examples -l pl
-Przyk³ady programów w jêzyku Ruby.
+%description examples -l pl.UTF-8
+PrzykÅ‚ady programÃ³w w jÄ™zyku Ruby.
 
 %package emacs-mode
 Summary:	Ruby mode and debugger for Emacs
-Summary(pl):	Tryb Ruby i debugger dla Emacsa
+Summary(pl.UTF-8):   Tryb Ruby i debugger dla Emacsa
 Group:		Development/Tools
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 Requires:	emacs-common
@@ -215,7 +215,7 @@ Requires:	emacs-common
 %description emacs-mode
 Ruby mode and debugger for Emacs.
 
-%description emacs-mode -l pl
+%description emacs-mode -l pl.UTF-8
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
