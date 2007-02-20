@@ -1,0 +1,24 @@
+diff -ur ruby-1.8.6-preview1-o/configure.in ruby-1.8.6-preview1-n/configure.in
+--- ruby-1.8.6-preview1-o/configure.in	2007-02-20 01:02:11.000000000 -0700
++++ ruby-1.8.6-preview1-n/configure.in	2007-02-20 01:20:48.000000000 -0700
+@@ -1241,7 +1241,7 @@
+     if test "$rb_cv_missing_fconvert" = yes; then
+       AC_DEFINE(MISSING_FCONVERT)
+     fi
+-    AC_LIBOBJ([x68.o])
++    AC_LIBOBJ([x68])
+     CFLAGS="$CFLAGS -fansi-only"
+     XCFLAGS="$XCFLAGS -cc1-stack=262144 -cpp-stack=2694144"
+     EXEEXT=.x
+@@ -1569,9 +1569,9 @@
+ RUBY_LIB_PATH="${RUBY_LIB_PREFIX}/${MAJOR}.${MINOR}"
+ 
+ AC_ARG_WITH(sitedir,
+-	    [  --with-sitedir=DIR      site libraries in DIR [PREFIX/lib/ruby/site_ruby]],
++	    [  --with-sitedir=DIR      site libraries in DIR [LIBDIR/ruby/site_ruby]],
+             [sitedir=$withval],
+-            [sitedir='${prefix}/lib/ruby/site_ruby'])
++            [sitedir='${libdir}/ruby/site_ruby'])
+ SITE_DIR=`eval echo \\"${sitedir}\\"`
+ case "$target_os" in
+   cygwin*|mingw*|*djgpp*|os2-emx*)
