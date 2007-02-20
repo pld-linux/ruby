@@ -129,7 +129,6 @@ Standardowe moduły i narzędzia Ruby:
 - ri - interaktywna dokumentacja Ruby
 - testrb - automatyczny runner dla Ruby Test::Unit
 
-%if %{with tk}
 %package tk
 Summary:	Ruby/Tk bindings
 Summary(pl.UTF-8):	Wiązania Ruby/Tk
@@ -141,8 +140,6 @@ This pachage contains Ruby/Tk bindings.
 
 %description tk -l pl.UTF-8
 Ten pakiet zawiera wiązania Ruby/Tk.
-
-%endif
 
 %package devel
 Summary:	Ruby development libraries
