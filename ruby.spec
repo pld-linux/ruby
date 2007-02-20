@@ -18,19 +18,20 @@
 #
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
+%define	ruby_preview preview1
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
 Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.5p2
-Release:	4.2
+Version:	1.8.6
+Release:	0.%{ruby_preview}.1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-1.8.5-p2.tar.gz
-# Source0-md5:	a3517a224716f79b14196adda3e88057
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.6-%{ruby_preview}.tar.gz
+# Source0-md5:	12c52f3fbf628f6e5c75f1daeda75207
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -38,8 +39,8 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_7.tar.gz
-# Source5-md5:	dcaa0b3608990791a5348e94b2f427d5
+Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_8.tar.gz
+# Source5-md5:	82cd47ded85f854149ae620a9fa728e5
 %define stdlibdoc_version	0.10.1
 Source6:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source6-md5:	5437c281b44e7a4af142d2bd35eba407
@@ -53,7 +54,7 @@ Source12:	%{name}-mode-init.el
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
-Patch3:		%{name}-ac260.patch
+Patch3:		%{name}-oniguruma-258-186.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -225,7 +226,7 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}-1.8.5-p2
+%setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}-1.8.6-preview1
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -260,10 +261,10 @@ cd ..
 %if %{with doc}
 mkdir rdoc
 
-RUBYLIB="lib:`find ext/ .ext/ -type d | tr '\n' ':'`"
+RUBYLIB=".:lib:`find ext/ .ext/ -type d | tr '\n' ':'`"
 export RUBYLIB
 
-LD_LIBRARY_PATH=. ./ruby bin/rdoc --inline-source --op rdoc/core \
+./miniruby bin/rdoc --inline-source --op rdoc/core \
 	array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
 	error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c marshal.c \
 	math.c numeric.c object.c pack.c parse.c prec.c process.c random.c range.c \
@@ -279,7 +280,7 @@ LD_LIBRARY_PATH=. ./ruby bin/rdoc --inline-source --op rdoc/core \
 mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 mv ri/%{ruby_ver}/site ri/%{ruby_ver}/system
 
-LD_LIBRARY_PATH=. ./ruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
+./miniruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
 	array.c bignum.c class.c compar.c dir.c dln.c \
 	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
 	marshal.c math.c numeric.c object.c pack.c parse.c prec.c process.c \
@@ -383,6 +384,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/bigdecimal
 %{_libdir}/%{name}/%{ruby_ver}/cgi
 %{_libdir}/%{name}/%{ruby_ver}/date
+%{_libdir}/%{name}/%{ruby_ver}/digest
 %{_libdir}/%{name}/%{ruby_ver}/dl
 %{_libdir}/%{name}/%{ruby_ver}/drb
 %{_libdir}/%{name}/%{ruby_ver}/io
@@ -419,6 +421,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[a-s]*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/thread.so
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[u-z]*.so
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest/*.so
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io/*.so
