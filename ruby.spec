@@ -1,5 +1,5 @@
 # TODO
-# - system oniguruma ?
+# - integrate vendordir patch
 #
 # Conditional build:
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
@@ -45,6 +45,7 @@ Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
 Patch3:		%{name}-oniguruma-258-186.patch
+Patch4:		%{name}-vendordir.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -221,6 +222,7 @@ Tryb Ruby i debugger dla Emacsa.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p0
+%patch4 -p1
 
 find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
@@ -336,6 +338,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}/site_ruby
 %dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}
 %dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
+%dir %{_libdir}/%{name}/vendor_ruby
+%dir %{_libdir}/%{name}/vendor_ruby/%{ruby_ver}
+%dir %{_libdir}/%{name}/vendor_ruby/%{ruby_ver}/*-linux*
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/ri
 %dir %{_datadir}/ri/%{ruby_ver}
