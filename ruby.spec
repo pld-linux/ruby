@@ -52,6 +52,7 @@ Patch3:		%{name}-oniguruma-258-186.patch
 Patch4:		%{name}-vendordir.patch
 Patch5:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
+Obsoletes:	ruby-fastthread
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	db-devel
