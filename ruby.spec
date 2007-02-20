@@ -1,5 +1,9 @@
 # TODO
 # - integrate vendordir patch
+# - include ext/ in docs
+# - replace ri with fastri
+# - patch ri to search multiple indexes (one per package), so RPMs can
+#   install ri docs
 #
 # Conditional build:
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
