@@ -50,6 +50,7 @@ Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
 Patch3:		%{name}-oniguruma-258-186.patch
 Patch4:		%{name}-vendordir.patch
+Patch5:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -224,6 +225,7 @@ Tryb Ruby i debugger dla Emacsa.
 %patch2 -p1
 %patch3 -p0
 %patch4 -p1
+%patch5 -p1
 
 find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
