@@ -14,6 +14,7 @@
 # Conditional build:
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
+%bcond_without	tk	# skip building package with Tk bindings
 #
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
@@ -64,7 +65,9 @@ BuildRequires:	openssl-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	sed >= 4.0
 BuildRequires:	texinfo
+%if %{with tk}
 BuildRequires:	tk-devel
+%endif
 BuildRequires:	unzip
 Requires(post,postun):	/sbin/ldconfig
 Provides:	ruby(ver) = %{ruby_ver}
@@ -134,6 +137,7 @@ Standardowe moduły i narzędzia Ruby:
 - ri - interaktywna dokumentacja Ruby
 - testrb - automatyczny runner dla Ruby Test::Unit
 
+%if %{with tk}
 %package tk
 Summary:	Ruby/Tk bindings
 Summary(pl.UTF-8):	Wiązania Ruby/Tk
@@ -145,6 +149,8 @@ This pachage contains Ruby/Tk bindings.
 
 %description tk -l pl.UTF-8
 Ten pakiet zawiera wiązania Ruby/Tk.
+
+%endif
 
 %package devel
 Summary:	Ruby development libraries
@@ -357,6 +363,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/lib*.a
 
+%if %{with tk}
 %files tk
 %defattr(644,root,root,755)
 %{_libdir}/%{name}/%{ruby_ver}/tcltk.rb
@@ -364,6 +371,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/tk
 %{_libdir}/%{name}/%{ruby_ver}/tkextlib
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/t*.so
+%endif
 
 %files modules
 %defattr(644,root,root,755)
