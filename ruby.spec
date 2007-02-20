@@ -1,3 +1,5 @@
+# TODO
+# - system oniguruma ?
 #
 # NOTE: - segfaults on ppc during building when is built with  `--with-pthreads'
 #	/home/users/builder/rpm/BUILD/ruby-1.8.5-p2/lib/mkmf.rb:147: [BUG] Segmentation fault
