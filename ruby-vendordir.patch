@@ -57,18 +57,6 @@ diff -ur ruby-1.8.6-preview1-o/configure.in ruby-1.8.6-preview1/configure.in
  
  AC_ARG_WITH(search-path,
  		[  --with-search-path=DIR specify the additional search path],
-diff -ur ruby-1.8.6-preview1-o/configure.in.orig ruby-1.8.6-preview1/configure.in.orig
---- ruby-1.8.6-preview1-o/configure.in.orig	2007-02-12 16:01:19.000000000 -0700
-+++ ruby-1.8.6-preview1/configure.in.orig	2007-02-20 01:02:11.000000000 -0700
-@@ -1563,7 +1563,7 @@
-     RUBY_LIB_PREFIX="/lib/ruby"
-     ;;
-   *)
--    RUBY_LIB_PREFIX="${prefix}/lib/ruby"
-+    RUBY_LIB_PREFIX="${libdir}/ruby"
-     ;;
- esac
- RUBY_LIB_PATH="${RUBY_LIB_PREFIX}/${MAJOR}.${MINOR}"
 diff -ur ruby-1.8.6-preview1-o/instruby.rb ruby-1.8.6-preview1/instruby.rb
 --- ruby-1.8.6-preview1-o/instruby.rb	2007-02-20 01:02:48.000000000 -0700
 +++ ruby-1.8.6-preview1/instruby.rb	2007-02-20 01:08:36.000000000 -0700
@@ -99,9 +87,6 @@ diff -ur ruby-1.8.6-preview1-o/instruby.rb ruby-1.8.6-preview1/instruby.rb
      install_recursive("#{extout}/common", rubylibdir)
    end
  end
-Only in ruby-1.8.6-preview1: instruby.rb~
-Only in ruby-1.8.6-preview1: instruby.rb.orig
-Only in ruby-1.8.6-preview1: instruby.rb.rej~
 diff -ur ruby-1.8.6-preview1-o/lib/mkmf.rb ruby-1.8.6-preview1/lib/mkmf.rb
 --- ruby-1.8.6-preview1-o/lib/mkmf.rb	2007-02-20 01:02:13.000000000 -0700
 +++ ruby-1.8.6-preview1/lib/mkmf.rb	2007-02-20 01:12:00.000000000 -0700
@@ -144,19 +129,6 @@ diff -ur ruby-1.8.6-preview1-o/lib/mkmf.rb ruby-1.8.6-preview1/lib/mkmf.rb
  ruby_version = #{Config::CONFIG['ruby_version']}
  ruby = #{$ruby}
  RUBY = $(ruby#{sep})
-Only in ruby-1.8.6-preview1/lib: mkmf.rb~
-diff -ur ruby-1.8.6-preview1-o/lib/mkmf.rb.orig ruby-1.8.6-preview1/lib/mkmf.rb.orig
---- ruby-1.8.6-preview1-o/lib/mkmf.rb.orig	2007-02-12 16:01:19.000000000 -0700
-+++ ruby-1.8.6-preview1/lib/mkmf.rb.orig	2007-02-20 01:02:13.000000000 -0700
-@@ -276,7 +276,7 @@
-                               'LDFLAGS' => "#$LDFLAGS #{ldflags}",
-                               'LIBPATH' => libpathflag(libpath),
-                               'LOCAL_LIBS' => "#$LOCAL_LIBS #$libs",
--                              'LIBS' => "#$LIBRUBYARG_STATIC #{opt} #$LIBS"))
-+                              'LIBS' => "#$LIBRUBYARG_SHARED #{opt} #$LIBS"))
- end
- 
- def cc_command(opt="")
 diff -ur ruby-1.8.6-preview1-o/Makefile.in ruby-1.8.6-preview1/Makefile.in
 --- ruby-1.8.6-preview1-o/Makefile.in	2007-02-12 16:01:19.000000000 -0700
 +++ ruby-1.8.6-preview1/Makefile.in	2007-02-20 01:05:18.000000000 -0700
@@ -169,7 +141,6 @@ diff -ur ruby-1.8.6-preview1-o/Makefile.in ruby-1.8.6-preview1/Makefile.in
  
  TESTUI = console
  TESTS =
-Only in ruby-1.8.6-preview1: Makefile.in.orig
 diff -ur ruby-1.8.6-preview1-o/mkconfig.rb ruby-1.8.6-preview1/mkconfig.rb
 --- ruby-1.8.6-preview1-o/mkconfig.rb	2007-02-20 01:02:48.000000000 -0700
 +++ ruby-1.8.6-preview1/mkconfig.rb	2007-02-20 01:05:18.000000000 -0700
@@ -188,7 +159,6 @@ diff -ur ruby-1.8.6-preview1-o/mkconfig.rb ruby-1.8.6-preview1/mkconfig.rb
    CONFIG["topdir"] = File.dirname(__FILE__)
    MAKEFILE_CONFIG = {}
    CONFIG.each{|k,v| MAKEFILE_CONFIG[k] = v.dup}
-Only in ruby-1.8.6-preview1: mkconfig.rb.orig
 diff -ur ruby-1.8.6-preview1-o/ruby.c ruby-1.8.6-preview1/ruby.c
 --- ruby-1.8.6-preview1-o/ruby.c	2007-02-12 16:01:19.000000000 -0700
 +++ ruby-1.8.6-preview1/ruby.c	2007-02-20 01:05:18.000000000 -0700
