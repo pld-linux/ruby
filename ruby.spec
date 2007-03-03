@@ -12,7 +12,7 @@
 #
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
-%define	ruby_preview preview1
+%define	ruby_preview preview2
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -20,12 +20,12 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.6
-Release:	0.%{ruby_preview}.2
+Release:	0.%{ruby_preview}.1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.6-%{ruby_preview}.tar.gz
-# Source0-md5:	12c52f3fbf628f6e5c75f1daeda75207
+# Source0-md5:	64504fe5807b9e1779a8a322bba49f63
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -220,7 +220,7 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}-1.8.6-preview1
+%setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}-1.8.6-%{ruby_preview}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
