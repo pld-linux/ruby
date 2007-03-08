@@ -12,7 +12,7 @@
 #
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
-%define	ruby_preview preview2
+%define	ruby_preview preview3
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -25,7 +25,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.6-%{ruby_preview}.tar.gz
-# Source0-md5:	64504fe5807b9e1779a8a322bba49f63
+# Source0-md5:	9ff2f92773e9f3ccfe1b8fec22c38848
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
