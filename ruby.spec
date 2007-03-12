@@ -12,7 +12,6 @@
 #
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
-%define	ruby_preview preview3
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -20,12 +19,12 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.6
-Release:	0.%{ruby_preview}.1
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.6-%{ruby_preview}.tar.gz
-# Source0-md5:	9ff2f92773e9f3ccfe1b8fec22c38848
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}.tar.gz
+# Source0-md5:	23d2494aa94e7ae1ecbbb8c5e1507683
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -52,7 +51,6 @@ Patch3:		%{name}-oniguruma-258-186.patch
 Patch4:		%{name}-vendordir.patch
 Patch5:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
-Obsoletes:	ruby-fastthread
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	db-devel
@@ -63,6 +61,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	sed >= 4.0
 BuildRequires:	texinfo
+Obsoletes:	ruby-fastthread
 %if %{with tk}
 BuildRequires:	tk-devel
 %endif
@@ -220,7 +219,7 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -a1 -a2 -a3 -a5 -a6 -a7 -n %{name}-1.8.6-%{ruby_preview}
+%setup -q -a1 -a2 -a3 -a5 -a6 -a7
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
