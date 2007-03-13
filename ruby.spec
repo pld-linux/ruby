@@ -61,7 +61,6 @@ BuildRequires:	openssl-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	sed >= 4.0
 BuildRequires:	texinfo
-Obsoletes:	ruby-fastthread
 %if %{with tk}
 BuildRequires:	tk-devel
 %endif
@@ -71,6 +70,7 @@ Provides:	ruby(ver) = %{ruby_ver}
 Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
+Obsoletes:	ruby-fastthread
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
