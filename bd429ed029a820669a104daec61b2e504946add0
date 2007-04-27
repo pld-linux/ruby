@@ -1,0 +1,2 @@
+- updated: ruby 1.8.5, onigd 2.5.7, doc-stdlib 0.10.1
+[fixes CVE-2006-3694]
