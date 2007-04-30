@@ -19,8 +19,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.6
-%define patchdate 20070426
-Release:	1.%{patchdate}.0
+Release:	2
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -51,7 +50,7 @@ Patch2:		%{name}-mkmf-shared.patch
 Patch3:		%{name}-oniguruma-258-186.patch
 Patch4:		%{name}-vendordir.patch
 Patch5:		%{name}-lib64.patch
-Patch6:	%{name}-20070426.patch
+Patch6:	%{name}-thread.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -246,6 +245,7 @@ cd ..
 %{__autoconf}
 %configure \
 	--enable-shared \
+	--with-default-kcode=utf8 \
 	--enable-pthread
 
 %{__make}
