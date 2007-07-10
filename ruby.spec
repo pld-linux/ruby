@@ -257,6 +257,8 @@ mkdir rdoc
 
 RUBYLIB=".:lib:`find ext/ .ext/ -type d | tr '\n' ':'`"
 export RUBYLIB
+LD_LIBRARY_PATH=$(pwd)
+export LD_LIBRARY_PATH
 
 ./miniruby bin/rdoc --inline-source --op rdoc/core \
 	array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
