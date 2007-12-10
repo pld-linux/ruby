@@ -23,8 +23,9 @@ Release:	3
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}.tar.gz
-# Source0-md5:	23d2494aa94e7ae1ecbbb8c5e1507683
+%define patchlevel 111
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.gz
+# Source0-md5:	c36e011733a3a3be6f43ba27b7cd7485
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -32,8 +33,8 @@ Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.t
 Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_8.tar.gz
-# Source5-md5:	82cd47ded85f854149ae620a9fa728e5
+Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_9.tar.gz
+# Source5-md5:	7e4c2b197387232afd9a11378feeb246
 %define stdlibdoc_version	0.10.1
 Source6:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source6-md5:	5437c281b44e7a4af142d2bd35eba407
@@ -47,10 +48,8 @@ Source12:	%{name}-mode-init.el
 Patch0:		%{name}-info.patch
 Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
-Patch3:		%{name}-oniguruma-258-186.patch
 Patch4:		%{name}-vendordir.patch
 Patch5:		%{name}-lib64.patch
-Patch6:	%{name}-thread.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -220,14 +219,12 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -a1 -a2 -a3 -a5 -a6 -a7
+%setup -q -n %{name}-%{version}-p%{patchlevel} -a1 -a2 -a3 -a5 -a6 -a7 
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p0
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 
 find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
