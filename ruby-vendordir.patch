@@ -1,6 +1,7 @@
---- ruby-1.8.6-preview1-o/configure.in	2007-02-20 01:02:11.000000000 -0700
-+++ ruby-1.8.6-preview1/configure.in	2007-02-20 01:05:18.000000000 -0700
-@@ -1586,9 +1586,28 @@
+diff -ur ruby-1.8.6-p111-o/configure.in ruby-1.8.6-p111/configure.in
+--- ruby-1.8.6-p111-o/configure.in	2007-12-07 18:57:23.000000000 -0700
++++ ruby-1.8.6-p111/configure.in	2007-12-07 21:44:21.000000000 -0700
+@@ -1575,9 +1575,28 @@
  AC_DEFINE_UNQUOTED(RUBY_SITE_LIB, "${RUBY_SITE_LIB_PATH}")
  AC_DEFINE_UNQUOTED(RUBY_SITE_LIB2, "${RUBY_SITE_LIB_PATH2}")
  
@@ -29,7 +30,7 @@
  
  configure_args=$ac_configure_args
  AC_SUBST(configure_args)dnl
-@@ -1601,6 +1620,8 @@
+@@ -1590,6 +1609,8 @@
  
      AC_DEFINE_UNQUOTED(RUBY_SITE_THIN_ARCHLIB,
                   "${RUBY_SITE_LIB_PATH}/" __ARCHITECTURE__ "-${target_os}")
@@ -38,7 +39,7 @@
      AC_DEFINE_UNQUOTED(RUBY_PLATFORM, __ARCHITECTURE__ "-${target_os}")
  else
      arch="${target_cpu}-${target_os}"
-@@ -1608,12 +1629,15 @@
+@@ -1597,12 +1618,15 @@
  fi
  
  case "$target_os" in
@@ -56,8 +57,21 @@
  
  AC_ARG_WITH(search-path,
  		[  --with-search-path=DIR specify the additional search path],
---- ruby-1.8.6-preview1-o/instruby.rb	2007-02-20 01:02:48.000000000 -0700
-+++ ruby-1.8.6-preview1/instruby.rb	2007-02-20 01:08:36.000000000 -0700
+diff -ur ruby-1.8.6-p111-o/configure.in.orig ruby-1.8.6-p111/configure.in.orig
+--- ruby-1.8.6-p111-o/configure.in.orig	2007-12-07 19:02:05.000000000 -0700
++++ ruby-1.8.6-p111/configure.in.orig	2007-12-07 21:42:59.000000000 -0700
+@@ -1552,7 +1552,7 @@
+     RUBY_LIB_PREFIX="/lib/ruby"
+     ;;
+   *)
+-    RUBY_LIB_PREFIX="${prefix}/lib/ruby"
++    RUBY_LIB_PREFIX="${libdir}/ruby"
+     ;;
+ esac
+ RUBY_LIB_PATH="${RUBY_LIB_PREFIX}/${MAJOR}.${MINOR}"
+diff -ur ruby-1.8.6-p111-o/instruby.rb ruby-1.8.6-p111/instruby.rb
+--- ruby-1.8.6-p111-o/instruby.rb	2007-12-07 18:57:32.000000000 -0700
++++ ruby-1.8.6-p111/instruby.rb	2007-12-07 21:44:21.000000000 -0700
 @@ -162,6 +162,8 @@
  archlibdir = CONFIG["archdir"]
  sitelibdir = CONFIG["sitelibdir"]
@@ -85,8 +99,9 @@
      install_recursive("#{extout}/common", rubylibdir)
    end
  end
---- ruby-1.8.6-preview1-o/lib/mkmf.rb	2007-02-20 01:02:13.000000000 -0700
-+++ ruby-1.8.6-preview1/lib/mkmf.rb	2007-02-20 01:12:00.000000000 -0700
+diff -ur ruby-1.8.6-p111-o/lib/mkmf.rb ruby-1.8.6-p111/lib/mkmf.rb
+--- ruby-1.8.6-p111-o/lib/mkmf.rb	2007-12-07 18:56:55.000000000 -0700
++++ ruby-1.8.6-p111/lib/mkmf.rb	2007-12-07 21:44:21.000000000 -0700
 @@ -51,6 +51,9 @@
  $sitedir = CONFIG["sitedir"]
  $sitelibdir = CONFIG["sitelibdir"]
@@ -97,7 +112,7 @@
  
  $mswin = /mswin/ =~ RUBY_PLATFORM
  $bccwin = /bccwin/ =~ RUBY_PLATFORM
-@@ -410,7 +413,7 @@
+@@ -417,7 +420,7 @@
  
  def try_func(func, libs, headers = nil, &b)
    headers = cpp_include(headers)
@@ -106,7 +121,7 @@
  #{COMMON_HEADERS}
  #{headers}
  /*top*/
-@@ -422,6 +425,11 @@
+@@ -429,6 +432,11 @@
  int main() { return 0; }
  int t() { #{func}(); return 0; }
  SRC
@@ -118,7 +133,7 @@
  end
  
  def try_var(var, headers = nil, &b)
-@@ -1087,6 +1095,7 @@
+@@ -1097,6 +1105,7 @@
  RUBY_SO_NAME = #{CONFIG['RUBY_SO_NAME']}
  arch = #{CONFIG['arch']}
  sitearch = #{CONFIG['sitearch']}
@@ -126,8 +141,10 @@
  ruby_version = #{Config::CONFIG['ruby_version']}
  ruby = #{$ruby}
  RUBY = $(ruby#{sep})
---- ruby-1.8.6-preview1-o/Makefile.in	2007-02-12 16:01:19.000000000 -0700
-+++ ruby-1.8.6-preview1/Makefile.in	2007-02-20 01:05:18.000000000 -0700
+Only in ruby-1.8.6-p111/lib: mkmf.rb.orig
+diff -ur ruby-1.8.6-p111-o/Makefile.in ruby-1.8.6-p111/Makefile.in
+--- ruby-1.8.6-p111-o/Makefile.in	2007-12-07 18:57:25.000000000 -0700
++++ ruby-1.8.6-p111/Makefile.in	2007-12-07 21:44:21.000000000 -0700
 @@ -24,6 +24,8 @@
  arch = @arch@
  sitearch = @sitearch@
@@ -137,9 +154,10 @@
  
  TESTUI = console
  TESTS =
---- ruby-1.8.6-preview1-o/mkconfig.rb	2007-02-20 01:02:48.000000000 -0700
-+++ ruby-1.8.6-preview1/mkconfig.rb	2007-02-20 01:05:18.000000000 -0700
-@@ -139,6 +139,14 @@
+diff -ur ruby-1.8.6-p111-o/mkconfig.rb ruby-1.8.6-p111/mkconfig.rb
+--- ruby-1.8.6-p111-o/mkconfig.rb	2007-12-07 18:57:32.000000000 -0700
++++ ruby-1.8.6-p111/mkconfig.rb	2007-12-07 21:44:21.000000000 -0700
+@@ -143,6 +143,14 @@
    CONFIG["archdir"] = "$(rubylibdir)/$(arch)"
    CONFIG["sitelibdir"] = "$(sitedir)/$(ruby_version)"
    CONFIG["sitearchdir"] = "$(sitelibdir)/$(sitearch)"
@@ -154,19 +172,25 @@
    CONFIG["topdir"] = File.dirname(__FILE__)
    MAKEFILE_CONFIG = {}
    CONFIG.each{|k,v| MAKEFILE_CONFIG[k] = v.dup}
---- ruby-1.8.6-preview1-o/ruby.c	2007-02-12 16:01:19.000000000 -0700
-+++ ruby-1.8.6-preview1/ruby.c	2007-02-20 01:05:18.000000000 -0700
-@@ -298,6 +298,13 @@
-     ruby_incpush(RUBY_RELATIVE(RUBY_SITE_ARCHLIB));
-     ruby_incpush(RUBY_RELATIVE(RUBY_SITE_LIB));
- 
-+    ruby_incpush(RUBY_RELATIVE(RUBY_VENDOR_LIB2));
+Only in ruby-1.8.6-p111: mkconfig.rb.orig
+diff -ur ruby-1.8.6-p111-o/ruby.c ruby-1.8.6-p111/ruby.c
+--- ruby-1.8.6-p111-o/ruby.c	2007-12-07 18:57:31.000000000 -0700
++++ ruby-1.8.6-p111/ruby.c	2007-12-07 22:30:13.000000000 -0700
+@@ -321,6 +321,13 @@
+ #endif
+     incpush(RUBY_RELATIVE(RUBY_SITE_ARCHLIB));
+     incpush(RUBY_RELATIVE(RUBY_SITE_LIB));
++		
++    incpush(RUBY_RELATIVE(RUBY_VENDOR_LIB2));
 +#ifdef RUBY_VENDOR_THIN_ARCHLIB
-+    ruby_incpush(RUBY_RELATIVE(RUBY_VENDOR_THIN_ARCHLIB));
++    incpush(RUBY_RELATIVE(RUBY_VENDOR_THIN_ARCHLIB));
 +#endif
-+    ruby_incpush(RUBY_RELATIVE(RUBY_VENDOR_ARCHLIB));
-+    ruby_incpush(RUBY_RELATIVE(RUBY_VENDOR_LIB));
-+
-     ruby_incpush(RUBY_RELATIVE(RUBY_LIB));
++    incpush(RUBY_RELATIVE(RUBY_VENDOR_ARCHLIB));
++    incpush(RUBY_RELATIVE(RUBY_VENDOR_LIB));
+ 
+     incpush(RUBY_RELATIVE(RUBY_LIB));
  #ifdef RUBY_THIN_ARCHLIB
-     ruby_incpush(RUBY_RELATIVE(RUBY_THIN_ARCHLIB));
+Only in ruby-1.8.6-p111: ruby.c~
+Only in ruby-1.8.6-p111: ruby.c.orig
+Only in ruby-1.8.6-p111: ruby.c.rej
+Only in ruby-1.8.6-p111: ruby.c.rej~

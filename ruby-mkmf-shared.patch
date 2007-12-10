@@ -1,11 +1,15 @@
---- ruby-1.8.4/lib/mkmf.rb~	2006-01-01 04:51:05.859197968 +0100
-+++ ruby-1.8.4/lib/mkmf.rb	2006-01-01 04:51:33.071061136 +0100
-@@ -269,7 +269,7 @@
+diff -ur ruby-1.8.6-p111-o/lib/mkmf.rb ruby-1.8.6-p111/lib/mkmf.rb
+--- ruby-1.8.6-p111-o/lib/mkmf.rb	2007-12-07 17:41:05.000000000 -0700
++++ ruby-1.8.6-p111/lib/mkmf.rb	2007-12-07 17:47:44.000000000 -0700
+@@ -275,7 +275,7 @@
                                'LDFLAGS' => "#$LDFLAGS #{ldflags}",
                                'LIBPATH' => libpathflag(libpath),
                                'LOCAL_LIBS' => "#$LOCAL_LIBS #$libs",
--                              'LIBS' => "#$LIBRUBYARG_STATIC #{opt} #$LIBS"))
-+                              'LIBS' => "#$LIBRUBYARG_SHARED #{opt} #$LIBS"))
+-                              'LIBS' => "#$LIBRUBYARG_STATIC #{opt} #$LIBS")
++                              'LIBS' => "#$LIBRUBYARG_SHARED #{opt} #$LIBS")
+   Config::expand(TRY_LINK.dup, conf)
  end
  
- def cc_command(opt="")
+Only in ruby-1.8.6-p111/lib: mkmf.rb~
+Only in ruby-1.8.6-p111/lib: mkmf.rb.orig
+Only in ruby-1.8.6-p111/lib: mkmf.rb.rej~
