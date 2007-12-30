@@ -9,7 +9,7 @@ diff -ur ruby-1.8.6-p111-o/configure.in ruby-1.8.6-p111/configure.in
 +	    [  --with-vendordir=DIR      vendor libraries in DIR [LIBDIR/ruby/vendor_ruby]],
 +            [vendordir=$withval],
 +            [vendordir='${libdir}/ruby/vendor_ruby'])
-+VENDOR_DIR="`eval \"echo ${vendordir}\"`"
++VENDOR_DIR=`eval echo \\"${vendordir}\\"`
 +case "$target_os" in
 +  cygwin*|mingw*|*djgpp*|os2_emx*)
 +    RUBY_VENDOR_LIB_PATH="`expr "$VENDOR_DIR" : "$prefix\(/.*\)"`" ||
@@ -57,18 +57,6 @@ diff -ur ruby-1.8.6-p111-o/configure.in ruby-1.8.6-p111/configure.in
  
  AC_ARG_WITH(search-path,
  		[  --with-search-path=DIR specify the additional search path],
-diff -ur ruby-1.8.6-p111-o/configure.in.orig ruby-1.8.6-p111/configure.in.orig
---- ruby-1.8.6-p111-o/configure.in.orig	2007-12-07 19:02:05.000000000 -0700
-+++ ruby-1.8.6-p111/configure.in.orig	2007-12-07 21:42:59.000000000 -0700
-@@ -1552,7 +1552,7 @@
-     RUBY_LIB_PREFIX="/lib/ruby"
-     ;;
-   *)
--    RUBY_LIB_PREFIX="${prefix}/lib/ruby"
-+    RUBY_LIB_PREFIX="${libdir}/ruby"
-     ;;
- esac
- RUBY_LIB_PATH="${RUBY_LIB_PREFIX}/${MAJOR}.${MINOR}"
 diff -ur ruby-1.8.6-p111-o/instruby.rb ruby-1.8.6-p111/instruby.rb
 --- ruby-1.8.6-p111-o/instruby.rb	2007-12-07 18:57:32.000000000 -0700
 +++ ruby-1.8.6-p111/instruby.rb	2007-12-07 21:44:21.000000000 -0700
