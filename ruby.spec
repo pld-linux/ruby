@@ -19,13 +19,13 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.6
-Release:	4
+Release:	5
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-%define patchlevel 111
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.gz
-# Source0-md5:	c36e011733a3a3be6f43ba27b7cd7485
+%define patchlevel 114
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.bz2
+# Source0-md5:	b4d0c74497f684814bcfbb41b7384a71
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -310,7 +310,7 @@ cp -Rf rubyfaq faq
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
 install misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
-rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el
+rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
 install %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << EOF > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
