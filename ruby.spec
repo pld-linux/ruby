@@ -1,5 +1,4 @@
 # TODO
-# - integrate vendordir patch
 # - include ext/ in docs
 # - replace ri with fastri
 # - patch ri to search multiple indexes (one per package), so RPMs can
@@ -9,6 +8,7 @@
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
+%bcond_with	onigurma
 #
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
@@ -18,14 +18,14 @@ Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
 Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.6
-Release:	6
+Version:	1.8.7
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-%define patchlevel 114
+%define patchlevel 22
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.bz2
-# Source0-md5:	b4d0c74497f684814bcfbb41b7384a71
+# Source0-md5:	2d57acee0d80531e14ec0f6826a1f9fb
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -46,9 +46,7 @@ Source10:	ri.1
 Source11:	testrb.1
 Source12:	%{name}-mode-init.el
 Patch0:		%{name}-info.patch
-Patch1:		%{name}-LIB_PREFIX.patch
 Patch2:		%{name}-mkmf-shared.patch
-Patch4:		%{name}-vendordir.patch
 Patch5:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
@@ -221,9 +219,7 @@ Tryb Ruby i debugger dla Emacsa.
 %prep
 %setup -q -n %{name}-%{version}-p%{patchlevel} -a1 -a2 -a3 -a5 -a6 -a7 
 %patch0 -p1
-%patch1 -p1
 %patch2 -p1
-%patch4 -p1
 %patch5 -p1
 
 find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
@@ -233,11 +229,13 @@ find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 %build
 cp -f /usr/share/automake/config.sub .
 
+%if %{with onigurma}
 cd oniguruma
 %configure \
 	--with-rubydir=..
 %{__make} 18
 cd ..
+%endif
 
 %{__autoconf}
 %configure \
