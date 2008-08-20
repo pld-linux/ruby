@@ -286,8 +286,7 @@ mv ri/%{ruby_ver}/site ri/%{ruby_ver}/system
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir}}
-install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_emacs_lispdir}/{%{name}-mode,site-start.d}}
+install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -307,6 +306,7 @@ cp -Rf rubyfaq faq
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
+install -d %{_emacs_lispdir}/{%{name}-mode,site-start.d}
 install misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
 rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
 install %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
@@ -332,9 +332,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/ruby
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/libruby.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libruby.so.1.8
 %{_mandir}/man1/ruby.1*
-%{_infodir}/*.info*
+%{_infodir}/ruby.info*
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{ruby_ver}
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
@@ -351,12 +352,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
+%attr(755,root,root) %{_libdir}/libruby.so
 %{_libdir}/%{name}/%{ruby_ver}/*/*.h
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libruby-static.a
 
 %if %{with tk}
 %files tk
