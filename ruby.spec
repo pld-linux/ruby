@@ -19,13 +19,13 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.7
-Release:	2
+Release:	3
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 %define patchlevel 72
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.gz
-# Source0-md5:	5e5b7189674b3a7f69401284f6a7a36d
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.bz2
+# Source0-md5:	0b215c46b89b28d7ab8d56d96e72d5b9
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -46,8 +46,9 @@ Source10:	ri.1
 Source11:	testrb.1
 Source12:	%{name}-mode-init.el
 Patch0:		%{name}-info.patch
-Patch2:		%{name}-mkmf-shared.patch
-Patch5:		%{name}-lib64.patch
+Patch1:		%{name}-mkmf-shared.patch
+Patch2:		%{name}-require-rubygems-version.patch
+Patch3:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -219,8 +220,9 @@ Tryb Ruby i debugger dla Emacsa.
 %prep
 %setup -q -n %{name}-%{version}-p%{patchlevel} -a1 -a2 -a3 -a5 -a6 -a7 
 %patch0 -p1
+%patch1 -p1
 %patch2 -p1
-%patch5 -p1
+%patch3 -p1
 
 find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
