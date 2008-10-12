@@ -12,6 +12,7 @@
 #
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
+%define		ruby_rdocdir	%{_datadir}/rdoc
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -19,7 +20,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	1.8.7
-Release:	3
+Release:	4
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -224,7 +225,7 @@ Tryb Ruby i debugger dla Emacsa.
 %patch2 -p1
 %patch3 -p1
 
-find . -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
+find -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
 
@@ -252,7 +253,7 @@ cd ..
 %if %{with doc}
 mkdir rdoc
 
-RUBYLIB=".:lib:`find ext/ .ext/ -type d | tr '\n' ':'`"
+RUBYLIB=".:lib:$(find ext .ext -type d | tr '\n' ':')"
 export RUBYLIB
 LD_LIBRARY_PATH=$(pwd)
 export LD_LIBRARY_PATH
@@ -312,7 +313,7 @@ install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{%{name}-mode,site-start.d}
 install misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
 rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
 install %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
-cat << EOF > path.el
+cat << 'EOF' > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
 EOF
 emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/*.el
@@ -322,12 +323,12 @@ rm -f path.el*
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
+%post	-p /sbin/postshell
+-/usr/sbin/fix-info-dir -c %{_infodir}
 /sbin/ldconfig
 
-%postun
-[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir %{_infodir} >/dev/null 2>&1
+%postun	-p /sbin/postshell
+-/usr/sbin/fix-info-dir -c %{_infodir}
 /sbin/ldconfig
 
 %files
@@ -351,6 +352,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/ri
 %dir %{_datadir}/ri/%{ruby_ver}
 %dir %{_datadir}/ri/%{ruby_ver}/system
+%dir %{ruby_rdocdir}
 
 %files devel
 %defattr(644,root,root,755)
