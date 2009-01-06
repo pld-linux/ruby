@@ -13,19 +13,21 @@
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 %define		ruby_rdocdir	%{_datadir}/rdoc
+%define		stdlibdoc_version	0.10.1
+%define		patchlevel 72
+%define		basever 1.8.7
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
 Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
-Version:	1.8.7
-Release:	4
+Version:	%{basever}.%{patchlevel}
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-%define patchlevel 72
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{version}-p%{patchlevel}.tar.bz2
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-%{basever}-p%{patchlevel}.tar.bz2
 # Source0-md5:	0b215c46b89b28d7ab8d56d96e72d5b9
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
@@ -36,7 +38,6 @@ Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
 Source4:	irb.1
 Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_9.tar.gz
 # Source5-md5:	7e4c2b197387232afd9a11378feeb246
-%define stdlibdoc_version	0.10.1
 Source6:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source6-md5:	5437c281b44e7a4af142d2bd35eba407
 Source7:	http://www.ruby-doc.org/download/Ruby-1.8.1_ri_data.zip
@@ -219,7 +220,7 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -n %{name}-%{version}-p%{patchlevel} -a1 -a2 -a3 -a5 -a6 -a7 
+%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a5 -a6 -a7
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
