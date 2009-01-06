@@ -289,7 +289,7 @@ mv ri/%{ruby_ver}/site ri/%{ruby_ver}/system
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir}}
+install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{ruby_rdocdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
