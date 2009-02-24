@@ -23,7 +23,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	2
+Release:	3
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -226,7 +226,7 @@ Tryb Ruby i debugger dla Emacsa.
 %patch2 -p1
 %patch3 -p1
 
-find -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
+find -type f -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
 
