@@ -1,8 +1,3 @@
-# TODO
-# - include ext/ in docs
-# - replace ri with fastri
-# - patch ri to search multiple indexes (one per package), so RPMs can
-#   install ri docs
 #
 # Conditional build:
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
@@ -52,6 +47,9 @@ Patch1:		%{name}-mkmf-shared.patch
 Patch2:		%{name}-require-rubygems-version.patch
 Patch3:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
+# http://www.ruby-lang.org/en/news/2009/06/09/dos-vulnerability-in-bigdecimal/
+# Upgrade to 1.8.7-p173 required. Or 1.9.*
+BuildRequires:	security(dos-vulnerability-in-bigdecimal)
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	db-devel
