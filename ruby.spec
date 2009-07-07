@@ -46,7 +46,7 @@ Patch0:		%{name}-info.patch
 Patch1:		%{name}-mkmf-shared.patch
 Patch2:		%{name}-require-rubygems-version.patch
 Patch3:		%{name}-lib64.patch
-Patch4:		%{name}-quicksync-fix.patch
+Patch4:		%{name}-imap-quicksync-fix.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
