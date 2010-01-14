@@ -9,7 +9,7 @@
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 %define		ruby_rdocdir	%{_datadir}/rdoc
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 174
+%define		patchlevel 249
 %define		basever 1.8.7
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -18,12 +18,12 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	2
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	88c45aaf627b4404e5e4273cb03ba2ee
+# Source0-md5:	37200cc956a16996bbfd25bb4068f242
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
@@ -46,7 +46,6 @@ Patch0:		%{name}-info.patch
 Patch1:		%{name}-mkmf-shared.patch
 Patch2:		%{name}-require-rubygems-version.patch
 Patch3:		%{name}-lib64.patch
-Patch4:		%{name}-imap-quicksync-fix.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -221,10 +220,9 @@ Tryb Ruby i debugger dla Emacsa.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
-find -type f \( -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
-	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' \) \
+find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
+	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' ')' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
 
 %build
@@ -293,12 +291,12 @@ install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_infodir},%{_mandir}/man1,%{_ex
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-install %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
-install %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
-install %{SOURCE8} $RPM_BUILD_ROOT%{_mandir}/man1
-install %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1
-install %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1
-install %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -a %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
+cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -a %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -a %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -a %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
 
 cp -Rf ruby-uguide guide
 cp -Rf rubyfaq faq
@@ -308,9 +306,9 @@ cp -Rf rubyfaq faq
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
 install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{%{name}-mode,site-start.d}
-install misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
+cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
 rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
-install %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
+install -p %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << 'EOF' > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
 EOF
