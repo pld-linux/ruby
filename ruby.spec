@@ -33,17 +33,18 @@ Patch1:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	bison
 BuildRequires:	db-devel
 %{?with_emacs:BuildRequires:	emacs}
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
 BuildRequires:	readline-devel >= 4.2
+BuildRequires:	ruby-modules
 BuildRequires:	sed >= 4.0
 %if %{with tk}
 BuildRequires:	tk-devel
 %endif
-BuildRequires:	unzip
 Requires(post,postun):	/sbin/ldconfig
 Provides:	ruby(ver) = %{ruby_ver}
 Obsoletes:	rdoc
