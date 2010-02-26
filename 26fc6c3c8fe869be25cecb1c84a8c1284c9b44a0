@@ -1,0 +1,2 @@
+- up to 1.8.7p22; lib_prefix and vendordir seems to be merged in some form;
+- onigurma doesn't build so bcond off it; probably several CVE fixed
