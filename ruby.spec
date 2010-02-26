@@ -4,9 +4,7 @@
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
 #
-%define		ruby_ver	1.9
-%define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
-%define		ruby_rdocdir	%{_datadir}/rdoc
+%define		ruby_ver	1.9.1
 %define		stdlibdoc_version	0.10.1
 %define		patchlevel 378
 %define		basever 1.9.1
@@ -42,7 +40,6 @@ BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	sed >= 4.0
-BuildRequires:	texinfo
 %if %{with tk}
 BuildRequires:	tk-devel
 %endif
@@ -205,8 +202,10 @@ Tryb Ruby i debugger dla Emacsa.
 %patch0 -p1
 %patch1 -p1
 
-find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
-	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' ')' \
+find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
+
+find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
+	-o -name 'ruby.1' -o -name '*.html' -o -name '*.tcl' ')' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
 
 %build
@@ -221,12 +220,11 @@ cp -f /usr/share/automake/config.sub .
 
 %if %{with doc}
 %{__make} rdoc
-mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{ruby_rdocdir}}
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -235,8 +233,11 @@ cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
-cp -Rf ruby-uguide guide
-cp -Rf rubyfaq faq
+# packaged separately
+rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json,minitest}
+rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
+rm $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
+rm $RPM_BUILD_ROOT%{_mandir}/man1/rake*
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
@@ -259,10 +260,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README README.EXT ChangeLog ToDo
+%doc NEWS LEGAL README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/ruby
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libruby.so.1.8
+%attr(755,root,root) %ghost %{_libdir}/libruby.so.1.9
 %{_mandir}/man1/ruby.1*
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{ruby_ver}
@@ -273,16 +274,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}/vendor_ruby
 %dir %{_libdir}/%{name}/vendor_ruby/%{ruby_ver}
 %dir %{_libdir}/%{name}/vendor_ruby/%{ruby_ver}/*-linux*
-%dir %{_datadir}/%{name}
 %dir %{_datadir}/ri
 %dir %{_datadir}/ri/%{ruby_ver}
 %dir %{_datadir}/ri/%{ruby_ver}/system
-%dir %{ruby_rdocdir}
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libruby.so
-%{_libdir}/%{name}/%{ruby_ver}/*/*.h
+%{_includedir}/%{name}-%{ruby_ver}
 
 %files static
 %defattr(644,root,root,755)
@@ -317,19 +316,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/openssl
 %{_libdir}/%{name}/%{ruby_ver}/optparse
 %{_libdir}/%{name}/%{ruby_ver}/racc
+%{_libdir}/%{name}/%{ruby_ver}/rbconfig
 %{_libdir}/%{name}/%{ruby_ver}/rdoc
 %{_libdir}/%{name}/%{ruby_ver}/rexml
 %{_libdir}/%{name}/%{ruby_ver}/rinda
+%{_libdir}/%{name}/%{ruby_ver}/ripper
 %{_libdir}/%{name}/%{ruby_ver}/rss
-%{_libdir}/%{name}/%{ruby_ver}/runit
 %{_libdir}/%{name}/%{ruby_ver}/shell
-%{_libdir}/%{name}/%{ruby_ver}/soap
 %{_libdir}/%{name}/%{ruby_ver}/test
 %{_libdir}/%{name}/%{ruby_ver}/uri
 %{_libdir}/%{name}/%{ruby_ver}/webrick
-%{_libdir}/%{name}/%{ruby_ver}/wsdl
 %{_libdir}/%{name}/%{ruby_ver}/xmlrpc
-%{_libdir}/%{name}/%{ruby_ver}/xsd
 %{_libdir}/%{name}/%{ruby_ver}/yaml
 %{_libdir}/%{name}/%{ruby_ver}/[A-Za-s]*.rb
 %{_libdir}/%{name}/%{ruby_ver}/tempfile.rb
@@ -342,13 +339,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/tsort.rb
 %{_libdir}/%{name}/%{ruby_ver}/[u-z]*.rb
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/trans
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/mathn
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[a-s]*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/thread.so
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[u-z]*.so
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest/*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/trans/*.so
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io/*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/mathn/*.so
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc/*.so
 %{_libdir}/%{name}/%{ruby_ver}/*-linux*/rbconfig.rb
 %{_mandir}/man1/erb.1*
@@ -359,8 +361,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(644,root,root,755)
-%doc faq guide
-%{?with_doc:%doc rdoc}
+%doc ruby-doc-bundle/*
+%{?with_doc:%doc ruby-doc-stdlib-%{stdlibdoc_version}/stdlib}
 
 %if %{with doc}
 %files doc-ri
