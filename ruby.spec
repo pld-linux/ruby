@@ -215,46 +215,13 @@ cp -f /usr/share/automake/config.sub .
 %{__autoconf}
 %configure \
 	--enable-shared \
-	--with-default-kcode=utf8 \
 	--enable-pthread
 
 %{__make}
 
 %if %{with doc}
-mkdir rdoc
-
-RUBYLIB=".:lib:$(find ext .ext -type d | tr '\n' ':')"
-export RUBYLIB
-LD_LIBRARY_PATH=$(pwd)
-export LD_LIBRARY_PATH
-
-./miniruby bin/rdoc --inline-source --op rdoc/core \
-	array.c bignum.c class.c compar.c dir.c dln.c dmyext.c enum.c \
-	error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c marshal.c \
-	math.c numeric.c object.c pack.c parse.c prec.c process.c random.c range.c \
-	re.c regex.c ruby.c signal.c sprintf.c st.c string.c struct.c time.c util.c \
-	variable.c version.c \
-	lib/English.rb lib/abbrev.rb lib/base64.rb lib/benchmark.rb lib/cgi.rb \
-	lib/cgi/session.rb lib/complex.rb lib/date.rb lib/fileutils.rb lib/find.rb \
-	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb \
-	lib/pathname.rb lib/set.rb lib/shellwords.rb lib/singleton.rb \
-	lib/tempfile.rb lib/test/unit.rb lib/thread.rb lib/thwait.rb \
-	lib/time.rb lib/yaml.rb
-
+%{__make} rdoc
 mv ruby-doc-stdlib-%{stdlibdoc_version}/stdlib rdoc/stdlib
-mv ri/%{ruby_ver}/site ri/%{ruby_ver}/system
-
-./miniruby bin/rdoc --ri -o ri/%{ruby_ver}/system \
-	array.c bignum.c class.c compar.c dir.c dln.c \
-	dmyext.c enum.c error.c eval.c file.c gc.c hash.c inits.c io.c lex.c main.c \
-	marshal.c math.c numeric.c object.c pack.c parse.c prec.c process.c \
-	random.c range.c re.c regex.c ruby.c signal.c sprintf.c st.c string.c \
-	struct.c time.c util.c variable.c version.c \
-	lib/English.rb lib/abbrev.rb lib/base64.rb lib/benchmark.rb lib/cgi.rb \
-	lib/cgi/session.rb lib/complex.rb lib/date.rb lib/fileutils.rb lib/find.rb \
-	lib/generator.rb lib/logger.rb lib/matrix.rb lib/observer.rb lib/pathname.rb \
-	lib/set.rb lib/shellwords.rb lib/singleton.rb lib/tempfile.rb \
-	lib/test/unit.rb lib/thread.rb lib/thwait.rb lib/time.rb lib/yaml.rb
 %endif
 
 %install
