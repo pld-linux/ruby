@@ -219,9 +219,6 @@ cp -f /usr/share/automake/config.sub .
 	--enable-pthread
 
 %{__make}
-exit
-%{__make} clean -C %{name}-texi-1.4-en
-%{__make} info -C %{name}-texi-1.4-en
 
 %if %{with doc}
 mkdir rdoc
@@ -266,16 +263,13 @@ install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_infodir},%{_mandir}/man1,%{_ex
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-exit
+
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
 cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
 cp -Rf ruby-uguide guide
 cp -Rf rubyfaq faq
-
-%{?with_doc:cp -Rf ri/%{ruby_ver}/system/* $RPM_BUILD_ROOT%{ruby_ridir}}
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
@@ -293,13 +287,8 @@ rm -f path.el*
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p /sbin/postshell
--/usr/sbin/fix-info-dir -c %{_infodir}
-/sbin/ldconfig
-
-%postun	-p /sbin/postshell
--/usr/sbin/fix-info-dir -c %{_infodir}
-/sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -308,7 +297,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.1.8
 %{_mandir}/man1/ruby.1*
-%{_infodir}/ruby.info*
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{ruby_ver}
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
