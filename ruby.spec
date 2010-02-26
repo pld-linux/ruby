@@ -24,7 +24,7 @@ Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
 # Source0-md5:	5922459622a23612eb9b68a3586cb5f8
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
-# Source1-md5:	24eadcd067278901da9ad70efb146b07
+# Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source2-md5:	5437c281b44e7a4af142d2bd35eba407
 Source3:	rdoc.1
