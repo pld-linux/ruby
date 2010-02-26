@@ -3,14 +3,13 @@
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
-%bcond_with	onigurma
 #
-%define		ruby_ver	1.8
+%define		ruby_ver	1.9
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 %define		ruby_rdocdir	%{_datadir}/rdoc
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 249
-%define		basever 1.8.7
+%define		patchlevel 378
+%define		basever 1.9.1
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -18,34 +17,21 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	2
+Release:	0.1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	37200cc956a16996bbfd25bb4068f242
-Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
-# Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
-Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
-# Source2-md5:	24eadcd067278901da9ad70efb146b07
-Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
-# Source3-md5:	634c25b14e19925d10af3720d72e8741
-Source4:	irb.1
-Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_9.tar.gz
-# Source5-md5:	7e4c2b197387232afd9a11378feeb246
-Source6:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
-# Source6-md5:	5437c281b44e7a4af142d2bd35eba407
-Source7:	http://www.ruby-doc.org/download/Ruby-1.8.1_ri_data.zip
-# Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
-Source8:	erb.1
-Source9:	rdoc.1
-Source10:	ri.1
-Source11:	testrb.1
-Source12:	%{name}-mode-init.el
-Patch0:		%{name}-info.patch
-Patch1:		%{name}-mkmf-shared.patch
-Patch2:		%{name}-require-rubygems-version.patch
-Patch3:		%{name}-lib64.patch
+# Source0-md5:	5922459622a23612eb9b68a3586cb5f8
+Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
+# Source1-md5:	24eadcd067278901da9ad70efb146b07
+Source2:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
+# Source2-md5:	5437c281b44e7a4af142d2bd35eba407
+Source3:	rdoc.1
+Source4:	testrb.1
+Source5:	%{name}-mode-init.el
+Patch0:		%{name}-mkmf-shared.patch
+Patch1:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -215,11 +201,9 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a5 -a6 -a7
+%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' ')' \
@@ -228,14 +212,6 @@ find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.
 %build
 cp -f /usr/share/automake/config.sub .
 
-%if %{with onigurma}
-cd oniguruma
-%configure \
-	--with-rubydir=..
-%{__make} 18
-cd ..
-%endif
-
 %{__autoconf}
 %configure \
 	--enable-shared \
@@ -243,6 +219,7 @@ cd ..
 	--enable-pthread
 
 %{__make}
+exit
 %{__make} clean -C %{name}-texi-1.4-en
 %{__make} info -C %{name}-texi-1.4-en
 
@@ -289,14 +266,11 @@ install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_infodir},%{_mandir}/man1,%{_ex
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
-
+exit
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -a %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
+cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
 
 cp -Rf ruby-uguide guide
 cp -Rf rubyfaq faq
@@ -308,7 +282,7 @@ cp -Rf rubyfaq faq
 install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{%{name}-mode,site-start.d}
 cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
 rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
-install -p %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
+install -p %{SOURCE5} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << 'EOF' > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
 EOF
