@@ -30,7 +30,6 @@ Source4:	testrb.1
 Source5:	%{name}-mode-init.el
 Patch0:		%{name}-mkmf-shared.patch
 Patch1:		%{name}-lib64.patch
-Patch2:		%{name}-archhdrdir.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -203,7 +202,6 @@ Tryb Ruby i debugger dla Emacsa.
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
