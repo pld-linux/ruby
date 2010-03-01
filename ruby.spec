@@ -4,7 +4,7 @@
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
 #
-%define		ruby_ver	1.9.1
+%define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
 %define		patchlevel 378
 %define		basever 1.9.1
@@ -215,7 +215,9 @@ cp -f /usr/share/automake/config.sub .
 %{__autoconf}
 %configure \
 	--enable-shared \
-	--enable-pthread
+	--enable-pthread \
+	--with-ruby-version=minor \
+	--enable-frame-address
 
 %{__make} -j1
 
