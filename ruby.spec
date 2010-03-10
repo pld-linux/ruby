@@ -15,7 +15,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	5
+Release:	6
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -242,6 +242,7 @@ rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
 rm $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rake,rubygems,json}.rb
 rm $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 rm $RPM_BUILD_ROOT%{_mandir}/man1/rake*
+rm -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_ver}/system/JSON
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
