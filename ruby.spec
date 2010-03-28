@@ -5,6 +5,7 @@
 %bcond_without	tk	# skip building package with Tk bindings
 %bcond_with	onigurma
 #
+%define		ruby_suffix 18
 %define		ruby_ver	1.8
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 %define		ruby_rdocdir	%{_datadir}/rdoc
@@ -16,24 +17,24 @@ Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
 Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
-Name:		ruby
+Name:		ruby%{ruby_suffix}
 Version:	%{basever}.%{patchlevel}
 Release:	2
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/ruby-%{basever}-p%{patchlevel}.tar.bz2
 # Source0-md5:	37200cc956a16996bbfd25bb4068f242
-Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}-texi-1.4-en.tar.gz
+Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/ruby-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
-Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/%{name}-uguide-981227.tar.gz
+Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/ruby-uguide-981227.tar.gz
 # Source2-md5:	24eadcd067278901da9ad70efb146b07
-Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/%{name}faq-990927.tar.gz
+Source3:	http://www.ibiblio.org/pub/languages/ruby/doc/rubyfaq-990927.tar.gz
 # Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source4:	irb.1
 Source5:	http://www.geocities.jp/kosako3/oniguruma/archive/onigd2_5_9.tar.gz
 # Source5-md5:	7e4c2b197387232afd9a11378feeb246
-Source6:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
+Source6:	http://www.ruby-doc.org/download/stdlib/ruby-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source6-md5:	5437c281b44e7a4af142d2bd35eba407
 Source7:	http://www.ruby-doc.org/download/Ruby-1.8.1_ri_data.zip
 # Source7-md5:	96e97cdfa55ed197e0e6c39159394c82
@@ -41,11 +42,11 @@ Source8:	erb.1
 Source9:	rdoc.1
 Source10:	ri.1
 Source11:	testrb.1
-Source12:	%{name}-mode-init.el
-Patch0:		%{name}-info.patch
-Patch1:		%{name}-mkmf-shared.patch
-Patch2:		%{name}-require-rubygems-version.patch
-Patch3:		%{name}-lib64.patch
+Source12:	ruby-mode-init.el
+Patch0:		ruby-info.patch
+Patch1:		ruby-mkmf-shared.patch
+Patch2:		ruby-require-rubygems-version.patch
+Patch3:		ruby-lib64.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -215,7 +216,7 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a5 -a6 -a7
+%setup -q -n ruby-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a5 -a6 -a7
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -238,13 +239,14 @@ cd ..
 
 %{__autoconf}
 %configure \
+	--program-suffix=%{ruby_suffix} \
 	--enable-shared \
 	--with-default-kcode=utf8 \
 	--enable-pthread
 
 %{__make}
-%{__make} clean -C %{name}-texi-1.4-en
-%{__make} info -C %{name}-texi-1.4-en
+%{__make} clean -C ruby-texi-1.4-en
+%{__make} info -C ruby-texi-1.4-en
 
 %if %{with doc}
 mkdir rdoc
@@ -285,18 +287,18 @@ mv ri/%{ruby_ver}/site ri/%{ruby_ver}/system
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_datadir}/%{name},%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{ruby_rdocdir}}
+install -d $RPM_BUILD_ROOT{%{_datadir}/ruby,%{_infodir},%{_mandir}/man1,%{_examplesdir}/%{name}-%{version},%{ruby_ridir},%{ruby_rdocdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a %{name}-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
-cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -a ruby-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
+cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/irb%{ruby_suffix}.1
+cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_mandir}/man1/erb%{ruby_suffix}.1
+cp -a %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
+cp -a %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1/ri%{ruby_suffix}.1
+cp -a %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 
 cp -Rf ruby-uguide guide
 cp -Rf rubyfaq faq
@@ -305,9 +307,9 @@ cp -Rf rubyfaq faq
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
-install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{%{name}-mode,site-start.d}
-cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
-rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
+install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{ruby-mode,site-start.d}
+cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode
+rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/rubydb2x.el*
 install -p %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << 'EOF' > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
@@ -330,21 +332,21 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README README.EXT ChangeLog ToDo
-%attr(755,root,root) %{_bindir}/ruby
-%attr(755,root,root) %{_libdir}/libruby.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libruby.so.1.8
-%{_mandir}/man1/ruby.1*
+%attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
+%attr(755,root,root) %{_libdir}/libruby%{ruby_suffix}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libruby%{ruby_suffix}.so.1.8
+%{_mandir}/man1/ruby%{ruby_suffix}.1*
 %{_infodir}/ruby.info*
-%dir %{_libdir}/%{name}
-%dir %{_libdir}/%{name}/%{ruby_ver}
-%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
-%dir %{_libdir}/%{name}/site_ruby
-%dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}
-%dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
-%dir %{_libdir}/%{name}/vendor_ruby
-%dir %{_libdir}/%{name}/vendor_ruby/%{ruby_ver}
-%dir %{_libdir}/%{name}/vendor_ruby/%{ruby_ver}/*-linux*
-%dir %{_datadir}/%{name}
+%dir %{_libdir}/ruby
+%dir %{_libdir}/ruby/%{ruby_ver}
+%dir %{_libdir}/ruby/%{ruby_ver}/*-linux*
+%dir %{_libdir}/ruby/site_ruby
+%dir %{_libdir}/ruby/site_ruby/%{ruby_ver}
+%dir %{_libdir}/ruby/site_ruby/%{ruby_ver}/*-linux*
+%dir %{_libdir}/ruby/vendor_ruby
+%dir %{_libdir}/ruby/vendor_ruby/%{ruby_ver}
+%dir %{_libdir}/ruby/vendor_ruby/%{ruby_ver}/*-linux*
+%dir %{_datadir}/ruby
 %dir %{_datadir}/ri
 %dir %{_datadir}/ri/%{ruby_ver}
 %dir %{_datadir}/ri/%{ruby_ver}/system
@@ -352,81 +354,81 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libruby.so
-%{_libdir}/%{name}/%{ruby_ver}/*/*.h
+%attr(755,root,root) %{_libdir}/libruby%{ruby_suffix}.so
+%{_libdir}/ruby/%{ruby_ver}/*/*.h
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libruby-static.a
+%{_libdir}/libruby%{ruby_suffix}-static.a
 
 %if %{with tk}
 %files tk
 %defattr(644,root,root,755)
-%{_libdir}/%{name}/%{ruby_ver}/tcltk.rb
-%{_libdir}/%{name}/%{ruby_ver}/tk*.rb
-%{_libdir}/%{name}/%{ruby_ver}/tk
-%{_libdir}/%{name}/%{ruby_ver}/tkextlib
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/t*.so
+%{_libdir}/ruby/%{ruby_ver}/tcltk.rb
+%{_libdir}/ruby/%{ruby_ver}/tk*.rb
+%{_libdir}/ruby/%{ruby_ver}/tk
+%{_libdir}/ruby/%{ruby_ver}/tkextlib
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/t*.so
 %endif
 
 %files modules
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/erb
-%attr(755,root,root) %{_bindir}/irb
-%attr(755,root,root) %{_bindir}/rdoc
-%attr(755,root,root) %{_bindir}/ri
-%attr(755,root,root) %{_bindir}/testrb
-%{_libdir}/%{name}/%{ruby_ver}/bigdecimal
-%{_libdir}/%{name}/%{ruby_ver}/cgi
-%{_libdir}/%{name}/%{ruby_ver}/date
-%{_libdir}/%{name}/%{ruby_ver}/digest
-%{_libdir}/%{name}/%{ruby_ver}/dl
-%{_libdir}/%{name}/%{ruby_ver}/drb
-%{_libdir}/%{name}/%{ruby_ver}/io
-%{_libdir}/%{name}/%{ruby_ver}/irb
-%{_libdir}/%{name}/%{ruby_ver}/net
-%{_libdir}/%{name}/%{ruby_ver}/openssl
-%{_libdir}/%{name}/%{ruby_ver}/optparse
-%{_libdir}/%{name}/%{ruby_ver}/racc
-%{_libdir}/%{name}/%{ruby_ver}/rdoc
-%{_libdir}/%{name}/%{ruby_ver}/rexml
-%{_libdir}/%{name}/%{ruby_ver}/rinda
-%{_libdir}/%{name}/%{ruby_ver}/rss
-%{_libdir}/%{name}/%{ruby_ver}/runit
-%{_libdir}/%{name}/%{ruby_ver}/shell
-%{_libdir}/%{name}/%{ruby_ver}/soap
-%{_libdir}/%{name}/%{ruby_ver}/test
-%{_libdir}/%{name}/%{ruby_ver}/uri
-%{_libdir}/%{name}/%{ruby_ver}/webrick
-%{_libdir}/%{name}/%{ruby_ver}/wsdl
-%{_libdir}/%{name}/%{ruby_ver}/xmlrpc
-%{_libdir}/%{name}/%{ruby_ver}/xsd
-%{_libdir}/%{name}/%{ruby_ver}/yaml
-%{_libdir}/%{name}/%{ruby_ver}/[A-Za-s]*.rb
-%{_libdir}/%{name}/%{ruby_ver}/tempfile.rb
-%{_libdir}/%{name}/%{ruby_ver}/thread.rb
-%{_libdir}/%{name}/%{ruby_ver}/thwait.rb
-%{_libdir}/%{name}/%{ruby_ver}/time.rb
-%{_libdir}/%{name}/%{ruby_ver}/timeout.rb
-%{_libdir}/%{name}/%{ruby_ver}/tmpdir.rb
-%{_libdir}/%{name}/%{ruby_ver}/tracer.rb
-%{_libdir}/%{name}/%{ruby_ver}/tsort.rb
-%{_libdir}/%{name}/%{ruby_ver}/[u-z]*.rb
-%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest
-%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io
-%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[a-s]*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/thread.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[u-z]*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest/*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io/*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc/*.so
-%{_libdir}/%{name}/%{ruby_ver}/*-linux*/rbconfig.rb
-%{_mandir}/man1/erb.1*
-%{_mandir}/man1/irb.1*
-%{_mandir}/man1/rdoc.1*
-%{_mandir}/man1/ri.1*
-%{_mandir}/man1/testrb.1*
+%attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
+%attr(755,root,root) %{_bindir}/irb%{ruby_suffix}
+%attr(755,root,root) %{_bindir}/rdoc%{ruby_suffix}
+%attr(755,root,root) %{_bindir}/ri%{ruby_suffix}
+%attr(755,root,root) %{_bindir}/testrb%{ruby_suffix}
+%{_libdir}/ruby/%{ruby_ver}/bigdecimal
+%{_libdir}/ruby/%{ruby_ver}/cgi
+%{_libdir}/ruby/%{ruby_ver}/date
+%{_libdir}/ruby/%{ruby_ver}/digest
+%{_libdir}/ruby/%{ruby_ver}/dl
+%{_libdir}/ruby/%{ruby_ver}/drb
+%{_libdir}/ruby/%{ruby_ver}/io
+%{_libdir}/ruby/%{ruby_ver}/irb
+%{_libdir}/ruby/%{ruby_ver}/net
+%{_libdir}/ruby/%{ruby_ver}/openssl
+%{_libdir}/ruby/%{ruby_ver}/optparse
+%{_libdir}/ruby/%{ruby_ver}/racc
+%{_libdir}/ruby/%{ruby_ver}/rdoc
+%{_libdir}/ruby/%{ruby_ver}/rexml
+%{_libdir}/ruby/%{ruby_ver}/rinda
+%{_libdir}/ruby/%{ruby_ver}/rss
+%{_libdir}/ruby/%{ruby_ver}/runit
+%{_libdir}/ruby/%{ruby_ver}/shell
+%{_libdir}/ruby/%{ruby_ver}/soap
+%{_libdir}/ruby/%{ruby_ver}/test
+%{_libdir}/ruby/%{ruby_ver}/uri
+%{_libdir}/ruby/%{ruby_ver}/webrick
+%{_libdir}/ruby/%{ruby_ver}/wsdl
+%{_libdir}/ruby/%{ruby_ver}/xmlrpc
+%{_libdir}/ruby/%{ruby_ver}/xsd
+%{_libdir}/ruby/%{ruby_ver}/yaml
+%{_libdir}/ruby/%{ruby_ver}/[A-Za-s]*.rb
+%{_libdir}/ruby/%{ruby_ver}/tempfile.rb
+%{_libdir}/ruby/%{ruby_ver}/thread.rb
+%{_libdir}/ruby/%{ruby_ver}/thwait.rb
+%{_libdir}/ruby/%{ruby_ver}/time.rb
+%{_libdir}/ruby/%{ruby_ver}/timeout.rb
+%{_libdir}/ruby/%{ruby_ver}/tmpdir.rb
+%{_libdir}/ruby/%{ruby_ver}/tracer.rb
+%{_libdir}/ruby/%{ruby_ver}/tsort.rb
+%{_libdir}/ruby/%{ruby_ver}/[u-z]*.rb
+%dir %{_libdir}/ruby/%{ruby_ver}/*-linux*/digest
+%dir %{_libdir}/ruby/%{ruby_ver}/*-linux*/io
+%dir %{_libdir}/ruby/%{ruby_ver}/*-linux*/racc
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/[a-s]*.so
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/thread.so
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/digest/*.so
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/io/*.so
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/racc/*.so
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/z*.so
+%{_libdir}/ruby/%{ruby_ver}/*-linux*/rbconfig.rb
+%{_mandir}/man1/erb%{ruby_suffix}.1*
+%{_mandir}/man1/irb%{ruby_suffix}.1*
+%{_mandir}/man1/rdoc%{ruby_suffix}.1*
+%{_mandir}/man1/ri%{ruby_suffix}.1*
+%{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %files doc
 %defattr(644,root,root,755)
@@ -447,7 +449,7 @@ rm -rf $RPM_BUILD_ROOT
 %files emacs-mode
 %defattr(644,root,root,755)
 %doc misc/*
-%dir %{_emacs_lispdir}/%{name}-mode
-%{_emacs_lispdir}/%{name}-mode/*.elc
+%dir %{_emacs_lispdir}/ruby-mode
+%{_emacs_lispdir}/ruby-mode/*.elc
 %{_emacs_lispdir}/site-start.d/*.el
 %endif
