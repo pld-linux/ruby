@@ -15,7 +15,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	7
+Release:	8
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -30,6 +30,7 @@ Source4:	testrb.1
 Source5:	%{name}-mode-init.el
 Patch0:		%{name}-mkmf-shared.patch
 Patch1:		%{name}-lib64.patch
+Patch2:		%{name}-openssl.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -202,6 +203,7 @@ Tryb Ruby i debugger dla Emacsa.
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
