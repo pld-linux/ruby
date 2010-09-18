@@ -1,9 +1,9 @@
 #
 # Conditional build:
-%bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
+%bcond_without	doc	# skip (time-consuming) docs generating; intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
-%bcond_without  batteries # Don't include rubygems, json or rake
+%bcond_without  batteries	# Don't include rubygems, json or rake
 #
 %define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
@@ -52,6 +52,11 @@ Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread
+%if %{with batteries}
+Obsoletes:	ruby-json
+Obsoletes:	ruby-rake
+Obsoletes:	ruby-rubygems
+%endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
@@ -323,8 +328,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/date
 %{_libdir}/%{name}/%{ruby_ver}/digest
 %{_libdir}/%{name}/%{ruby_ver}/dl
-%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/dl
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/dl/callback.so
 %{_libdir}/%{name}/%{ruby_ver}/drb
 %{_libdir}/%{name}/%{ruby_ver}/irb
 %{_libdir}/%{name}/%{ruby_ver}/minitest
@@ -360,35 +363,39 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/tracer.rb
 %{_libdir}/%{name}/%{ruby_ver}/tsort.rb
 %{_libdir}/%{name}/%{ruby_ver}/[u-z]*.rb
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[a-s]*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[u-z]*.so
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest/*.so
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/dl
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/dl/callback.so
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/*.so
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/trans
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/trans/*.so
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io/*.so
 %if %{with batteries}
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/json/ext
-%attr(755,root,root) %{ruby_archdir}/json/ext/*.so
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/json/ext/*.so
 %endif
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/mathn
-%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[a-s]*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[u-z]*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/digest/*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/trans/*.so
-%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io/*.so
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/mathn/*.so
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc/*.so
 %{_libdir}/%{name}/%{ruby_ver}/*-linux*/rbconfig.rb
+%dir %{_libdir}/%{name}/gems
+%dir %{_libdir}/%{name}/gems/%{ruby_ver}
+%dir %{_libdir}/%{name}/gems/%{ruby_ver}/specifications
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/minitest.gemspec
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rake.gemspec
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rdoc.gemspec
 %{_mandir}/man1/erb.1*
 %{_mandir}/man1/irb.1*
 %{_mandir}/man1/rdoc.1*
 %{_mandir}/man1/ri.1*
 %{_mandir}/man1/testrb.1*
-%attr(755,root,root) %{ruby_archdir}/dl/callback.so
-%{_libdir}/ruby/gems/1.9/specifications/minitest.gemspec
-%{_libdir}/ruby/gems/1.9/specifications/rake.gemspec
-%{_libdir}/ruby/gems/1.9/specifications/rdoc.gemspec
 
 %files doc
 %defattr(644,root,root,755)
