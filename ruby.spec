@@ -31,7 +31,6 @@ Source4:	testrb.1
 Source5:	%{name}-mode-init.el
 Patch0:		%{name}-mkmf-shared.patch
 Patch1:		%{name}-lib64.patch
-#Patch2: %{name}-openssl.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -203,7 +202,6 @@ Tryb Ruby i debugger dla Emacsa.
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2
 %patch0 -p1
 %patch1 -p1
-#%patch2 -p1
 
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
@@ -387,11 +385,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rdoc.1*
 %{_mandir}/man1/ri.1*
 %{_mandir}/man1/testrb.1*
-%{ruby_archdir}/dl/callback.so
+%attr(755,root,root) %{ruby_archdir}/dl/callback.so
 %{_libdir}/ruby/gems/1.9/specifications/minitest.gemspec
 %{_libdir}/ruby/gems/1.9/specifications/rake.gemspec
 %{_libdir}/ruby/gems/1.9/specifications/rdoc.gemspec
-
 
 %files doc
 %defattr(644,root,root,755)
