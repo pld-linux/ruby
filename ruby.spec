@@ -32,7 +32,7 @@ Source5:	%{name}-mode-init.el
 Patch0:		%{name}-mkmf-shared.patch
 Patch1:		%{name}-lib64.patch
 URL:		http://www.ruby-lang.org/
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	db-devel
