@@ -329,6 +329,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/digest
 %{_libdir}/%{name}/%{ruby_ver}/dl
 %{_libdir}/%{name}/%{ruby_ver}/drb
+%{_libdir}/%{name}/%{ruby_ver}/fiddle
 %{_libdir}/%{name}/%{ruby_ver}/irb
 %{_libdir}/%{name}/%{ruby_ver}/minitest
 %{_libdir}/%{name}/%{ruby_ver}/net
