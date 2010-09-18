@@ -3,11 +3,12 @@
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
+%bcond_without  batteries # Don't include rubygems, json or rake
 #
 %define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 378
-%define		basever 1.9.1
+%define		patchlevel 0
+%define		basever 1.9.2
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -15,12 +16,12 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	8
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	5922459622a23612eb9b68a3586cb5f8
+# Source0-md5:	d8a02cadf57d2571cd4250e248ea7e4b
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
@@ -30,7 +31,7 @@ Source4:	testrb.1
 Source5:	%{name}-mode-init.el
 Patch0:		%{name}-mkmf-shared.patch
 Patch1:		%{name}-lib64.patch
-Patch2:		%{name}-openssl.patch
+#Patch2: %{name}-openssl.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -73,8 +74,7 @@ full-functional ruby environment install ruby-modules package.
 %description -l ja.UTF-8
 Rubyはシンプルかつ強力なオブジェクト指向スクリプト言語です．Rubyは最初
 から純粋なオブジェクト指向言語として設計されていますから，オブジェクト
-指向プログラミングを手軽に行う事が出来ます．もちろん通常の手続き型のプ
-ログラミングも可能です．
+指向プログラミングを手軽に行う事が出来ます．もちろん通常の手続き型のプ ログラミングも可能です．
 
 %description -l pl.UTF-8
 Ruby to interpretowany język skryptowy, w sam raz dla łatwego i
@@ -203,7 +203,7 @@ Tryb Ruby i debugger dla Emacsa.
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
@@ -218,8 +218,7 @@ cp -f /usr/share/automake/config.sub .
 %configure \
 	--enable-shared \
 	--enable-pthread \
-	--with-ruby-version=minor \
-	--enable-frame-address
+	--with-ruby-version=minor
 
 %{__make} -j1
 
@@ -238,6 +237,7 @@ cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
+%if %{without batteries}
 # packaged separately
 rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json,minitest}
 rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
@@ -245,6 +245,7 @@ rm $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rake,rubygems,json}.rb
 rm $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 rm $RPM_BUILD_ROOT%{_mandir}/man1/rake*
 rm -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_ver}/system/JSON
+%endif
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
@@ -269,9 +270,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc NEWS LEGAL README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/ruby
+%if %{with batteries}
+%attr(755,root,root) %{_bindir}/gem
+%attr(755,root,root) %{_bindir}/rake
+%endif
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.1.9
 %{_mandir}/man1/ruby.1*
+%if %{with batteries}
+%{_mandir}/man1/rake.1*
+%endif
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{ruby_ver}
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*
@@ -317,12 +325,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/date
 %{_libdir}/%{name}/%{ruby_ver}/digest
 %{_libdir}/%{name}/%{ruby_ver}/dl
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/dl
+%attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/dl/callback.so
 %{_libdir}/%{name}/%{ruby_ver}/drb
-%{_libdir}/%{name}/%{ruby_ver}/io
 %{_libdir}/%{name}/%{ruby_ver}/irb
+%{_libdir}/%{name}/%{ruby_ver}/minitest
 %{_libdir}/%{name}/%{ruby_ver}/net
 %{_libdir}/%{name}/%{ruby_ver}/openssl
 %{_libdir}/%{name}/%{ruby_ver}/optparse
+%if %{with batteries}
+%{_libdir}/%{name}/%{ruby_ver}/json
+%{_libdir}/%{name}/%{ruby_ver}/rake
+%{_libdir}/%{name}/%{ruby_ver}/rubygems
+%endif
 %{_libdir}/%{name}/%{ruby_ver}/racc
 %{_libdir}/%{name}/%{ruby_ver}/rbconfig
 %{_libdir}/%{name}/%{ruby_ver}/rdoc
@@ -331,6 +346,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/ripper
 %{_libdir}/%{name}/%{ruby_ver}/rss
 %{_libdir}/%{name}/%{ruby_ver}/shell
+%{_libdir}/%{name}/%{ruby_ver}/syck
 %{_libdir}/%{name}/%{ruby_ver}/test
 %{_libdir}/%{name}/%{ruby_ver}/uri
 %{_libdir}/%{name}/%{ruby_ver}/webrick
@@ -350,6 +366,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/enc/trans
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/io
+%if %{with batteries}
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
+%dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/json/ext
+%attr(755,root,root) %{ruby_archdir}/json/ext/*.so
+%endif
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/mathn
 %dir %{_libdir}/%{name}/%{ruby_ver}/*-linux*/racc
 %attr(755,root,root) %{_libdir}/%{name}/%{ruby_ver}/*-linux*/[a-s]*.so
@@ -366,6 +387,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rdoc.1*
 %{_mandir}/man1/ri.1*
 %{_mandir}/man1/testrb.1*
+%{ruby_archdir}/dl/callback.so
+%{_libdir}/ruby/gems/1.9/specifications/minitest.gemspec
+%{_libdir}/ruby/gems/1.9/specifications/rake.gemspec
+%{_libdir}/ruby/gems/1.9/specifications/rdoc.gemspec
+
 
 %files doc
 %defattr(644,root,root,755)
