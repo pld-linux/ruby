@@ -3,7 +3,7 @@
 %bcond_without	doc	# skip (time-consuming) docs generating; intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
-%bcond_without  batteries	# Don't include rubygems, json or rake
+%bcond_with	batteries	# Don't include rubygems, json or rake
 #
 %define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
@@ -16,7 +16,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	1
+Release:	2
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
