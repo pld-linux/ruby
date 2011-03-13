@@ -16,7 +16,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	3
+Release:	4
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -104,6 +104,7 @@ Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Provides:	ruby-modules(ver) = %{ruby_ver}
+Obsoletes:	ruby-minitest
 
 %description modules
 Ruby standard modules and utilities:
@@ -245,7 +246,7 @@ cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
-rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json,minitest}
+rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json}
 rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
 rm $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rake,rubygems,json}.rb
 rm $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
@@ -334,12 +335,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/drb
 %{_libdir}/%{name}/%{ruby_ver}/fiddle
 %{_libdir}/%{name}/%{ruby_ver}/irb
+%{_libdir}/%{name}/%{ruby_ver}/minitest
 %{_libdir}/%{name}/%{ruby_ver}/net
 %{_libdir}/%{name}/%{ruby_ver}/openssl
 %{_libdir}/%{name}/%{ruby_ver}/optparse
 %if %{with batteries}
 %{_libdir}/%{name}/%{ruby_ver}/json
-%{_libdir}/%{name}/%{ruby_ver}/minitest
 %{_libdir}/%{name}/%{ruby_ver}/rake
 %{_libdir}/%{name}/%{ruby_ver}/rubygems
 %endif
@@ -392,7 +393,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}/gems
 %dir %{_libdir}/%{name}/gems/%{ruby_ver}
 %dir %{_libdir}/%{name}/gems/%{ruby_ver}/specifications
-%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/minitest.gemspec
 %{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rake.gemspec
 %{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rdoc.gemspec
 %{_mandir}/man1/erb.1*
