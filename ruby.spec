@@ -4,7 +4,7 @@
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
 %bcond_with	onigurma
-#
+
 %if "%{pld_release}" == "th"
 %define		ruby_suffix 18
 %else
@@ -14,7 +14,7 @@
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 %define		ruby_rdocdir	%{_datadir}/rdoc
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 249
+%define		patchlevel 334
 %define		basever 1.8.7
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -23,12 +23,12 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby%{ruby_suffix}
 Version:	%{basever}.%{patchlevel}
-Release:	3
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/ruby-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	37200cc956a16996bbfd25bb4068f242
+# Source0-md5:	2f14f604bf981bb938ab5fc8b09eb1a6
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/ruby-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/ruby-uguide-981227.tar.gz
@@ -318,7 +318,7 @@ install -p %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << 'EOF' > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
 EOF
-emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/*.el
+emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/*.el
 rm -f path.el*
 %endif
 
