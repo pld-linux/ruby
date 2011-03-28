@@ -1,11 +1,12 @@
---- ruby-1.9.2-p0/configure.in.orig	2010-10-09 14:30:10.239742720 +0200
-+++ ruby-1.9.2-p0/configure.in	2010-10-09 14:35:19.007744396 +0200
-@@ -1163,7 +1163,7 @@
+diff -ur ruby-1.9.2-p180-o/configure.in ruby-1.9.2-p180/configure.in
+--- ruby-1.9.2-p180-o/configure.in	2011-03-27 21:38:41.000000000 -0600
++++ ruby-1.9.2-p180/configure.in	2011-03-27 21:40:29.000000000 -0600
+@@ -1185,7 +1185,7 @@
  else
    AC_LIBOBJ([signbit])
  fi
--AC_CHECK_FUNCS(fmod killpg wait4 waitpid fork spawnv syscall chroot getcwd eaccess\
-+AC_CHECK_FUNCS(fmod killpg wait4 waitpid fork spawnv syscall chroot getcwd eaccess ffs\
+-AC_CHECK_FUNCS(fmod killpg wait4 waitpid fork spawnv syscall __syscall chroot getcwd eaccess\
++AC_CHECK_FUNCS(fmod killpg wait4 waitpid fork spawnv syscall __syscall chroot getcwd eaccess ffs\
  	      truncate ftruncate chsize times utimes utimensat fcntl lockf lstat\
  	      link symlink readlink readdir_r fsync fdatasync fchown\
  	      setitimer setruid seteuid setreuid setresuid setproctitle socketpair\

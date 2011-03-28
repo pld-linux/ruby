@@ -7,7 +7,7 @@
 #
 %define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 0
+%define		patchlevel 180
 %define		basever 1.9.2
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -21,7 +21,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	d8a02cadf57d2571cd4250e248ea7e4b
+# Source0-md5:	68510eeb7511c403b91fe5476f250538
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
@@ -393,8 +393,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}/gems
 %dir %{_libdir}/%{name}/gems/%{ruby_ver}
 %dir %{_libdir}/%{name}/gems/%{ruby_ver}/specifications
+%if %{with batteries}
 %{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rake.gemspec
 %{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rdoc.gemspec
+%endif
 %{_mandir}/man1/erb.1*
 %{_mandir}/man1/irb.1*
 %{_mandir}/man1/rdoc.1*
