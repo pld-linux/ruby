@@ -3,7 +3,7 @@
 %bcond_without	doc	# skip (time-consuming) docs generating; intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
-%bcond_with	batteries	# Don't include rubygems, json or rake
+%bcond_without	batteries	# Don't include rubygems, json or rake
 #
 %define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
