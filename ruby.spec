@@ -9,6 +9,9 @@
 %define		stdlibdoc_version	0.10.1
 %define		patchlevel 180
 %define		basever 1.9.2
+%define		rake_ver	0.8.7
+%define		minitest_ver	1.6.0
+%define		rdoc_ver	2.5.8
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -16,7 +19,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	5
+Release:	5.1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -396,8 +399,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}/gems/%{ruby_ver}
 %dir %{_libdir}/%{name}/gems/%{ruby_ver}/specifications
 %if %{with batteries}
-%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rake.gemspec
-%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rdoc.gemspec
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/minitest-%{minitest_ver}.gemspec
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rake-%{rake_ver}.gemspec
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rdoc-%{rdoc_ver}.gemspec
 %endif
 %{_mandir}/man1/erb.1*
 %{_mandir}/man1/irb.1*
