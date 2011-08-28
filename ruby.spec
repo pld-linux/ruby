@@ -7,7 +7,7 @@
 #
 %define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 180
+%define		patchlevel 290
 %define		basever 1.9.2
 %define		rake_ver	0.8.7
 %define		minitest_ver	1.6.0
@@ -24,7 +24,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	68510eeb7511c403b91fe5476f250538
+# Source0-md5:	096758c3e853b839dc980b183227b182
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
