@@ -1,8 +1,8 @@
 #
 # Conditional build:
-%bcond_without	doc	# skip (time-consuming) docs generating; intended for speed up test builds
-%bcond_without	emacs	# skip building package with ruby-mode for emacs
-%bcond_without	tk	# skip building package with Tk bindings
+%bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
+%bcond_without	emacs		# skip building package with ruby-mode for emacs
+%bcond_without	tk		# skip building package with Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json or rake
 #
 %define		ruby_ver	1.9
@@ -59,6 +59,10 @@ Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread
 %if %{with batteries}
+Provides:	ruby-rake = %{rake_ver}
+# which versions?
+Provides:	ruby-json
+Provides:	ruby-rubygems
 Obsoletes:	ruby-json
 Obsoletes:	ruby-rake
 Obsoletes:	ruby-rubygems
