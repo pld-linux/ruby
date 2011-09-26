@@ -10,14 +10,14 @@
      XCFLAGS="$XCFLAGS -cc1-stack=262144 -cpp-stack=2694144"
      EXEEXT=.x
 
---- ruby-1.8.7-p72/ext/tk/extconf.rb~	2009-02-26 01:29:16.000000000 +0200
-+++ ruby-1.8.7-p72/ext/tk/extconf.rb	2009-02-26 01:33:54.847015682 +0200
-@@ -182,7 +182,7 @@
+--- ruby-1.8.7-p352/ext/tk/extconf.rb~	2011-06-30 06:53:30.000000000 +0300
++++ ruby-1.8.7-p352/ext/tk/extconf.rb	2011-09-27 02:11:10.503467664 +0300
+@@ -1507,7 +1507,7 @@
  
  def find_X11(*opt_paths)
-   default_paths = 
--    [ "/usr/X11/lib", "/usr/lib/X11", "/usr/X11R6/lib", "/usr/openwin/lib" ]
-+    [ "/usr/X11/lib", "/usr/lib/X11", "/usr/X11R6/lib64", "/usr/X11R6/lib", "/usr/openwin/lib" ]
-   paths = opt_paths.compact.concat(default_paths)
-   st = find_library("X11", "XOpenDisplay", *paths)
-   unless st
+   defaults =
+-    [ "/usr/X11*/lib", "/usr/lib/X11*", "/usr/local/X11*", "/usr/openwin/lib" ]
++    [ "/usr/X11*/lib64", "/usr/X11*/lib", "/usr/lib/X11*", "/usr/local/X11*", "/usr/openwin/lib" ]
+   paths = []
+   opt_paths.compact.each{|path| paths.concat(Dir.glob(path.strip.chomp('/'), File::FNM_CASEFOLD))}
+   defaults.compact.each{|path| paths.concat(Dir.glob(path.strip.chomp('/'), File::FNM_CASEFOLD))}
