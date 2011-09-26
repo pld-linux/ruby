@@ -14,7 +14,7 @@
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 %define		ruby_rdocdir	%{_datadir}/rdoc
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 334
+%define		patchlevel 352
 %define		basever 1.8.7
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -28,7 +28,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/ruby-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	2f14f604bf981bb938ab5fc8b09eb1a6
+# Source0-md5:	0c61ea41d1b1183b219b9afe97f18f52
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/ruby-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/ruby-uguide-981227.tar.gz
@@ -297,12 +297,12 @@ install -d $RPM_BUILD_ROOT{%{_datadir}/ruby,%{_infodir},%{_mandir}/man1,%{_examp
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a ruby-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
-cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/irb%{ruby_suffix}.1
-cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_mandir}/man1/erb%{ruby_suffix}.1
-cp -a %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
-cp -a %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1/ri%{ruby_suffix}.1
-cp -a %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
+cp -p ruby-texi-1.4-en/ruby.info* $RPM_BUILD_ROOT%{_infodir}
+cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/irb%{ruby_suffix}.1
+cp -p %{SOURCE8} $RPM_BUILD_ROOT%{_mandir}/man1/erb%{ruby_suffix}.1
+cp -p %{SOURCE9} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
+cp -p %{SOURCE10} $RPM_BUILD_ROOT%{_mandir}/man1/ri%{ruby_suffix}.1
+cp -p %{SOURCE11} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 
 cp -Rf ruby-uguide guide
 cp -Rf rubyfaq faq
@@ -312,7 +312,7 @@ cp -Rf rubyfaq faq
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
 install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{ruby-mode,site-start.d}
-cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode
+cp -p misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode
 rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/rubydb2x.el*
 install -p %{SOURCE12} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << 'EOF' > path.el
