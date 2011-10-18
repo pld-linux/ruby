@@ -51,6 +51,7 @@ Patch0:		ruby-info.patch
 Patch1:		ruby-mkmf-shared.patch
 Patch2:		ruby-require-rubygems-version.patch
 Patch3:		ruby-lib64.patch
+Patch4:		stdout-rouge-fix.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -225,6 +226,7 @@ Tryb Ruby i debugger dla Emacsa.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' -o -name 'ruby.1' \
 	-o -name 'ruby.info*' -o -name '*.html' -o -name '*.tcl' -o -name '*.texi' ')' \
