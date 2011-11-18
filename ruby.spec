@@ -4,6 +4,7 @@
 %bcond_without	emacs		# skip building package with ruby-mode for emacs
 %bcond_without	tk		# skip building package with Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json or rake
+%bcond_with	bootstrap	# build bootstrap version
 #
 %define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
@@ -29,6 +30,8 @@ Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
 # Source2-md5:	5437c281b44e7a4af142d2bd35eba407
+Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.7-p330.tar.gz
+# Source100-md5:	50a49edb787211598d08e756e733e42e
 Source3:	rdoc.1
 Source4:	testrb.1
 Source5:	%{name}-mode-init.el
@@ -46,9 +49,9 @@ BuildRequires:	libffi-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
 BuildRequires:	readline-devel >= 4.2
-BuildRequires:	yaml-devel
-BuildRequires:	ruby-modules
+%{!?with_bootstrap:BuildRequires:	ruby-modules}
 BuildRequires:	sed >= 4.0
+BuildRequires:	yaml-devel
 %if %{with tk}
 BuildRequires:	tk-devel
 %endif
@@ -215,7 +218,7 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2
+%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a100
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -229,13 +232,22 @@ find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
 %build
 cp -f /usr/share/automake/config.sub .
 
+# build ruby-1.8.7 first
+%if %{with bootstrap}
+cd %{name}-1.8.7-p330
+%configure
+%{__make}
+cd ..
+%endif
+
 %{__autoconf}
 %configure \
+	%{?with_bootstrap:--with-baseruby=%{name}-1.8.7-p330/miniruby} \
 	--enable-shared \
 	--enable-pthread \
 	--with-ruby-version=minor
 
-%{__make} -j1
+%{__make} -j1 %{?with_bootstrap:BASERUBY="ruby-1.8.7-p330/miniruby -I./ruby-1.8.7-p330/lib"}
 
 %if %{with doc}
 %{__make} -j1 rdoc
@@ -254,25 +266,25 @@ cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
-rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json}
-rm -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
-rm $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rake,rubygems,json}.rb
-rm $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
-rm $RPM_BUILD_ROOT%{_mandir}/man1/rake*
-rm -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_ver}/system/JSON
+%{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json}
+%{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rake,rubygems,json}.rb
+%{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_ver}/system/JSON
 %endif
 
 # ruby emacs mode - borrowed from FC-4
 %if %{with emacs}
 install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{%{name}-mode,site-start.d}
 cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
-rm -f $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
+%{__rm} $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
 install -p %{SOURCE5} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << 'EOF' > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
 EOF
 emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/*.el
-rm -f path.el*
+%{__rm} path.el*
 %endif
 
 %clean
