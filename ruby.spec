@@ -7,9 +7,9 @@
 %bcond_with	bootstrap	# build bootstrap version
 #
 %define		ruby_ver	1.9
-%define		stdlibdoc_version	0.10.1
-%define		patchlevel 0
-%define		basever 1.9.3
+%define		basever		1.9.3
+%define		patchlevel	0
+%define		doc_version	1_9_2
 %define		json_ver	1.5.4
 %define		rake_ver	0.9.2.2
 %define		rubygems_ver	1.8.11
@@ -30,13 +30,16 @@ Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.
 # Source0-md5:	65401fb3194cdccd6c1175ab29b8fdb8
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
-Source2:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
-# Source2-md5:	5437c281b44e7a4af142d2bd35eba407
+Source2:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_stdlib_rdocs.tgz
+# Source2-md5:	65036185e7c64d5b0aa6f394ca3d6bd5
+Source3:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_core_rdocs.tgz
+# Source3-md5:	a83880aee09be8a31d201900943e0f65
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
-Source3:	rdoc.1
-Source4:	testrb.1
-Source5:	%{name}-mode-init.el
+Source4:	rdoc.1
+# Source4-md5:	a2d96f354d8fa1a8ad2e6b2fe08ea9ef
+Source5:	testrb.1
+Source6:	%{name}-mode-init.el
 Patch0:		%{name}-lib64.patch
 Patch1:		%{name}-ffs.patch
 URL:		http://www.ruby-lang.org/
@@ -218,7 +221,7 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
-%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a100
+%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a100
 %patch0 -p1
 %patch1 -p1
 
@@ -261,8 +264,8 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -a %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
@@ -279,7 +282,7 @@ cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{%{name}-mode,site-start.d}
 cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
 %{__rm} $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
-install -p %{SOURCE5} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
+install -p %{SOURCE6} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
 cat << 'EOF' > path.el
 (setq load-path (cons "." load-path) byte-compile-warnings nil)
 EOF
@@ -443,7 +446,8 @@ rm -rf $RPM_BUILD_ROOT
 %files doc
 %defattr(644,root,root,755)
 %doc ruby-doc-bundle/*
-%{?with_doc:%doc ruby-doc-stdlib-%{stdlibdoc_version}/stdlib}
+%{?with_doc:%doc ruby_%{doc_version}_stdlib}
+%{?with_doc:%doc ruby_%{doc_version}_core}
 
 %if %{with doc}
 %files doc-ri
