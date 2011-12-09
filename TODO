@@ -1,6 +1,0 @@
-# TODO
-- include ext/ in docs
-- replace ri with fastri
-- patch ri to search multiple indexes (one per package), so RPMs can
-  install ri docs
-

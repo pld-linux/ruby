@@ -1,4 +1,13 @@
 #
+# TODO:
+#	!!!
+#	- 1.9.3 breaks all rails apps, see https://www.chiliproject.org/boards/1/topics/973
+#	!!!
+#	- include ext/ in docs
+#	- replace ri with fastri
+#	- patch ri to search multiple indexes (one per package), so RPMs can
+#	  install ri docs
+#
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
 %bcond_without	emacs		# skip building package with ruby-mode for emacs
@@ -22,7 +31,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	1
+Release:	0.1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
