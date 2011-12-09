@@ -10,18 +10,3 @@ diff -ur ruby-1.9.2-p290-o//configure.in ruby-1.9.2-p290/configure.in
  	      truncate ftruncate ftello chsize times utimes utimensat fcntl lockf lstat\
  	      truncate64 ftruncate64 ftello64 fseeko fseeko64 \
  	      link symlink readlink readdir_r fsync fdatasync fchown\
-Only in ruby-1.9.2-p290: configure.in~
-diff -ur ruby-1.9.2-p290-o//configure.in.orig ruby-1.9.2-p290/configure.in.orig
---- ruby-1.9.2-p290-o//configure.in.orig	2011-05-29 22:45:00.000000000 -0600
-+++ ruby-1.9.2-p290/configure.in.orig	2011-08-27 20:31:47.000000000 -0600
-@@ -2245,7 +2245,7 @@
- 	RUBY_APPEND_OPTION(CFLAGS, -pipe)
- 	],
-     [human*], [
--	AC_LIBOBJ([x68.o])
-+	AC_LIBOBJ([x68])
- 	CFLAGS="$CFLAGS -fansi-only"
- 	XCFLAGS="$XCFLAGS -cc1-stack=262144 -cpp-stack=2694144"
- 	EXEEXT=.x
-Only in ruby-1.9.2-p290: configure.in.rej
-Only in ruby-1.9.2-p290: configure.in.rej~

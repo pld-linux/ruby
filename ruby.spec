@@ -8,11 +8,13 @@
 #
 %define		ruby_ver	1.9
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 290
-%define		basever 1.9.2
-%define		rake_ver	0.8.7
-%define		minitest_ver	1.6.0
-%define		rdoc_ver	2.5.8
+%define		patchlevel 0
+%define		basever 1.9.3
+%define		json_ver	1.5.4
+%define		rake_ver	0.9.2.2
+%define		rubygems_ver	1.8.11
+%define		minitest_ver	2.5.1
+%define		rdoc_ver	3.9.4
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -20,12 +22,12 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	9
+Release:	10
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	096758c3e853b839dc980b183227b182
+# Source0-md5:	65401fb3194cdccd6c1175ab29b8fdb8
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/download/stdlib/%{name}-doc-stdlib-%{stdlibdoc_version}.tgz
@@ -35,9 +37,8 @@ Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.7-p330.tar.gz
 Source3:	rdoc.1
 Source4:	testrb.1
 Source5:	%{name}-mode-init.el
-Patch0:		%{name}-mkmf-shared.patch
-Patch1:		%{name}-lib64.patch
-Patch2:		%{name}-ffs.patch
+Patch0:		%{name}-lib64.patch
+Patch1:		%{name}-ffs.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -62,10 +63,9 @@ Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread
 %if %{with batteries}
+Provides:	ruby-json = %{json_ver}
 Provides:	ruby-rake = %{rake_ver}
-# which versions?
-Provides:	ruby-json
-Provides:	ruby-rubygems
+Provides:	ruby-rubygems = %{rubygems_ver}
 Obsoletes:	ruby-json
 Obsoletes:	ruby-rake
 Obsoletes:	ruby-rubygems
@@ -221,7 +221,6 @@ Tryb Ruby i debugger dla Emacsa.
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a100
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
@@ -255,7 +254,8 @@ cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}}
+install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
+	$RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/tasks
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -266,7 +266,7 @@ cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
-%{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json}
+%{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json,tasks}
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/*-linux*/json
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
@@ -325,6 +325,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libruby.so
 %{_includedir}/%{name}-%{ruby_ver}
+%{_pkgconfigdir}/ruby-%{ruby_ver}.pc
 
 %files static
 %defattr(644,root,root,755)
@@ -354,7 +355,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/dl
 %{_libdir}/%{name}/%{ruby_ver}/drb
 %{_libdir}/%{name}/%{ruby_ver}/fiddle
+%{_libdir}/%{name}/%{ruby_ver}/io
 %{_libdir}/%{name}/%{ruby_ver}/irb
+%{_libdir}/%{name}/%{ruby_ver}/matrix
 %{_libdir}/%{name}/%{ruby_ver}/minitest
 %{_libdir}/%{name}/%{ruby_ver}/net
 %{_libdir}/%{name}/%{ruby_ver}/openssl
@@ -363,6 +366,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/json
 %{_libdir}/%{name}/%{ruby_ver}/rake
 %{_libdir}/%{name}/%{ruby_ver}/rubygems
+%dir %{_libdir}/%{name}/%{ruby_ver}/tasks
 %endif
 %{_libdir}/%{name}/%{ruby_ver}/psych
 %{_libdir}/%{name}/%{ruby_ver}/racc
@@ -413,11 +417,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}/%{ruby_ver}/*-linux*/rbconfig.rb
 %dir %{_libdir}/%{name}/gems
 %dir %{_libdir}/%{name}/gems/%{ruby_ver}
+%dir %{_libdir}/%{name}/gems/%{ruby_ver}/gems
 %dir %{_libdir}/%{name}/gems/%{ruby_ver}/specifications
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/io-console-*.gemspec
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/bigdecimal-*.gemspec
 %if %{with batteries}
+%dir %{_libdir}/%{name}/gems/%{ruby_ver}/gems/rake-%{rake_ver}
+%dir %{_libdir}/%{name}/gems/%{ruby_ver}/gems/rake-%{rake_ver}/bin
+%attr(755,root,root) %{_libdir}/%{name}/gems/%{ruby_ver}/gems/rake-%{rake_ver}/bin/rake
+%dir %{_libdir}/%{name}/gems/%{ruby_ver}/gems/rdoc-%{rdoc_ver}
+%dir %{_libdir}/%{name}/gems/%{ruby_ver}/gems/rdoc-%{rdoc_ver}/bin
+%attr(755,root,root) %{_libdir}/%{name}/gems/%{ruby_ver}/gems/rdoc-%{rdoc_ver}/bin/rdoc
+%attr(755,root,root) %{_libdir}/%{name}/gems/%{ruby_ver}/gems/rdoc-%{rdoc_ver}/bin/ri
 %{_libdir}/%{name}/gems/%{ruby_ver}/specifications/minitest-%{minitest_ver}.gemspec
 %{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rake-%{rake_ver}.gemspec
 %{_libdir}/%{name}/gems/%{ruby_ver}/specifications/rdoc-%{rdoc_ver}.gemspec
+%{_libdir}/%{name}/gems/%{ruby_ver}/specifications/json-%{json_ver}.gemspec
 %endif
 %{_mandir}/man1/erb.1*
 %{_mandir}/man1/irb.1*
