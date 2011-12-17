@@ -57,6 +57,7 @@ BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	libffi-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
+BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 %{!?with_bootstrap:BuildRequires:	ruby-modules}
 BuildRequires:	sed >= 4.0
