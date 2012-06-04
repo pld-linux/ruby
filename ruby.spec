@@ -14,8 +14,8 @@
 #
 %define		ruby_ver	1.9
 %define		basever		1.9.3
-%define		patchlevel	0
-%define		doc_version	1_9_2
+%define		patchlevel	194
+%define		doc_version	1_9_3
 %define		json_ver	1.5.4
 %define		rake_ver	0.9.2.2
 %define		rubygems_ver	1.8.11
@@ -28,18 +28,18 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	2
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	65401fb3194cdccd6c1175ab29b8fdb8
+# Source0-md5:	2278eff4cfed3cbc0653bc73085caa34
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	65036185e7c64d5b0aa6f394ca3d6bd5
+# Source2-md5:	69c4c01c9349a7133819062f42384bda
 Source3:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	a83880aee09be8a31d201900943e0f65
+# Source3-md5:	05e6d5f699e8b856028c58d28f0ae1a0
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
