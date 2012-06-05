@@ -37,9 +37,9 @@ Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	69c4c01c9349a7133819062f42384bda
+# Source2-md5:	ec622612428672c432b6f65dd31a84b5
 Source3:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	05e6d5f699e8b856028c58d28f0ae1a0
+# Source3-md5:	1892aadde51d36106c513bced2193dff
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
