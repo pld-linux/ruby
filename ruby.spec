@@ -28,7 +28,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	1
+Release:	2
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -47,6 +47,7 @@ Source5:	testrb.1
 Source6:	%{name}-mode-init.el
 Patch0:		%{name}-lib64.patch
 Patch1:		%{name}-ffs.patch
+Patch2:		fix-bison-invocation.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -229,9 +230,17 @@ Ruby mode and debugger for Emacs.
 Tryb Ruby i debugger dla Emacsa.
 
 %prep
+%if %{with bootstrap}
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a100
+%else
+%setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3
+%endif
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+
+# must be regenerated with new bison
+%{__rm} parse.{c,h}
 
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 

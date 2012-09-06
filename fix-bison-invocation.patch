@@ -1,0 +1,11 @@
+--- ruby-1.9.3-p194/ext/ripper/depend~	2010-12-26 14:25:10.000000000 +0100
++++ ruby-1.9.3-p194/ext/ripper/depend	2012-09-06 19:56:49.041137189 +0200
+@@ -16,7 +16,7 @@
+ 
+ .y.c:
+ 	$(ECHO) compiling compiler $<
+-	$(Q) $(BISON) -t -v -oy.tab.c $<
++	$(Q) $(BISON) -d -t -v -oy.tab.c $<
+ 	$(Q) sed -f $(top_srcdir)/tool/ytab.sed -e "/^#/s!y\.tab\.c!$@!" y.tab.c > $@
+ 	@$(RM) y.tab.c
+ 
