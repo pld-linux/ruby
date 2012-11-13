@@ -28,7 +28,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	3
+Release:	4
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -73,6 +73,9 @@ Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread
 %if %{with batteries}
+Provides:	json = %{json_ver}
+Provides:	rake = %{rake_ver}
+Provides:	rubygems = %{rubygems_ver}
 Provides:	ruby-json = %{json_ver}
 Provides:	ruby-rake = %{rake_ver}
 Provides:	ruby-rubygems = %{rubygems_ver}
