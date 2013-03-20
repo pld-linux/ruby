@@ -33,13 +33,13 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	c27526b298659a186bdb5107fcec2341
+# Source0-md5:	a810d64e2255179d2f334eb61fb8519c
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
-# Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
+# Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	24eadcd067278901da9ad70efb146b07
+# Source2-md5:	ec622612428672c432b6f65dd31a84b5
 Source3:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	634c25b14e19925d10af3720d72e8741
+# Source3-md5:	1892aadde51d36106c513bced2193dff
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
