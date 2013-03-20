@@ -32,7 +32,7 @@ Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{ruby_ver}/%{name}-%{basever}-p%{patchlevel}.tar.bz2
 # Source0-md5:	a810d64e2255179d2f334eb61fb8519c
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
@@ -75,10 +75,10 @@ Obsoletes:	ruby-fastthread
 %if %{with batteries}
 Provides:	json = %{json_ver}
 Provides:	rake = %{rake_ver}
-Provides:	rubygems = %{rubygems_ver}
 Provides:	ruby-json = %{json_ver}
 Provides:	ruby-rake = %{rake_ver}
 Provides:	ruby-rubygems = %{rubygems_ver}
+Provides:	rubygems = %{rubygems_ver}
 Obsoletes:	ruby-json
 Obsoletes:	ruby-rake
 Obsoletes:	ruby-rubygems
@@ -271,7 +271,9 @@ cd ..
 	--enable-pthread \
 	--with-ruby-version=minor
 
-%{__make} -j1 %{?with_bootstrap:BASERUBY="ruby-1.8.7-p330/miniruby -I./ruby-1.8.7-p330/lib"}
+%{__make} -j1 \
+	COPY="cp -p" Q= \
+	%{?with_bootstrap:BASERUBY="ruby-1.8.7-p330/miniruby -I./ruby-1.8.7-p330/lib"}
 
 %if %{with doc}
 %{__make} -j1 rdoc
@@ -286,8 +288,8 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
-cp -a %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
+cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
