@@ -11,16 +11,16 @@
 %bcond_without	tk		# skip building package with Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json or rake
 %bcond_with	bootstrap	# build bootstrap version
-#
+
 %define		ruby_ver	1.9
 %define		basever		1.9.3
-%define		patchlevel	194
+%define		patchlevel	392
 %define		doc_version	1_9_3
-%define		json_ver	1.5.4
+%define		json_ver	1.5.5
 %define		rake_ver	0.9.2.2
 %define		rubygems_ver	1.8.11
 %define		minitest_ver	2.5.1
-%define		rdoc_ver	3.9.4
+%define		rdoc_ver	3.9.5
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -28,18 +28,18 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	5
+Release:	1
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	2278eff4cfed3cbc0653bc73085caa34
+# Source0-md5:	c27526b298659a186bdb5107fcec2341
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
-# Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
+# Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	ec622612428672c432b6f65dd31a84b5
+# Source2-md5:	24eadcd067278901da9ad70efb146b07
 Source3:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	1892aadde51d36106c513bced2193dff
+# Source3-md5:	634c25b14e19925d10af3720d72e8741
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
