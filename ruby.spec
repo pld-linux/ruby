@@ -94,8 +94,6 @@ Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	verpath	%{?with_verpath:/%{ruby_version}}
-
 %define	gemdir			%{_datadir}/%{name}/gems
 %define	gem_dir			%{_datadir}/%{name}/gems/%{ruby_version}
 %define	gems2dir		%{_datadir}/%{name}/gems/%{ruby_version}/gems
@@ -105,20 +103,19 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	rubygems_dir	%{_datadir}/rubygems
 # legacy: /usr/lib64/ruby/gems/1.9/
 
-%define	ruby_libdir		%{_datadir}/%{name}%{verpath}
-#%define	ruby_libarchdir	%{_libdir}/%{name}%{verpath}
+%define	ruby_libdir		%{_datadir}/%{name}
 %define	ruby_libarchdir	%{_libdir}/%{name}
 
 # This is the local lib/arch and should not be used for packaging.
 %define	ruby_sitedir		site_ruby
-%define	ruby_sitelibdir		%{_prefix}/local/share/%{name}/%{ruby_sitedir}%{verpath}
-%define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{name}/%{ruby_sitedir}%{verpath}
+%define	ruby_sitelibdir		%{_prefix}/local/share/%{name}/%{ruby_sitedir}
+%define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{name}/%{ruby_sitedir}
 
 # This is the general location for libs/archs compatible with all
 # or most of the Ruby versions available in the PLD repositories.
 %define	ruby_vendordir		vendor_ruby
-%define	ruby_vendorlibdir	%{_datadir}/%{name}/%{ruby_vendordir}%{verpath}
-%define	ruby_vendorarchdir	%{_libdir}/%{name}/%{ruby_vendordir}%{verpath}
+%define	ruby_vendorlibdir	%{_datadir}/%{name}/%{ruby_vendordir}
+%define	ruby_vendorarchdir	%{_libdir}/%{name}/%{ruby_vendordir}
 
 # TODO: drop legacy loadpaths after all ruby modules rebuilt in Th
 %define	legacy_libdir			%{_libdir}/%{name}/%{ruby_version}
