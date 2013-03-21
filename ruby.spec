@@ -339,7 +339,7 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
-	$RPM_BUILD_ROOT%{ruby_libdir}/tasks
+	$RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/tasks
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -350,9 +350,9 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
-%{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/{rubygems,rake,json,tasks}
+%{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/{rubygems,rake,json,tasks}
 %{__rm} -r $RPM_BUILD_ROOT%{ruby_libarchdir}/json
-%{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/{rake,rubygems,json}.rb
+%{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_ver}/system/JSON
@@ -422,10 +422,10 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with tk}
 %files tk
 %defattr(644,root,root,755)
-%{ruby_libdir}/tcltk.rb
-%{ruby_libdir}/tk*.rb
-%{ruby_libdir}/tk
-%{ruby_libdir}/tkextlib
+%{ruby_libdir}/%{ruby_version}/tcltk.rb
+%{ruby_libdir}/%{ruby_version}/tk*.rb
+%{ruby_libdir}/%{ruby_version}/tk
+%{ruby_libdir}/%{ruby_version}/tkextlib
 %attr(755,root,root) %{ruby_libarchdir}/t*.so
 %endif
 
@@ -436,51 +436,51 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rdoc
 %attr(755,root,root) %{_bindir}/ri
 %attr(755,root,root) %{_bindir}/testrb
-%{ruby_libdir}/bigdecimal
-%{ruby_libdir}/cgi
-%{ruby_libdir}/date
-%{ruby_libdir}/digest
-%{ruby_libdir}/dl
-%{ruby_libdir}/drb
-%{ruby_libdir}/fiddle
-%{ruby_libdir}/io
-%{ruby_libdir}/irb
-%{ruby_libdir}/matrix
-%{ruby_libdir}/minitest
-%{ruby_libdir}/net
-%{ruby_libdir}/openssl
-%{ruby_libdir}/optparse
+%{ruby_libdir}/%{ruby_version}/bigdecimal
+%{ruby_libdir}/%{ruby_version}/cgi
+%{ruby_libdir}/%{ruby_version}/date
+%{ruby_libdir}/%{ruby_version}/digest
+%{ruby_libdir}/%{ruby_version}/dl
+%{ruby_libdir}/%{ruby_version}/drb
+%{ruby_libdir}/%{ruby_version}/fiddle
+%{ruby_libdir}/%{ruby_version}/io
+%{ruby_libdir}/%{ruby_version}/irb
+%{ruby_libdir}/%{ruby_version}/matrix
+%{ruby_libdir}/%{ruby_version}/minitest
+%{ruby_libdir}/%{ruby_version}/net
+%{ruby_libdir}/%{ruby_version}/openssl
+%{ruby_libdir}/%{ruby_version}/optparse
 %if %{with batteries}
-%{ruby_libdir}/json
-%{ruby_libdir}/rake
-%{ruby_libdir}/rubygems
-%dir %{ruby_libarchdir}/%{ruby_version}/tasks
+%{ruby_libdir}/%{ruby_version}/json
+%{ruby_libdir}/%{ruby_version}/rake
+%{ruby_libdir}/%{ruby_version}/rubygems
+%dir %{ruby_libdir}/tasks
 %endif
-%{ruby_libdir}/psych
-%{ruby_libdir}/racc
-%{ruby_libdir}/rbconfig
-%{ruby_libdir}/rdoc
-%{ruby_libdir}/rexml
-%{ruby_libdir}/rinda
-%{ruby_libdir}/ripper
-%{ruby_libdir}/rss
-%{ruby_libdir}/shell
-%{ruby_libdir}/syck
-%{ruby_libdir}/test
-%{ruby_libdir}/uri
-%{ruby_libdir}/webrick
-%{ruby_libdir}/xmlrpc
-%{ruby_libdir}/yaml
-%{ruby_libdir}/[A-Za-s]*.rb
-%{ruby_libdir}/tempfile.rb
-%{ruby_libdir}/thread.rb
-%{ruby_libdir}/thwait.rb
-%{ruby_libdir}/time.rb
-%{ruby_libdir}/timeout.rb
-%{ruby_libdir}/tmpdir.rb
-%{ruby_libdir}/tracer.rb
-%{ruby_libdir}/tsort.rb
-%{ruby_libdir}/[u-z]*.rb
+%{ruby_libdir}/%{ruby_version}/psych
+%{ruby_libdir}/%{ruby_version}/racc
+%{ruby_libdir}/%{ruby_version}/rbconfig
+%{ruby_libdir}/%{ruby_version}/rdoc
+%{ruby_libdir}/%{ruby_version}/rexml
+%{ruby_libdir}/%{ruby_version}/rinda
+%{ruby_libdir}/%{ruby_version}/ripper
+%{ruby_libdir}/%{ruby_version}/rss
+%{ruby_libdir}/%{ruby_version}/shell
+%{ruby_libdir}/%{ruby_version}/syck
+%{ruby_libdir}/%{ruby_version}/test
+%{ruby_libdir}/%{ruby_version}/uri
+%{ruby_libdir}/%{ruby_version}/webrick
+%{ruby_libdir}/%{ruby_version}/xmlrpc
+%{ruby_libdir}/%{ruby_version}/yaml
+%{ruby_libdir}/%{ruby_version}/[A-Za-s]*.rb
+%{ruby_libdir}/%{ruby_version}/tempfile.rb
+%{ruby_libdir}/%{ruby_version}/thread.rb
+%{ruby_libdir}/%{ruby_version}/thwait.rb
+%{ruby_libdir}/%{ruby_version}/time.rb
+%{ruby_libdir}/%{ruby_version}/timeout.rb
+%{ruby_libdir}/%{ruby_version}/tmpdir.rb
+%{ruby_libdir}/%{ruby_version}/tracer.rb
+%{ruby_libdir}/%{ruby_version}/tsort.rb
+%{ruby_libdir}/%{ruby_version}/[u-z]*.rb
 %attr(755,root,root) %{ruby_libarchdir}/[a-s]*.so
 %attr(755,root,root) %{ruby_libarchdir}/[u-z]*.so
 %dir %{ruby_libarchdir}/digest
@@ -503,7 +503,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_libarchdir}/racc
 %attr(755,root,root) %{ruby_libarchdir}/racc/*.so
 %{ruby_libarchdir}/rbconfig.rb
-#%dir %{ruby_libdir}/gems
+#%dir %{ruby_libdir}/%{ruby_version}/gems
 %dir %{gem_dir}
 %dir %{gemdir}
 %dir %{gem_dir}/specifications
