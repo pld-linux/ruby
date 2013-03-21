@@ -4,6 +4,20 @@
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can
 #	  install ri docs
+# - drop emacs
+#* Mon Jul 12 2010 Mohammed Morsi <mmorsi@redhat.com> - 1.8.7.299-3
+#- updated packaged based on feedback (from mtasaka)
+#- added comments to all patches / sources
+#- obsoleted ruby-mode, as it's now provided by the emacs package itself
+#- readded missing documentation
+#- various small compatability/regression fixes
+#* Thu Jun 24 2010 Mohammed Morsi <mmorsi@redhat.com> - 1.8.7.299-1
+#- integrate more of jmeyering's and mtaska's feedback
+#- removed emacs bits that are now shipped with the emacs package
+#- various patch and spec cleanup
+#- rebased to ruby 1.8.7 patch 299, removed patches no longer needed:
+#   ruby-1.8.7-openssl-1.0.patch, ruby-1.8.7-rb_gc_guard_ptr-optimization.patch
+
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -322,6 +336,7 @@ cd ..
 	--with-search-path=%{legacy_loadpaths} \
 	--enable-shared \
 	--enable-pthread \
+	--disable-install-doc \
 	%{!?with_verpath:--disable-versioned-paths} \
 	--with-ruby-version=minor
 
@@ -338,7 +353,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	$RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/tasks
 
-%{__make} install \
+%{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
@@ -371,7 +386,7 @@ emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%
 # too much .ri
 rm -rf $RPM_BUILD_ROOT%{_datadir}/ri
 rm -rf $RPM_BUILD_ROOT%{_docdir}/ruby/html
-rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode
+#rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -501,7 +516,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_libarchdir}/racc
 %attr(755,root,root) %{ruby_libarchdir}/racc/*.so
 %{ruby_libarchdir}/rbconfig.rb
-%dir %{ruby_libdir}/%{ruby_version}/gems
+#%dir %{ruby_libdir}/%{ruby_version}/gems
 %dir %{_datadir}/%{name}/gems
 %dir %{gem_dir}
 %dir %{gem_dir}/specifications
