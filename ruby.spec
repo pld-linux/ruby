@@ -43,7 +43,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	0.7
+Release:	0.8
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -139,8 +139,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	legacy_vendorarchdir	%{_libdir}/%{name}/%{ruby_vendordir}/%{ruby_version}/%{_arch}-linux
 
 %define	legacy_siteloadpath		%{legacy_sitelibdir}\\0%{legacy_sitearchdir}\\0%{legacy_sitedir}
-%define	legacy_vendorloadpath	%{legacy_vendorlibdir}\\0%{legacy_vendorarchdir}\\0%{legacy_vendordir}
-%define	legacy_loadpath			%{legacy_libdir}\\0%{legacy_archdir}
+%define	legacy_vendorloadpath	%{legacy_vendorlibdir}\\0%{legacy_vendorarchdir}
+%define	legacy_loadpath			%{legacy_archdir}
 %define	legacy_loadpaths		%{legacy_siteloadpath}\\0%{legacy_vendorloadpath}\\0%{legacy_loadpath}
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
