@@ -2,26 +2,10 @@
 # TODO:
 #	- include ext/ in docs
 #	- replace ri with fastri
-#	- patch ri to search multiple indexes (one per package), so RPMs can
-#	  install ri docs
-# - drop emacs
-#* Mon Jul 12 2010 Mohammed Morsi <mmorsi@redhat.com> - 1.8.7.299-3
-#- updated packaged based on feedback (from mtasaka)
-#- added comments to all patches / sources
-#- obsoleted ruby-mode, as it's now provided by the emacs package itself
-#- readded missing documentation
-#- various small compatability/regression fixes
-#* Thu Jun 24 2010 Mohammed Morsi <mmorsi@redhat.com> - 1.8.7.299-1
-#- integrate more of jmeyering's and mtaska's feedback
-#- removed emacs bits that are now shipped with the emacs package
-#- various patch and spec cleanup
-#- rebased to ruby 1.8.7 patch 299, removed patches no longer needed:
-#   ruby-1.8.7-openssl-1.0.patch, ruby-1.8.7-rb_gc_guard_ptr-optimization.patch
-
+#	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
-%bcond_without	emacs		# skip building package with ruby-mode for emacs
 %bcond_without	tk		# skip building package with Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json or rake
 %bcond_without	verpath	# LOAD_PATH with version number
@@ -74,7 +58,6 @@ BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	db-devel
-%{?with_emacs:BuildRequires:	emacs}
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	libffi-devel
 BuildRequires:	ncurses-devel
@@ -277,19 +260,6 @@ Ruby examples.
 %description examples -l pl.UTF-8
 Przykłady programów w języku Ruby.
 
-%package emacs-mode
-Summary:	Ruby mode and debugger for Emacs
-Summary(pl.UTF-8):	Tryb Ruby i debugger dla Emacsa
-Group:		Development/Tools
-Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
-Requires:	emacs-common
-
-%description emacs-mode
-Ruby mode and debugger for Emacs.
-
-%description emacs-mode -l pl.UTF-8
-Tryb Ruby i debugger dla Emacsa.
-
 %prep
 %if %{with bootstrap}
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a100
@@ -362,6 +332,8 @@ cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}/html
+
 %if %{without batteries}
 # packaged separately
 %{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/{rubygems,rake,json,tasks}
@@ -372,30 +344,8 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON
 %endif
 
-# ruby emacs mode - borrowed from FC-4
-%if %{with emacs}
-install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{%{name}-mode,site-start.d}
-cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
-%{__rm} $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
-install -p %{SOURCE6} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
-cat << 'EOF' > path.el
-(setq load-path (cons "." load-path) byte-compile-warnings nil)
-EOF
-emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/*.el
-%{__rm} path.el*
-%endif
-
 # too much .ri
 rm -rf $RPM_BUILD_ROOT%{_datadir}/ri
-rm -rf $RPM_BUILD_ROOT%{_docdir}/ruby/html
-#rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode
-rm -rf $RPM_BUILD_ROOT%{_docdir}/ruby/html
-rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/inf-ruby.el
-rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/rdoc-mode.el
-rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/ruby-electric.el
-rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/ruby-mode.el
-rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/ruby-style.el
-rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/rubydb3x.el
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -577,12 +527,3 @@ rm -rf $RPM_BUILD_ROOT
 %files examples
 %defattr(644,root,root,755)
 %{_examplesdir}/%{name}-%{version}
-
-%if %{with emacs}
-%files emacs-mode
-%defattr(644,root,root,755)
-%doc misc/*
-%dir %{_emacs_lispdir}/%{name}-mode
-%{_emacs_lispdir}/%{name}-mode/*.elc
-%{_emacs_lispdir}/site-start.d/*.el
-%endif
