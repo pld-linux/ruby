@@ -43,7 +43,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	0.8
+Release:	0.10
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -353,6 +353,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	$RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/tasks \
 	$RPM_BUILD_ROOT%{ruby_vendorarchdir}/%{ruby_version} \
+	$RPM_BUILD_ROOT{%{legacy_archdir},%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir}} \
 
 %{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -430,6 +431,13 @@ rm -rf $RPM_BUILD_ROOT
 #%dir %{_datadir}/ri/%{ruby_version}
 #%dir %{_datadir}/ri/%{ruby_version}/system
 %dir %{ruby_rdocdir}
+
+# legacy dirs. when everything rebuilt in Th not using these dirs. drop them
+%dir %{legacy_archdir}
+%dir %{legacy_sitedir}
+%dir %{legacy_sitelibdir}
+%dir %{legacy_sitearchdir}
+%dir %{legacy_vendorarchdir}
 
 %files devel
 %defattr(644,root,root,755)
