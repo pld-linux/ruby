@@ -29,7 +29,8 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 Release:	1
 Epoch:		1
-License:	The Ruby License
+# Public Domain for example for: include/ruby/st.h, strftime.c, ...
+License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{ruby_ver}/%{name}-%{basever}-p%{patchlevel}.tar.bz2
 # Source0-md5:	a810d64e2255179d2f334eb61fb8519c
