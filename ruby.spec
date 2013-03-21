@@ -27,7 +27,7 @@
 %bcond_without	verpath	# LOAD_PATH with version number
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		ruby_ver	1.9
+%define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	392
 %define		doc_version	1_9_3
@@ -43,11 +43,11 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	0.1
+Release:	0.3
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{ruby_ver}/%{name}-%{basever}-p%{patchlevel}.tar.bz2
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{ruby_version}/%{name}-%{basever}-p%{patchlevel}.tar.bz2
 # Source0-md5:	a810d64e2255179d2f334eb61fb8519c
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
@@ -88,7 +88,7 @@ BuildRequires:	yaml-devel
 BuildRequires:	tk-devel
 %endif
 Requires(post,postun):	/sbin/ldconfig
-Provides:	ruby(ver) = %{ruby_ver}
+Provides:	ruby(ver) = %{ruby_version}
 Obsoletes:	rdoc
 Obsoletes:	ruby-REXML
 Obsoletes:	ruby-doc < 1.8.4
@@ -138,10 +138,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	legacy_vendorlibdir		%{_libdir}/%{name}/%{ruby_vendordir}/%{ruby_version}
 %define	legacy_vendorarchdir	%{_libdir}/%{name}/%{ruby_vendordir}/%{ruby_version}/%{_arch}-linux
 
-%define	legacy_siteloadpath		%{legacy_sitelibdir}:%{legacy_sitearchdir}:%{legacy_sitedir}
-%define	legacy_vendorloadpath	%{legacy_vendorlibdir}:%{legacy_vendorarchdir}:%{legacy_vendordir}
-%define	legacy_loadpath			%{legacy_libdir}:%{legacy_archdir}
-%define	legacy_loadpaths		%{legacy_siteloadpath}:%{legacy_vendorloadpath}:%{legacy_loadpath}
+%define	legacy_siteloadpath		%{legacy_sitelibdir}\0%{legacy_sitearchdir}\0%{legacy_sitedir}
+%define	legacy_vendorloadpath	%{legacy_vendorlibdir}\0%{legacy_vendorarchdir}\0%{legacy_vendordir}
+%define	legacy_loadpath			%{legacy_libdir}\0%{legacy_archdir}
+%define	legacy_loadpaths		%{legacy_siteloadpath}\0%{legacy_vendorloadpath}\0%{legacy_loadpath}
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
 # (SEGV or "unexpected break" on miniruby run during build)
@@ -186,8 +186,8 @@ Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 # workaround for autodep generator net getting version properly
-Provides:	ruby(abi) = %{ruby_ver}
-Provides:	ruby-modules(ver) = %{ruby_ver}
+Provides:	ruby(abi) = %{ruby_version}
+Provides:	ruby-modules(ver) = %{ruby_version}
 Obsoletes:	ruby-minitest
 
 %description modules
@@ -327,13 +327,13 @@ cd ..
 %configure \
 	%{?with_bootstrap:--with-baseruby=%{name}-1.8.7-p330/miniruby} \
 	--with-rubylibprefix=%{ruby_libdir} \
-	--with-archdir=%{ruby_libarchdir} \
+	--with-archdir=%{ruby_libarchdir}/%{ruby_version} \
 	--with-sitedir=%{ruby_sitelibdir} \
 	--with-sitearchdir=%{ruby_sitearchdir} \
 	--with-vendordir=%{ruby_vendorlibdir} \
 	--with-vendorarchdir=%{ruby_vendorarchdir} \
 	--with-rubygemsdir=%{rubygems_dir} \
-	--with-search-path=%{legacy_loadpaths} \
+	--with-search-path="%{legacy_loadpaths}" \
 	--enable-shared \
 	--enable-pthread \
 	--disable-install-doc \
@@ -367,7 +367,7 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 %{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
-%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_ver}/system/JSON
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON
 %endif
 
 # ruby emacs mode - borrowed from FC-4
@@ -387,6 +387,13 @@ emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%
 rm -rf $RPM_BUILD_ROOT%{_datadir}/ri
 rm -rf $RPM_BUILD_ROOT%{_docdir}/ruby/html
 #rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode
+rm -rf $RPM_BUILD_ROOT%{_docdir}/ruby/html
+rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/inf-ruby.el
+rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/rdoc-mode.el
+rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/ruby-electric.el
+rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/ruby-mode.el
+rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/ruby-style.el
+rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode/rubydb3x.el
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -408,25 +415,29 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with batteries}
 %{_mandir}/man1/rake.1*
 %endif
-#%dir %{_libdir}/%{name}
-#%dir %{_libdir}/%{name}/%{ruby_ver}
-#%dir %{ruby_libarchdir}
-#%dir %{_libdir}/%{name}/site_ruby
-#%dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}
-#%dir %{_libdir}/%{name}/site_ruby/%{ruby_ver}/*-linux*
-#%dir %{_libdir}/%{name}/vendor_ruby
-#%dir %{_libdir}/%{name}/vendor_ruby/%{ruby_ver}
-#%dir %{_libdir}/%{name}/vendor_ruby/%{ruby_ver}/*-linux*
+%dir %{ruby_libarchdir}
+#%dir %{ruby_libarchdir}/%{ruby_version}
+%dir %{ruby_libdir}
+#%dir %{ruby_libdir}/%{ruby_version}
+%dir %{ruby_sitelibdir}
+%dir %{ruby_sitelibdir}/%{ruby_version}
+%dir %{ruby_sitearchdir}
+#%dir %{ruby_sitearchdir}/%{ruby_version}
+
+%dir %{_prefix}/local/%{_lib}/%{name}
+%dir %{_prefix}/local/share/%{name}
+%dir %{_datadir}/ruby/%{ruby_version}
+
 #%dir %{_datadir}/ri
-#%dir %{_datadir}/ri/%{ruby_ver}
-#%dir %{_datadir}/ri/%{ruby_ver}/system
+#%dir %{_datadir}/ri/%{ruby_version}
+#%dir %{_datadir}/ri/%{ruby_version}/system
 %dir %{ruby_rdocdir}
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libruby.so
-%{_includedir}/%{name}-%{ruby_ver}
-%{_pkgconfigdir}/ruby-%{ruby_ver}.pc
+%{_includedir}/%{name}-%{ruby_version}
+%{_pkgconfigdir}/ruby-%{ruby_version}.pc
 
 %files static
 %defattr(644,root,root,755)
@@ -516,8 +527,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_libarchdir}/racc
 %attr(755,root,root) %{ruby_libarchdir}/racc/*.so
 %{ruby_libarchdir}/rbconfig.rb
-#%dir %{ruby_libdir}/%{ruby_version}/gems
+
+# parents of gem_dir
 %dir %{_datadir}/%{name}/gems
+#%dir %{_datadir}/%{name}/gems/%{ruby_version}
+%dir %{_datadir}/%{name}/gems/%{ruby_version}/gems
+
 %dir %{gem_dir}
 %dir %{gem_dir}/specifications
 %{gem_dir}/specifications/io-console-*.gemspec
@@ -550,7 +565,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %files doc-ri
 %defattr(644,root,root,755)
-%{_datadir}/ri/%{ruby_ver}/system/*
+%{_datadir}/ri/%{ruby_version}/system/*
 %endif
 
 %files examples
