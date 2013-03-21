@@ -291,6 +291,8 @@ cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}/html
+
 %if %{without batteries}
 # packaged separately
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/%{name}/%{ruby_ver}/{rubygems,rake,json,tasks}
