@@ -7,7 +7,6 @@
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
-%bcond_without	emacs		# skip building package with ruby-mode for emacs
 %bcond_without	tk		# skip building package with Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json or rake
 %bcond_with	bootstrap	# build bootstrap version
@@ -53,7 +52,6 @@ BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	db-devel
-%{?with_emacs:BuildRequires:	emacs}
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	libffi-devel
 BuildRequires:	ncurses-devel
@@ -221,19 +219,6 @@ Ruby examples.
 %description examples -l pl.UTF-8
 Przykłady programów w języku Ruby.
 
-%package emacs-mode
-Summary:	Ruby mode and debugger for Emacs
-Summary(pl.UTF-8):	Tryb Ruby i debugger dla Emacsa
-Group:		Development/Tools
-Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
-Requires:	emacs-common
-
-%description emacs-mode
-Ruby mode and debugger for Emacs.
-
-%description emacs-mode -l pl.UTF-8
-Tryb Ruby i debugger dla Emacsa.
-
 %prep
 %if %{with bootstrap}
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a100
@@ -301,19 +286,6 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_ver}/system/JSON
-%endif
-
-# ruby emacs mode - borrowed from FC-4
-%if %{with emacs}
-install -d $RPM_BUILD_ROOT%{_emacs_lispdir}/{%{name}-mode,site-start.d}
-cp -a misc/*.el $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode
-%{__rm} $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/rubydb2x.el*
-install -p %{SOURCE6} $RPM_BUILD_ROOT%{_emacs_lispdir}/site-start.d
-cat << 'EOF' > path.el
-(setq load-path (cons "." load-path) byte-compile-warnings nil)
-EOF
-emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%{_emacs_lispdir}/%{name}-mode/*.el
-%{__rm} path.el*
 %endif
 
 %clean
@@ -484,12 +456,3 @@ rm -rf $RPM_BUILD_ROOT
 %files examples
 %defattr(644,root,root,755)
 %{_examplesdir}/%{name}-%{version}
-
-%if %{with emacs}
-%files emacs-mode
-%defattr(644,root,root,755)
-%doc misc/*
-%dir %{_emacs_lispdir}/%{name}-mode
-%{_emacs_lispdir}/%{name}-mode/*.elc
-%{_emacs_lispdir}/site-start.d/*.el
-%endif
