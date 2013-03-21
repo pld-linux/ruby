@@ -43,7 +43,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	0.6
+Release:	0.7
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -351,7 +351,8 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
-	$RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/tasks
+	$RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/tasks \
+	$RPM_BUILD_ROOT%{ruby_vendorarchdir}/%{ruby_version} \
 
 %{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -416,20 +417,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rake.1*
 %endif
 
+%dir %{ruby_libdir}
+%dir %{ruby_libdir}/%{ruby_version}
 %dir %{ruby_libarchdir}
 %dir %{ruby_libarchdir}/%{ruby_version}
-%dir %{ruby_libdir}
-#%dir %{ruby_libarchdir}/%{ruby_version}/%{ruby_version}
-#%dir %{ruby_archdir}/%{ruby_version}
-#%dir %{ruby_libdir}/%{ruby_version}
-%dir %{ruby_sitelibdir}
-%dir %{ruby_sitelibdir}/%{ruby_version}
-%dir %{ruby_sitearchdir}
-#%dir %{ruby_sitearchdir}/%{ruby_version}
-
-%dir %{_prefix}/local/%{_lib}/%{name}
-%dir %{_prefix}/local/share/%{name}
-%dir %{_datadir}/ruby/%{ruby_version}
+%dir %{ruby_vendorlibdir}
+%dir %{ruby_vendorlibdir}/%{ruby_version}
+%dir %{ruby_vendorarchdir}
+%dir %{ruby_vendorarchdir}/%{ruby_version}
 
 #%dir %{_datadir}/ri
 #%dir %{_datadir}/ri/%{ruby_version}
