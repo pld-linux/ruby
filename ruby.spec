@@ -94,14 +94,11 @@ Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	gemdir			%{_datadir}/%{name}/gems
 %define	gem_dir			%{_datadir}/%{name}/gems/%{ruby_version}
-%define	gems2dir		%{_datadir}/%{name}/gems/%{ruby_version}/gems
 
 # The RubyGems library has to stay out of Ruby directory three, since the
 # RubyGems should be share by all Ruby implementations.
 %define	rubygems_dir	%{_datadir}/rubygems
-# legacy: /usr/lib64/ruby/gems/1.9/
 
 %define	ruby_libdir		%{_datadir}/%{name}
 %define	ruby_libarchdir	%{_libdir}/%{name}
@@ -328,12 +325,12 @@ cd ..
 	%{!?with_verpath:--disable-versioned-paths} \
 	--with-ruby-version=minor
 
-%{__make} -j1 \
+%{__make} -j1 main \
 	COPY="cp -p" Q= \
 	%{?with_bootstrap:BASERUBY="ruby-1.8.7-p330/miniruby -I./ruby-1.8.7-p330/lib"}
 
 %if %{with doc}
-%{__make} -j1 rdoc
+%{__make} -j1 docs
 %endif
 
 %install
@@ -374,6 +371,7 @@ emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%
 # too much .ri
 rm -rf $RPM_BUILD_ROOT%{_datadir}/ri
 rm -rf $RPM_BUILD_ROOT%{_docdir}/ruby/html
+rm -rf $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/ruby-mode
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -454,7 +452,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/%{ruby_version}/json
 %{ruby_libdir}/%{ruby_version}/rake
 %{ruby_libdir}/%{ruby_version}/rubygems
-%dir %{ruby_libdir}/tasks
+%dir %{ruby_libdir}/%{ruby_version}/tasks
 %endif
 %{ruby_libdir}/%{ruby_version}/psych
 %{ruby_libdir}/%{ruby_version}/racc
@@ -503,20 +501,20 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_libarchdir}/racc
 %attr(755,root,root) %{ruby_libarchdir}/racc/*.so
 %{ruby_libarchdir}/rbconfig.rb
-#%dir %{ruby_libdir}/%{ruby_version}/gems
+%dir %{ruby_libdir}/%{ruby_version}/gems
+%dir %{_datadir}/%{name}/gems
 %dir %{gem_dir}
-%dir %{gemdir}
 %dir %{gem_dir}/specifications
 %{gem_dir}/specifications/io-console-*.gemspec
 %{gem_dir}/specifications/bigdecimal-*.gemspec
 %if %{with batteries}
-%dir %{gems2dir}/rake-%{rake_ver}
-%dir %{gems2dir}/rake-%{rake_ver}/bin
-%attr(755,root,root) %{gems2dir}/rake-%{rake_ver}/bin/rake
-%dir %{gems2dir}/rdoc-%{rdoc_ver}
-%dir %{gems2dir}/rdoc-%{rdoc_ver}/bin
-%attr(755,root,root) %{gems2dir}/rdoc-%{rdoc_ver}/bin/rdoc
-%attr(755,root,root) %{gems2dir}/rdoc-%{rdoc_ver}/bin/ri
+%dir %{gem_dir}/gems/rake-%{rake_ver}
+%dir %{gem_dir}/gems/rake-%{rake_ver}/bin
+%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
+%dir %{gem_dir}/gems/rdoc-%{rdoc_ver}
+%dir %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin
+%attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc
+%attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri
 %{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
 %{gem_dir}/specifications/rdoc-%{rdoc_ver}.gemspec
