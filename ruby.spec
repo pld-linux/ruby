@@ -374,7 +374,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ruby/%{ruby_ver}/tk*.rb
 %{_libdir}/ruby/%{ruby_ver}/tk
 %{_libdir}/ruby/%{ruby_ver}/tkextlib
-%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/t*.so
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/tcltklib.so
+%attr(755,root,root) %{_libdir}/ruby/%{ruby_ver}/*-linux*/tkutil.so
 %endif
 
 %files modules
