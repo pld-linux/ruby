@@ -3,6 +3,7 @@
 #	- include ext/ in docs
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
+#   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -27,7 +28,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	0.11
+Release:	0.13
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -97,14 +98,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # RubyGems should be share by all Ruby implementations.
 %define	rubygems_dir		%{_datadir}/rubygems
 
-%define	ruby_archdir		%{_libdir}/%{name}
-%define	ruby_libdir		%{_datadir}/%{name}
+%define	ruby_archdir		%{_libdir}/%{name}/%{ruby_version}
+%define	ruby_libdir		%{_datadir}/%{name}/%{ruby_version}
 
 # This is the local lib/arch and should not be used for packaging.
 %define	sitedir			site_ruby
 %define	ruby_sitedir		%{_prefix}/local/share/%{name}/%{sitedir}
-%define	ruby_sitelibdir		%{_prefix}/local/share/%{name}/%{sitedir}/%{ruby_version}
 %define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{name}/%{sitedir}
+%define	ruby_sitelibdir		%{_prefix}/local/share/%{name}/%{sitedir}/%{ruby_version}
 
 # This is the general location for libs/archs compatible with all
 # or most of the Ruby versions available in the PLD repositories.
@@ -298,11 +299,11 @@ cd ..
 %{__autoconf}
 %configure \
 	%{?with_bootstrap:--with-baseruby=%{name}-1.8.7-p330/miniruby} \
-	--with-rubylibprefix=%{ruby_libdir} \
-	--with-archdir=%{ruby_archdir}/%{ruby_version} \
-	--with-sitedir=%{ruby_sitelibdir} \
+	--with-rubylibprefix=%(dirname %{ruby_libdir}) \
+	--with-archdir=%{ruby_archdir} \
+	--with-sitedir=%(dirname %{ruby_sitelibdir}) \
 	--with-sitearchdir=%{ruby_sitearchdir} \
-	--with-vendordir=%{ruby_vendorlibdir} \
+	--with-vendordir=%(dirname %{ruby_vendorlibdir}) \
 	--with-vendorarchdir=%{ruby_vendorarchdir} \
 	--with-rubygemsdir=%{rubygems_dir} \
 	--with-search-path="%{legacy_loadpaths}" \
@@ -323,7 +324,7 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
-	$RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/tasks \
+	$RPM_BUILD_ROOT%{ruby_libdir}/tasks \
 	$RPM_BUILD_ROOT%{ruby_vendorarchdir}/%{ruby_version} \
 	$RPM_BUILD_ROOT{%{legacy_archdir},%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir}} \
 
@@ -338,9 +339,9 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
-%{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/{rubygems,rake,json,tasks}
-%{__rm} -r $RPM_BUILD_ROOT%{ruby_archdir}/%{ruby_version}/json
-%{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/{rake,rubygems,json}.rb
+%{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/{rubygems,rake,json,tasks}
+%{__rm} -r $RPM_BUILD_ROOT%{ruby_archdir}/json
+%{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON
@@ -370,13 +371,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rake.1*
 %endif
 
+%dir %{_libdir}/%{name}
+%dir %{_datadir}/%{name}
+%dir %{_datadir}/%{name}/%{vendordir}
+
 %dir %{ruby_libdir}
-%dir %{ruby_libdir}/%{ruby_version}
 %dir %{ruby_archdir}
-%dir %{ruby_archdir}/%{ruby_version}
-%dir %{ruby_vendordir}
 %dir %{ruby_vendorlibdir}
-%dir %{ruby_vendorlibdir}/%{ruby_version}
 %dir %{ruby_vendorarchdir}
 %dir %{ruby_vendorarchdir}/%{ruby_version}
 
@@ -405,11 +406,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with tk}
 %files tk
 %defattr(644,root,root,755)
-%{ruby_libdir}/%{ruby_version}/tcltk.rb
-%{ruby_libdir}/%{ruby_version}/tk*.rb
-%{ruby_libdir}/%{ruby_version}/tk
-%{ruby_libdir}/%{ruby_version}/tkextlib
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/t*.so
+%{ruby_libdir}/tcltk.rb
+%{ruby_libdir}/tk*.rb
+%{ruby_libdir}/tk
+%{ruby_libdir}/tkextlib
+%attr(755,root,root) %{ruby_archdir}/t*.so
 %endif
 
 %files modules
@@ -419,73 +420,73 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rdoc
 %attr(755,root,root) %{_bindir}/ri
 %attr(755,root,root) %{_bindir}/testrb
-%{ruby_libdir}/%{ruby_version}/bigdecimal
-%{ruby_libdir}/%{ruby_version}/cgi
-%{ruby_libdir}/%{ruby_version}/date
-%{ruby_libdir}/%{ruby_version}/digest
-%{ruby_libdir}/%{ruby_version}/dl
-%{ruby_libdir}/%{ruby_version}/drb
-%{ruby_libdir}/%{ruby_version}/fiddle
-%{ruby_libdir}/%{ruby_version}/io
-%{ruby_libdir}/%{ruby_version}/irb
-%{ruby_libdir}/%{ruby_version}/matrix
-%{ruby_libdir}/%{ruby_version}/minitest
-%{ruby_libdir}/%{ruby_version}/net
-%{ruby_libdir}/%{ruby_version}/openssl
-%{ruby_libdir}/%{ruby_version}/optparse
+%{ruby_libdir}/bigdecimal
+%{ruby_libdir}/cgi
+%{ruby_libdir}/date
+%{ruby_libdir}/digest
+%{ruby_libdir}/dl
+%{ruby_libdir}/drb
+%{ruby_libdir}/fiddle
+%{ruby_libdir}/io
+%{ruby_libdir}/irb
+%{ruby_libdir}/matrix
+%{ruby_libdir}/minitest
+%{ruby_libdir}/net
+%{ruby_libdir}/openssl
+%{ruby_libdir}/optparse
 %if %{with batteries}
-%{ruby_libdir}/%{ruby_version}/json
-%{ruby_libdir}/%{ruby_version}/rake
-%{ruby_libdir}/%{ruby_version}/rubygems
-%dir %{ruby_libdir}/%{ruby_version}/tasks
+%{ruby_libdir}/json
+%{ruby_libdir}/rake
+%{ruby_libdir}/rubygems
+%dir %{ruby_libdir}/tasks
 %endif
-%{ruby_libdir}/%{ruby_version}/psych
-%{ruby_libdir}/%{ruby_version}/racc
-%{ruby_libdir}/%{ruby_version}/rbconfig
-%{ruby_libdir}/%{ruby_version}/rdoc
-%{ruby_libdir}/%{ruby_version}/rexml
-%{ruby_libdir}/%{ruby_version}/rinda
-%{ruby_libdir}/%{ruby_version}/ripper
-%{ruby_libdir}/%{ruby_version}/rss
-%{ruby_libdir}/%{ruby_version}/shell
-%{ruby_libdir}/%{ruby_version}/syck
-%{ruby_libdir}/%{ruby_version}/test
-%{ruby_libdir}/%{ruby_version}/uri
-%{ruby_libdir}/%{ruby_version}/webrick
-%{ruby_libdir}/%{ruby_version}/xmlrpc
-%{ruby_libdir}/%{ruby_version}/yaml
-%{ruby_libdir}/%{ruby_version}/[A-Za-s]*.rb
-%{ruby_libdir}/%{ruby_version}/tempfile.rb
-%{ruby_libdir}/%{ruby_version}/thread.rb
-%{ruby_libdir}/%{ruby_version}/thwait.rb
-%{ruby_libdir}/%{ruby_version}/time.rb
-%{ruby_libdir}/%{ruby_version}/timeout.rb
-%{ruby_libdir}/%{ruby_version}/tmpdir.rb
-%{ruby_libdir}/%{ruby_version}/tracer.rb
-%{ruby_libdir}/%{ruby_version}/tsort.rb
-%{ruby_libdir}/%{ruby_version}/[u-z]*.rb
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/[a-s]*.so
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/[u-z]*.so
-%dir %{ruby_archdir}/%{ruby_version}/digest
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/digest/*.so
-%dir %{ruby_archdir}/%{ruby_version}/dl
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/dl/callback.so
-%dir %{ruby_archdir}/%{ruby_version}/enc
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/enc/*.so
-%dir %{ruby_archdir}/%{ruby_version}/enc/trans
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/enc/trans/*.so
-%dir %{ruby_archdir}/%{ruby_version}/io
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/io/*.so
+%{ruby_libdir}/psych
+%{ruby_libdir}/racc
+%{ruby_libdir}/rbconfig
+%{ruby_libdir}/rdoc
+%{ruby_libdir}/rexml
+%{ruby_libdir}/rinda
+%{ruby_libdir}/ripper
+%{ruby_libdir}/rss
+%{ruby_libdir}/shell
+%{ruby_libdir}/syck
+%{ruby_libdir}/test
+%{ruby_libdir}/uri
+%{ruby_libdir}/webrick
+%{ruby_libdir}/xmlrpc
+%{ruby_libdir}/yaml
+%{ruby_libdir}/[A-Za-s]*.rb
+%{ruby_libdir}/tempfile.rb
+%{ruby_libdir}/thread.rb
+%{ruby_libdir}/thwait.rb
+%{ruby_libdir}/time.rb
+%{ruby_libdir}/timeout.rb
+%{ruby_libdir}/tmpdir.rb
+%{ruby_libdir}/tracer.rb
+%{ruby_libdir}/tsort.rb
+%{ruby_libdir}/[u-z]*.rb
+%attr(755,root,root) %{ruby_archdir}/[a-s]*.so
+%attr(755,root,root) %{ruby_archdir}/[u-z]*.so
+%dir %{ruby_archdir}/digest
+%attr(755,root,root) %{ruby_archdir}/digest/*.so
+%dir %{ruby_archdir}/dl
+%attr(755,root,root) %{ruby_archdir}/dl/callback.so
+%dir %{ruby_archdir}/enc
+%attr(755,root,root) %{ruby_archdir}/enc/*.so
+%dir %{ruby_archdir}/enc/trans
+%attr(755,root,root) %{ruby_archdir}/enc/trans/*.so
+%dir %{ruby_archdir}/io
+%attr(755,root,root) %{ruby_archdir}/io/*.so
 %if %{with batteries}
-%dir %{ruby_archdir}/%{ruby_version}/json
-%dir %{ruby_archdir}/%{ruby_version}/json/ext
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/json/ext/*.so
+%dir %{ruby_archdir}/json
+%dir %{ruby_archdir}/json/ext
+%attr(755,root,root) %{ruby_archdir}/json/ext/*.so
 %endif
-%dir %{ruby_archdir}/%{ruby_version}/mathn
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/mathn/*.so
-%dir %{ruby_archdir}/%{ruby_version}/racc
-%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/racc/*.so
-%{ruby_archdir}/%{ruby_version}/rbconfig.rb
+%dir %{ruby_archdir}/mathn
+%attr(755,root,root) %{ruby_archdir}/mathn/*.so
+%dir %{ruby_archdir}/racc
+%attr(755,root,root) %{ruby_archdir}/racc/*.so
+%{ruby_archdir}/rbconfig.rb
 
 # parents of gem_dir
 %dir %{_datadir}/%{name}/gems
