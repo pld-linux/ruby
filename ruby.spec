@@ -28,7 +28,8 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	0.13
+# NOTE: do not decrease Release, when updating Version, unless rdoc_ver was increased as well
+Release:	0.19
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -92,6 +93,7 @@ Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define	ruby_ridir		%{_datadir}/ri/%{ruby_version}/system
 %define	gem_dir			%{_datadir}/%{name}/gems/%{ruby_version}
 
 # The RubyGems library has to stay out of Ruby directory three, since the
@@ -179,17 +181,13 @@ Obsoletes:	ruby-minitest
 %description modules
 Ruby standard modules and utilities:
 - erb - Tiny eRuby
-- rdoc - documentation tool for source code
 - irb - interactive Ruby
-- ri - Ruby interactive reference
 - testrb - automatic runner for Test::Unit of Ruby
 
 %description modules -l pl.UTF-8
 Standardowe moduły i narzędzia Ruby:
 - erb - mały eRuby
-- rdoc - narzędzie do dokumentowania kodu źródłowego
 - irb - interaktywny Ruby
-- ri - interaktywna dokumentacja Ruby
 - testrb - automatyczny runner dla Ruby Test::Unit
 
 %package tk
@@ -263,6 +261,20 @@ Ruby examples.
 %description examples -l pl.UTF-8
 Przykłady programów w języku Ruby.
 
+# IMPORTANT: keep this as last package, as we reset Epoch
+%package rdoc
+Summary:	A tool to generate HTML and command-line documentation for Ruby projects
+Version:	%{rdoc_ver}
+Epoch:		0
+License:	GPL v2 and Ruby and MIT
+Group:		Development/Libraries
+Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
+
+%description rdoc
+RDoc produces HTML and command-line documentation for Ruby projects.
+RDoc includes the 'rdoc' and 'ri' tools for generating and displaying
+online documentation.
+
 %prep
 %if %{with bootstrap}
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a100
@@ -325,7 +337,7 @@ cd ..
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	$RPM_BUILD_ROOT%{ruby_libdir}/tasks \
-	$RPM_BUILD_ROOT%{ruby_vendorarchdir}/%{ruby_version} \
+	$RPM_BUILD_ROOT{%{ruby_vendorarchdir}/%{ruby_version},%{ruby_ridir}} \
 	$RPM_BUILD_ROOT{%{legacy_archdir},%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir}} \
 
 %{__make} install %{?with_doc:install-doc} \
@@ -348,7 +360,8 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 %endif
 
 # too much .ri
-rm -rf $RPM_BUILD_ROOT%{_datadir}/ri
+%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/cache.ri
+%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/created.rid
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -381,9 +394,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_vendorarchdir}
 %dir %{ruby_vendorarchdir}/%{ruby_version}
 
-#%dir %{_datadir}/ri
-#%dir %{_datadir}/ri/%{ruby_version}
-#%dir %{_datadir}/ri/%{ruby_version}/system
+%dir %{_datadir}/ri
+%dir %{_datadir}/ri/%{ruby_version}
+%dir %{ruby_ridir}
+
 %dir %{ruby_rdocdir}
 
 # legacy dirs. when everything rebuilt in Th not using these dirs. drop them
@@ -413,12 +427,22 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/t*.so
 %endif
 
+%files rdoc
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/rdoc
+%attr(755,root,root) %{_bindir}/ri
+%{_mandir}/man1/rdoc.1*
+%{ruby_libdir}/rdoc
+%dir %{gem_dir}/gems/rdoc-%{rdoc_ver}
+%dir %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin
+%attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc
+%{gem_dir}/specifications/rdoc-%{rdoc_ver}.gemspec
+%attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri
+
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb
 %attr(755,root,root) %{_bindir}/irb
-%attr(755,root,root) %{_bindir}/rdoc
-%attr(755,root,root) %{_bindir}/ri
 %attr(755,root,root) %{_bindir}/testrb
 %{ruby_libdir}/bigdecimal
 %{ruby_libdir}/cgi
@@ -443,7 +467,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/psych
 %{ruby_libdir}/racc
 %{ruby_libdir}/rbconfig
-%{ruby_libdir}/rdoc
 %{ruby_libdir}/rexml
 %{ruby_libdir}/rinda
 %{ruby_libdir}/ripper
@@ -501,18 +524,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
-%dir %{gem_dir}/gems/rdoc-%{rdoc_ver}
-%dir %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc
-%attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri
 %{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
-%{gem_dir}/specifications/rdoc-%{rdoc_ver}.gemspec
 %{gem_dir}/specifications/json-%{json_ver}.gemspec
 %endif
 %{_mandir}/man1/erb.1*
 %{_mandir}/man1/irb.1*
-%{_mandir}/man1/rdoc.1*
 %{_mandir}/man1/ri.1*
 %{_mandir}/man1/testrb.1*
 
@@ -525,7 +542,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %files doc-ri
 %defattr(644,root,root,755)
-%{_datadir}/ri/%{ruby_version}/system/*
+%{ruby_ridir}/*
 %endif
 
 %files examples
