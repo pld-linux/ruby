@@ -27,7 +27,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-Release:	0.10
+Release:	0.11
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -95,36 +95,38 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # The RubyGems library has to stay out of Ruby directory three, since the
 # RubyGems should be share by all Ruby implementations.
-%define	rubygems_dir	%{_datadir}/rubygems
+%define	rubygems_dir		%{_datadir}/rubygems
 
+%define	ruby_archdir		%{_libdir}/%{name}
 %define	ruby_libdir		%{_datadir}/%{name}
-%define	ruby_libarchdir	%{_libdir}/%{name}
 
 # This is the local lib/arch and should not be used for packaging.
-%define	ruby_sitedir		site_ruby
-%define	ruby_sitelibdir		%{_prefix}/local/share/%{name}/%{ruby_sitedir}
-%define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{name}/%{ruby_sitedir}
+%define	sitedir			site_ruby
+%define	ruby_sitedir		%{_prefix}/local/share/%{name}/%{sitedir}
+%define	ruby_sitelibdir		%{_prefix}/local/share/%{name}/%{sitedir}/%{ruby_version}
+%define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{name}/%{sitedir}
 
 # This is the general location for libs/archs compatible with all
 # or most of the Ruby versions available in the PLD repositories.
-%define	ruby_vendordir		vendor_ruby
-%define	ruby_vendorlibdir	%{_datadir}/%{name}/%{ruby_vendordir}
-%define	ruby_vendorarchdir	%{_libdir}/%{name}/%{ruby_vendordir}
+%define	vendordir		vendor_ruby
+%define	ruby_vendordir		%{_datadir}/%{name}/%{vendordir}
+%define	ruby_vendorarchdir	%{_libdir}/%{name}/%{vendordir}
+%define	ruby_vendorlibdir	%{_datadir}/%{name}/%{vendordir}/%{ruby_version}
 
 # TODO: drop legacy loadpaths after all ruby modules rebuilt in Th
-%define	legacy_libdir			%{_libdir}/%{name}/%{ruby_version}
-%define	legacy_archdir			%{_libdir}/%{name}/%{ruby_version}/%{_arch}-linux
-%define	legacy_sitedir			%{_libdir}/%{name}/%{ruby_sitedir}
-%define	legacy_sitelibdir		%{_libdir}/%{name}/%{ruby_sitedir}/%{ruby_version}
-%define	legacy_sitearchdir		%{_libdir}/%{name}/%{ruby_sitedir}/%{ruby_version}/%{_arch}-linux
-%define	legacy_vendordir		%{_libdir}/%{name}/%{ruby_vendordir}
-%define	legacy_vendorlibdir		%{_libdir}/%{name}/%{ruby_vendordir}/%{ruby_version}
-%define	legacy_vendorarchdir	%{_libdir}/%{name}/%{ruby_vendordir}/%{ruby_version}/%{_arch}-linux
+%define	legacy_libdir		%{_libdir}/%{name}/%{ruby_version}
+%define	legacy_archdir		%{_libdir}/%{name}/%{ruby_version}/%{_arch}-linux
+%define	legacy_sitedir		%{_libdir}/%{name}/%{sitedir}
+%define	legacy_sitelibdir	%{_libdir}/%{name}/%{sitedir}/%{ruby_version}
+%define	legacy_sitearchdir	%{_libdir}/%{name}/%{sitedir}/%{ruby_version}/%{_arch}-linux
+%define	legacy_vendordir	%{_libdir}/%{name}/%{vendordir}
+%define	legacy_vendorlibdir	%{_libdir}/%{name}/%{vendordir}/%{ruby_version}
+%define	legacy_vendorarchdir%{_libdir}/%{name}/%{vendordir}/%{ruby_version}/%{_arch}-linux
 
-%define	legacy_siteloadpath		%{legacy_sitelibdir}\\0%{legacy_sitearchdir}\\0%{legacy_sitedir}
+%define	legacy_siteloadpath	%{legacy_sitelibdir}\\0%{legacy_sitearchdir}\\0%{legacy_sitedir}
 %define	legacy_vendorloadpath	%{legacy_vendorlibdir}\\0%{legacy_vendorarchdir}
-%define	legacy_loadpath			%{legacy_archdir}
-%define	legacy_loadpaths		%{legacy_siteloadpath}\\0%{legacy_vendorloadpath}\\0%{legacy_loadpath}
+%define	legacy_loadpath		%{legacy_archdir}
+%define	legacy_loadpaths	%{legacy_siteloadpath}\\0%{legacy_vendorloadpath}\\0%{legacy_loadpath}
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
 # (SEGV or "unexpected break" on miniruby run during build)
@@ -297,7 +299,7 @@ cd ..
 %configure \
 	%{?with_bootstrap:--with-baseruby=%{name}-1.8.7-p330/miniruby} \
 	--with-rubylibprefix=%{ruby_libdir} \
-	--with-archdir=%{ruby_libarchdir}/%{ruby_version} \
+	--with-archdir=%{ruby_archdir}/%{ruby_version} \
 	--with-sitedir=%{ruby_sitelibdir} \
 	--with-sitearchdir=%{ruby_sitearchdir} \
 	--with-vendordir=%{ruby_vendorlibdir} \
@@ -332,12 +334,12 @@ cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
-%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}/html
+%{__rm} -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/html
 
 %if %{without batteries}
 # packaged separately
 %{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/{rubygems,rake,json,tasks}
-%{__rm} -r $RPM_BUILD_ROOT%{ruby_libarchdir}/%{ruby_version}/json
+%{__rm} -r $RPM_BUILD_ROOT%{ruby_archdir}/%{ruby_version}/json
 %{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/%{ruby_version}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
@@ -370,8 +372,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{ruby_libdir}
 %dir %{ruby_libdir}/%{ruby_version}
-%dir %{ruby_libarchdir}
-%dir %{ruby_libarchdir}/%{ruby_version}
+%dir %{ruby_archdir}
+%dir %{ruby_archdir}/%{ruby_version}
+%dir %{ruby_vendordir}
 %dir %{ruby_vendorlibdir}
 %dir %{ruby_vendorlibdir}/%{ruby_version}
 %dir %{ruby_vendorarchdir}
@@ -406,7 +409,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/%{ruby_version}/tk*.rb
 %{ruby_libdir}/%{ruby_version}/tk
 %{ruby_libdir}/%{ruby_version}/tkextlib
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/t*.so
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/t*.so
 %endif
 
 %files modules
@@ -461,28 +464,28 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/%{ruby_version}/tracer.rb
 %{ruby_libdir}/%{ruby_version}/tsort.rb
 %{ruby_libdir}/%{ruby_version}/[u-z]*.rb
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/[a-s]*.so
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/[u-z]*.so
-%dir %{ruby_libarchdir}/%{ruby_version}/digest
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/digest/*.so
-%dir %{ruby_libarchdir}/%{ruby_version}/dl
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/dl/callback.so
-%dir %{ruby_libarchdir}/%{ruby_version}/enc
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/enc/*.so
-%dir %{ruby_libarchdir}/%{ruby_version}/enc/trans
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/enc/trans/*.so
-%dir %{ruby_libarchdir}/%{ruby_version}/io
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/io/*.so
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/[a-s]*.so
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/[u-z]*.so
+%dir %{ruby_archdir}/%{ruby_version}/digest
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/digest/*.so
+%dir %{ruby_archdir}/%{ruby_version}/dl
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/dl/callback.so
+%dir %{ruby_archdir}/%{ruby_version}/enc
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/enc/*.so
+%dir %{ruby_archdir}/%{ruby_version}/enc/trans
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/enc/trans/*.so
+%dir %{ruby_archdir}/%{ruby_version}/io
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/io/*.so
 %if %{with batteries}
-%dir %{ruby_libarchdir}/%{ruby_version}/json
-%dir %{ruby_libarchdir}/%{ruby_version}/json/ext
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/json/ext/*.so
+%dir %{ruby_archdir}/%{ruby_version}/json
+%dir %{ruby_archdir}/%{ruby_version}/json/ext
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/json/ext/*.so
 %endif
-%dir %{ruby_libarchdir}/%{ruby_version}/mathn
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/mathn/*.so
-%dir %{ruby_libarchdir}/%{ruby_version}/racc
-%attr(755,root,root) %{ruby_libarchdir}/%{ruby_version}/racc/*.so
-%{ruby_libarchdir}/%{ruby_version}/rbconfig.rb
+%dir %{ruby_archdir}/%{ruby_version}/mathn
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/mathn/*.so
+%dir %{ruby_archdir}/%{ruby_version}/racc
+%attr(755,root,root) %{ruby_archdir}/%{ruby_version}/racc/*.so
+%{ruby_archdir}/%{ruby_version}/rbconfig.rb
 
 # parents of gem_dir
 %dir %{_datadir}/%{name}/gems
