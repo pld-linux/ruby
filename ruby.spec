@@ -31,7 +31,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	0.23
+Release:	0.24
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -329,9 +329,9 @@ cd ..
 	--with-rubylibprefix=%(dirname %{ruby_libdir}) \
 	--with-archdir=%{ruby_archdir} \
 	--with-sitedir=%(dirname %{ruby_sitelibdir}) \
-	--with-sitearchdir=%(dirname %{ruby_sitearchdir}) \
+	--with-sitearchdir=%{ruby_sitearchdir} \
 	--with-vendordir=%(dirname %{ruby_vendorlibdir}) \
-	--with-vendorarchdir=%(dirname %{ruby_vendorarchdir}) \
+	--with-vendorarchdir=%{ruby_vendorarchdir} \
 	--with-rubygemsdir=%{rubygems_dir} \
 	--with-search-path="%{legacy_loadpaths}" \
 	--enable-shared \
