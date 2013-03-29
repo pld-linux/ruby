@@ -4,6 +4,7 @@
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
 #   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
+#   - custom-rubygems-location.patch
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -28,8 +29,9 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-# NOTE: do not decrease Release, when updating Version, unless rdoc_ver was increased as well
-Release:	0.19
+# NOTE: do not decrease Release, when updating Version,
+# unless rdoc_ver, rubygems_ver *both* are increased as well
+Release:	0.23
 Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
@@ -83,11 +85,8 @@ Provides:	json = %{json_ver}
 Provides:	rake = %{rake_ver}
 Provides:	ruby-json = %{json_ver}
 Provides:	ruby-rake = %{rake_ver}
-Provides:	ruby-rubygems = %{rubygems_ver}
-Provides:	rubygems = %{rubygems_ver}
 Obsoletes:	ruby-json
 Obsoletes:	ruby-rake
-Obsoletes:	ruby-rubygems
 %endif
 Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
@@ -275,6 +274,22 @@ RDoc produces HTML and command-line documentation for Ruby projects.
 RDoc includes the 'rdoc' and 'ri' tools for generating and displaying
 online documentation.
 
+%package rubygems
+Summary:    The Ruby standard for packaging ruby libraries
+Version:    %{rubygems_ver}
+Group:      Development/Libraries
+License:    Ruby or MIT
+Requires:   %{name}-rdoc >= %{rdoc_ver}
+Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
+Provides:	rubygems = %{rubygems_ver}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description rubygems
+RubyGems is the Ruby standard for publishing and managing third party
+libraries.
+
 %prep
 %if %{with bootstrap}
 %setup -q -n %{name}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a100
@@ -359,9 +374,11 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON
 %endif
 
+%if %{with doc}
 # too much .ri
 %{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/cache.ri
 %{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/created.rid
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -374,7 +391,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc NEWS LEGAL README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/ruby
 %if %{with batteries}
-%attr(755,root,root) %{_bindir}/gem
 %attr(755,root,root) %{_bindir}/rake
 %endif
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
@@ -439,6 +455,25 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/specifications/rdoc-%{rdoc_ver}.gemspec
 %attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri
 
+%if %{with batteries}
+%files rubygems
+%attr(755,root,root) %{_bindir}/gem
+%{ruby_libdir}/rubygems
+%{ruby_libdir}/rubygems.rb
+%{ruby_libdir}/ubygems.rb
+
+%{gem_dir}/specifications/io-console-*.gemspec
+%{gem_dir}/specifications/bigdecimal-*.gemspec
+%if %{with batteries}
+%dir %{gem_dir}/gems/rake-%{rake_ver}
+%dir %{gem_dir}/gems/rake-%{rake_ver}/bin
+%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
+%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
+%{gem_dir}/specifications/rake-%{rake_ver}.gemspec
+%{gem_dir}/specifications/json-%{json_ver}.gemspec
+%endif
+%endif
+
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb
@@ -461,7 +496,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with batteries}
 %{ruby_libdir}/json
 %{ruby_libdir}/rake
-%{ruby_libdir}/rubygems
 %dir %{ruby_libdir}/tasks
 %endif
 %{ruby_libdir}/psych
@@ -488,6 +522,8 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/tracer.rb
 %{ruby_libdir}/tsort.rb
 %{ruby_libdir}/[u-z]*.rb
+%exclude %{ruby_libdir}/rubygems.rb
+%exclude %{ruby_libdir}/ubygems.rb
 %attr(755,root,root) %{ruby_archdir}/[a-s]*.so
 %attr(755,root,root) %{ruby_archdir}/[u-z]*.so
 %dir %{ruby_archdir}/digest
@@ -518,16 +554,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{gem_dir}
 %dir %{gem_dir}/specifications
-%{gem_dir}/specifications/io-console-*.gemspec
-%{gem_dir}/specifications/bigdecimal-*.gemspec
-%if %{with batteries}
-%dir %{gem_dir}/gems/rake-%{rake_ver}
-%dir %{gem_dir}/gems/rake-%{rake_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
-%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
-%{gem_dir}/specifications/rake-%{rake_ver}.gemspec
-%{gem_dir}/specifications/json-%{json_ver}.gemspec
-%endif
 %{_mandir}/man1/erb.1*
 %{_mandir}/man1/irb.1*
 %{_mandir}/man1/ri.1*
