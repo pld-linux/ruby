@@ -10,7 +10,6 @@
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
 %bcond_without	tk		# skip building package with Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json or rake
-%bcond_without	verpath	# LOAD_PATH with version number
 %bcond_with	bootstrap	# build bootstrap version
 
 %define		ruby_version	1.9
@@ -337,7 +336,6 @@ cd ..
 	--enable-shared \
 	--enable-pthread \
 	--disable-install-doc \
-	%{!?with_verpath:--disable-versioned-paths} \
 	--with-ruby-version=minor
 
 %{__make} -j1 main \
