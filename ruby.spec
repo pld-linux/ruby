@@ -32,7 +32,8 @@ Version:	%{basever}.%{patchlevel}
 # unless rdoc_ver, rubygems_ver *both* are increased as well
 Release:	0.24
 Epoch:		1
-License:	The Ruby License
+# Public Domain for example for: include/ruby/st.h, strftime.c, ...
+License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{ruby_version}/%{name}-%{basever}-p%{patchlevel}.tar.bz2
 # Source0-md5:	a810d64e2255179d2f334eb61fb8519c
@@ -274,12 +275,12 @@ RDoc includes the 'rdoc' and 'ri' tools for generating and displaying
 online documentation.
 
 %package rubygems
-Summary:    The Ruby standard for packaging ruby libraries
-Version:    %{rubygems_ver}
-Group:      Development/Libraries
-License:    Ruby or MIT
-Requires:   %{name}-rdoc >= %{rdoc_ver}
+Summary:	The Ruby standard for packaging ruby libraries
+Version:	%{rubygems_ver}
+License:	Ruby or MIT
+Group:		Development/Libraries
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
+Requires:	%{name}-rdoc >= %{rdoc_ver}
 Provides:	rubygems = %{rubygems_ver}
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
@@ -455,6 +456,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with batteries}
 %files rubygems
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/gem
 %{ruby_libdir}/rubygems
 %{ruby_libdir}/rubygems.rb
