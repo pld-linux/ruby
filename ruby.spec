@@ -106,14 +106,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # This is the local lib/arch and should not be used for packaging.
 %define	sitedir			site_ruby
 %define	ruby_sitedir		%{_prefix}/local/share/%{name}/%{sitedir}
-%define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{name}/%{sitedir}
+%define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{name}/%{sitedir}/%{ruby_version}
 %define	ruby_sitelibdir		%{_prefix}/local/share/%{name}/%{sitedir}/%{ruby_version}
 
 # This is the general location for libs/archs compatible with all
 # or most of the Ruby versions available in the PLD repositories.
 %define	vendordir		vendor_ruby
 %define	ruby_vendordir		%{_datadir}/%{name}/%{vendordir}
-%define	ruby_vendorarchdir	%{_libdir}/%{name}/%{vendordir}
+%define	ruby_vendorarchdir	%{_libdir}/%{name}/%{vendordir}/%{ruby_version}
 %define	ruby_vendorlibdir	%{_datadir}/%{name}/%{vendordir}/%{ruby_version}
 
 # TODO: drop legacy loadpaths after all ruby modules rebuilt in Th
@@ -173,7 +173,7 @@ Summary:	Ruby standard modules and utilities
 Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-# workaround for autodep generator net getting version properly
+# workaround for autodep generator not getting version properly
 Provides:	ruby(abi) = %{ruby_version}
 Provides:	ruby-modules(ver) = %{ruby_version}
 Obsoletes:	ruby-minitest
@@ -314,9 +314,9 @@ cd ..
 	--with-rubylibprefix=%(dirname %{ruby_libdir}) \
 	--with-archdir=%{ruby_archdir} \
 	--with-sitedir=%(dirname %{ruby_sitelibdir}) \
-	--with-sitearchdir=%{ruby_sitearchdir} \
+	--with-sitearchdir=%(dirname %{ruby_sitearchdir}) \
 	--with-vendordir=%(dirname %{ruby_vendorlibdir}) \
-	--with-vendorarchdir=%{ruby_vendorarchdir} \
+	--with-vendorarchdir=%(dirname %{ruby_vendorarchdir}) \
 	--with-rubygemsdir=%{rubygems_dir} \
 	--with-search-path="%{legacy_loadpaths}" \
 	--enable-shared \
@@ -337,7 +337,7 @@ cd ..
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	$RPM_BUILD_ROOT%{ruby_libdir}/tasks \
-	$RPM_BUILD_ROOT{%{ruby_vendorarchdir}/%{ruby_version},%{ruby_ridir}} \
+	$RPM_BUILD_ROOT{%{ruby_vendorarchdir},%{ruby_ridir}} \
 	$RPM_BUILD_ROOT{%{legacy_archdir},%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir}} \
 
 %{__make} install %{?with_doc:install-doc} \
@@ -385,6 +385,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %dir %{_libdir}/%{name}
+%dir %{_libdir}/%{name}/%{vendordir}
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/%{vendordir}
 
@@ -392,7 +393,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_archdir}
 %dir %{ruby_vendorlibdir}
 %dir %{ruby_vendorarchdir}
-%dir %{ruby_vendorarchdir}/%{ruby_version}
 
 %dir %{_datadir}/ri
 %dir %{_datadir}/ri/%{ruby_version}
