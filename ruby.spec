@@ -30,7 +30,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	0.24
+Release:	0.26
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -126,7 +126,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	legacy_vendorarchdir%{_libdir}/%{name}/%{vendordir}/%{ruby_version}/%{_arch}-linux
 
 %define	legacy_siteloadpath	%{legacy_sitelibdir}\\0%{legacy_sitearchdir}\\0%{legacy_sitedir}
-%define	legacy_vendorloadpath	%{legacy_vendorlibdir}\\0%{legacy_vendorarchdir}
+%define	legacy_vendorloadpath	%{legacy_vendorarchdir}
 %define	legacy_loadpath		%{legacy_archdir}
 %define	legacy_loadpaths	%{legacy_siteloadpath}\\0%{legacy_vendorloadpath}\\0%{legacy_loadpath}
 
