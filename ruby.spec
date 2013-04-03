@@ -344,7 +344,7 @@ cd ..
 	%{?with_bootstrap:BASERUBY="ruby-1.8.7-p330/miniruby -I./ruby-1.8.7-p330/lib"}
 
 %if %{with doc}
-%{__make} -j1 docs
+%{__make} -j1 rdoc
 %endif
 
 %install
