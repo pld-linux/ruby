@@ -47,7 +47,6 @@ Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{name}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
 Source5:	testrb.1
-Source6:	%{name}-mode-init.el
 Patch0:		%{name}-lib64.patch
 Patch1:		%{name}-ffs.patch
 Patch2:		fix-bison-invocation.patch
