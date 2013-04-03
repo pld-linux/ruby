@@ -172,6 +172,7 @@ Summary:	Ruby standard modules and utilities
 Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Suggests:	ruby-rubygems
 # workaround for autodep generator not getting version properly
 Provides:	ruby(abi) = %{ruby_version}
 Provides:	ruby-modules(ver) = %{ruby_version}
