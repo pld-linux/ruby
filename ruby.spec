@@ -67,7 +67,7 @@ BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
-%{!?with_bootstrap:BuildRequires:	ruby-modules}
+%{!?with_bootstrap:BuildRequires:	ruby}
 BuildRequires:	sed >= 4.0
 BuildRequires:	yaml-devel
 %if %{with tk}
