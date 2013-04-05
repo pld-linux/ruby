@@ -350,9 +350,8 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
-	$RPM_BUILD_ROOT%{ruby_libdir}/tasks \
 	$RPM_BUILD_ROOT{%{ruby_vendorarchdir},%{ruby_ridir}} \
-	$RPM_BUILD_ROOT{%{legacy_archdir},%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir}} \
+	$RPM_BUILD_ROOT{%{legacy_archdir},%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir},%{legacy_libdir}/tasks} \
 
 %{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -365,7 +364,7 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
-%{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/{rubygems,rake,json,tasks}
+%{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/{rubygems,rake,json}
 %{__rm} -r $RPM_BUILD_ROOT%{ruby_archdir}/json
 %{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
@@ -421,6 +420,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{legacy_sitelibdir}
 %dir %{legacy_sitearchdir}
 %dir %{legacy_vendorarchdir}
+%dir %{legacy_libdir}/tasks
 
 %files devel
 %defattr(644,root,root,755)
@@ -496,7 +496,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with batteries}
 %{ruby_libdir}/json
 %{ruby_libdir}/rake
-%dir %{ruby_libdir}/tasks
 %endif
 %{ruby_libdir}/psych
 %{ruby_libdir}/racc
