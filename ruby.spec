@@ -67,6 +67,8 @@ BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
+# boostrap needs ruby binary, erb module
+%{!?with_bootstrap:BuildRequires:	ruby-modules}
 %{!?with_bootstrap:BuildRequires:	ruby}
 BuildRequires:	sed >= 4.0
 BuildRequires:	yaml-devel
