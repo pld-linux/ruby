@@ -30,7 +30,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	3
+Release:	4
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -336,6 +336,7 @@ cd ..
 	--with-search-path="%{legacy_loadpaths}" \
 	--enable-shared \
 	--enable-pthread \
+	--disable-rubygems \
 	--disable-install-doc \
 	--with-ruby-version=minor
 
