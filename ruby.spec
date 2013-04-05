@@ -30,7 +30,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	2
+Release:	3
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -351,7 +351,7 @@ cd ..
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	$RPM_BUILD_ROOT{%{ruby_vendorarchdir},%{ruby_ridir}} \
-	$RPM_BUILD_ROOT{%{legacy_archdir},%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir},%{legacy_libdir}/tasks} \
+	$RPM_BUILD_ROOT{%{legacy_archdir}/racc,%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir},%{legacy_libdir}/tasks} \
 
 %{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -421,6 +421,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{legacy_sitearchdir}
 %dir %{legacy_vendorarchdir}
 %dir %{legacy_libdir}/tasks
+%dir %{legacy_archdir}/racc
 
 %files devel
 %defattr(644,root,root,755)
