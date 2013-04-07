@@ -118,13 +118,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # TODO: drop legacy loadpaths after all ruby modules rebuilt in Th
 %define	legacy_libdir		%{_libdir}/%{name}/%{ruby_version}
-%define	legacy_archdir		%{_libdir}/%{name}/%{ruby_version}/%{_arch}-linux
+%define	legacy_archdir		%{_libdir}/%{name}/%{ruby_version}/%{_target_cpu}-linux
 %define	legacy_sitedir		%{_libdir}/%{name}/%{sitedir}
 %define	legacy_sitelibdir	%{_libdir}/%{name}/%{sitedir}/%{ruby_version}
-%define	legacy_sitearchdir	%{_libdir}/%{name}/%{sitedir}/%{ruby_version}/%{_arch}-linux
+%define	legacy_sitearchdir	%{_libdir}/%{name}/%{sitedir}/%{ruby_version}/%{_target_cpu}-linux
 %define	legacy_vendordir	%{_libdir}/%{name}/%{vendordir}
 %define	legacy_vendorlibdir	%{_libdir}/%{name}/%{vendordir}/%{ruby_version}
-%define	legacy_vendorarchdir%{_libdir}/%{name}/%{vendordir}/%{ruby_version}/%{_arch}-linux
+%define	legacy_vendorarchdir	%{_libdir}/%{name}/%{vendordir}/%{ruby_version}/%{_target_cpu}-linux
 
 %define	legacy_siteloadpath	%{legacy_sitelibdir}\\0%{legacy_sitearchdir}\\0%{legacy_sitedir}
 %define	legacy_vendorloadpath	%{legacy_vendorarchdir}
@@ -265,6 +265,7 @@ Przykłady programów w języku Ruby.
 # IMPORTANT: keep this as last package, as we reset Epoch
 %package rdoc
 Summary:	A tool to generate HTML and command-line documentation for Ruby projects
+Summary(pl.UTF-8):	Narzędzie do generowania dokumentacji HTML i linii poleceń dla projektów w Rubym
 Version:	%{rdoc_ver}
 Epoch:		0
 License:	GPL v2 and Ruby and MIT
@@ -276,8 +277,14 @@ RDoc produces HTML and command-line documentation for Ruby projects.
 RDoc includes the 'rdoc' and 'ri' tools for generating and displaying
 online documentation.
 
+%description rdoc -l pl.UTF-8
+RDoc tworzy dokumentację HTML i linii poleceń dla projektów w języku
+Ruby. RDoc zawiera narzędzia 'rdoc' i 'ri' do generowania i
+wyświetlania dokumentacji online.
+
 %package rubygems
-Summary:	The Ruby standard for packaging ruby libraries
+Summary:	RubyGems - the Ruby standard for packaging Ruby libraries
+Summary(pl.UTF-8):	RubyGems - standard Ruby'ego pakietowania bibliotek
 Version:	%{rubygems_ver}
 License:	Ruby or MIT
 Group:		Development/Libraries
@@ -291,6 +298,10 @@ BuildArch:	noarch
 %description rubygems
 RubyGems is the Ruby standard for publishing and managing third party
 libraries.
+
+%description rubygems -l pl.UTF-8
+RubyGems to standardowe narzędzie języka Ruby do publikowania i
+zarządzania zewnętrznymi bibliotekami.
 
 %prep
 %if %{with bootstrap}
