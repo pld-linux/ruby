@@ -30,7 +30,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	4
+Release:	5
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -286,6 +286,7 @@ wyświetlania dokumentacji online.
 Summary:	RubyGems - the Ruby standard for packaging Ruby libraries
 Summary(pl.UTF-8):	RubyGems - standard Ruby'ego pakietowania bibliotek
 Version:	%{rubygems_ver}
+Epoch:		0
 License:	Ruby or MIT
 Group:		Development/Libraries
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
