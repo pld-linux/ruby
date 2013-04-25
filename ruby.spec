@@ -30,7 +30,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	5
+Release:	6
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -366,6 +366,7 @@ cd ..
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	$RPM_BUILD_ROOT{%{ruby_vendorarchdir},%{ruby_ridir}} \
+	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
 	$RPM_BUILD_ROOT{%{legacy_archdir}/racc,%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir},%{legacy_libdir}/tasks} \
 
 %{__make} install %{?with_doc:install-doc} \
@@ -428,6 +429,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_ridir}
 
 %dir %{ruby_rdocdir}
+
+# common dirs for ruby vendor modules
+%dir %{ruby_vendorlibdir}/net
 
 # legacy dirs. when everything rebuilt in Th not using these dirs. drop them
 %dir %{legacy_archdir}
