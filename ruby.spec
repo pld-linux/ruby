@@ -69,6 +69,7 @@ BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
+BuildRequires:	rpm-build >= 5.4.10-49
 # boostrap needs ruby binary, erb module
 %{!?with_bootstrap:BuildRequires:	ruby-modules}
 %{!?with_bootstrap:BuildRequires:	ruby}
@@ -176,8 +177,6 @@ Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Suggests:	ruby-rubygems
-# workaround for autodep generator not getting version properly
-Provides:	ruby(abi) = %{ruby_version}
 # ruby-modules deprecated, rpm5 generates ruby(abi) itself
 Provides:	ruby-modules(ver) = %{ruby_version}
 Obsoletes:	ruby-minitest
