@@ -30,7 +30,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	6
+Release:	7
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -56,6 +56,8 @@ Patch3:		disable-versioned-paths.patch
 Patch4:		arch-specific-dir.patch
 # http://redmine.ruby-lang.org/issues/5281
 Patch5:		site-and-vendor-arch-flags.patch
+# Make mkmf verbose by default
+Patch6:		mkmf-verbose.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -176,6 +178,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 Suggests:	ruby-rubygems
 # workaround for autodep generator not getting version properly
 Provides:	ruby(abi) = %{ruby_version}
+# ruby-modules deprecated, rpm5 generates ruby(abi) itself
 Provides:	ruby-modules(ver) = %{ruby_version}
 Obsoletes:	ruby-minitest
 
@@ -208,6 +211,7 @@ Summary:	Ruby development libraries
 Summary(pl.UTF-8):	Biblioteki programistyczne interpretera języka Ruby
 Group:		Development/Languages
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
+Requires:	pkgconfig
 
 %description devel
 Ruby development libraries.
@@ -447,6 +451,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libruby.so
 %{_includedir}/%{name}-%{ruby_version}
 %{_pkgconfigdir}/ruby-%{ruby_version}.pc
+%{ruby_libdir}/mkmf.rb
 
 %files static
 %defattr(644,root,root,755)
@@ -543,6 +548,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/[u-z]*.rb
 %exclude %{ruby_libdir}/rubygems.rb
 %exclude %{ruby_libdir}/ubygems.rb
+%exclude %{ruby_libdir}/mkmf.rb
 %attr(755,root,root) %{ruby_archdir}/[a-s]*.so
 %attr(755,root,root) %{ruby_archdir}/[u-z]*.so
 %dir %{ruby_archdir}/digest
