@@ -21,6 +21,8 @@
 %define		rubygems_ver	1.8.11
 %define		minitest_ver	2.5.1
 %define		rdoc_ver	3.9.5
+%define		bigdecimal_ver	1.1.0
+%define		io_console_ver	0.3
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
 Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
@@ -30,7 +32,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	7
+Release:	8
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -80,17 +82,16 @@ BuildRequires:	tk-devel
 %endif
 Requires(post,postun):	/sbin/ldconfig
 Provides:	ruby(ver) = %{ruby_version}
-Obsoletes:	rdoc
-Obsoletes:	ruby-REXML
+Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
-Obsoletes:	ruby-fastthread
+Obsoletes:	ruby-fastthread <= 0.6.3
 %if %{with batteries}
 Provides:	json = %{json_ver}
 Provides:	rake = %{rake_ver}
 Provides:	ruby-json = %{json_ver}
 Provides:	ruby-rake = %{rake_ver}
-Obsoletes:	ruby-json
-Obsoletes:	ruby-rake
+Obsoletes:	ruby-json <= 1.5.4
+Obsoletes:	ruby-rake <= 0.9.2.2
 %endif
 Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
@@ -177,9 +178,14 @@ Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Suggests:	ruby-rubygems
+Provides:	ruby-bigdecimal = %{bigdecimal_ver}
+Provides:	ruby-io-console = %{io_console_ver}
+Provides:	ruby-json = %{json_ver}
+Provides:	ruby-minitest = %{minitest_ver}
+Provides:	ruby-rake = %{rake_ver}
 # ruby-modules deprecated, rpm5 generates ruby(abi) itself
 Provides:	ruby-modules(ver) = %{ruby_version}
-Obsoletes:	ruby-minitest
+Obsoletes:	ruby-minitest <= 1.5.0
 
 %description modules
 Ruby standard modules and utilities:
@@ -274,6 +280,7 @@ Epoch:		0
 License:	GPL v2 and Ruby and MIT
 Group:		Development/Libraries
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
+Obsoletes:	rdoc <= 0.9.0
 
 %description rdoc
 RDoc produces HTML and command-line documentation for Ruby projects.
@@ -486,8 +493,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/rubygems.rb
 %{ruby_libdir}/ubygems.rb
 
-%{gem_dir}/specifications/io-console-*.gemspec
-%{gem_dir}/specifications/bigdecimal-*.gemspec
 %if %{with batteries}
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
@@ -570,6 +575,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_archdir}/racc
 %attr(755,root,root) %{ruby_archdir}/racc/*.so
 %{ruby_archdir}/rbconfig.rb
+
+%{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
+%{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
 
 # parents of gem_dir
 %dir %{_datadir}/%{name}/gems
