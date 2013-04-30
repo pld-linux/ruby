@@ -3,6 +3,7 @@
 %bcond_without	doc	# skip generating docs (which is time-consuming). Intended for speed up test builds
 %bcond_without	emacs	# skip building package with ruby-mode for emacs
 %bcond_without	tk	# skip building package with Tk bindings
+%bcond_with	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	onigurma
 
 %if "%{pld_release}" == "th"
@@ -324,6 +325,11 @@ emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%
 rm -f path.el*
 %endif
 
+%if %{with default_ruby}
+ln -s ruby%{ruby_suffix} $RPM_BUILD_ROOT%{_bindir}/ruby
+echo '.so man1/ruby%{ruby_suffix}.1' > $RPM_BUILD_ROOT%{_mandir}/man1/ruby.1
+%endif
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -340,9 +346,15 @@ rm -rf $RPM_BUILD_ROOT
 %doc README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby%{ruby_suffix}.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libruby%{ruby_suffix}.so.1.8
+%attr(755,root,root) %ghost %{_libdir}/libruby%{ruby_suffix}.so.%{ruby_ver}
 %{_mandir}/man1/ruby%{ruby_suffix}.1*
 %{_infodir}/ruby.info*
+
+%if %{with default_ruby}
+%attr(755,root,root) %{_bindir}/ruby
+%{_mandir}/man1/ruby.1
+%endif
+
 %dir %{_libdir}/ruby
 %dir %{_libdir}/ruby/%{ruby_ver}
 %dir %{_libdir}/ruby/%{ruby_ver}/*-linux*
