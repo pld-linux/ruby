@@ -323,6 +323,13 @@ cat << 'EOF' > path.el
 EOF
 emacs --no-site-file -q -batch -l path.el -f batch-byte-compile $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/*.el
 rm -f path.el*
+
+# unpackaged, dunno, remove
+rm $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/inf-ruby.el
+rm $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/ruby-electric.el
+rm $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/ruby-mode.el
+rm $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/ruby-style.el
+rm $RPM_BUILD_ROOT%{_emacs_lispdir}/ruby-mode/rubydb3x.el
 %endif
 
 %if %{with default_ruby}
