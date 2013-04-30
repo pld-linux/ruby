@@ -119,6 +119,7 @@ Summary:	Ruby standard modules and utilities
 Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Provides:	ruby(abi) = %{ruby_ver}
 Provides:	ruby-modules(ver) = %{ruby_ver}
 
 %description modules
