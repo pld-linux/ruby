@@ -32,7 +32,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	8
+Release:	9
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -91,7 +91,7 @@ Provides:	rake = %{rake_ver}
 Provides:	ruby-json = %{json_ver}
 Provides:	ruby-rake = %{rake_ver}
 Obsoletes:	ruby-json <= 1.5.4
-Obsoletes:	ruby-rake <= 0.9.2.2
+Obsoletes:	ruby-rake < 0.9.2.2
 %endif
 Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
