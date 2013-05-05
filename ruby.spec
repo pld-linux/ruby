@@ -389,10 +389,12 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 # packaged separately
 %{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/{rubygems,rake,json,minitest}
 %{__rm} -r $RPM_BUILD_ROOT%{ruby_archdir}/json
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-*
 %{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
-%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON
+%{__rm} $RPM_BUILD_ROOT%{gem_dir}/specifications/{json,minitest,rake}-*.gemspec
+%{?with_doc:%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON}
 %endif
 
 %if %{with doc}
@@ -533,8 +535,10 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/tracer.rb
 %{ruby_libdir}/tsort.rb
 %{ruby_libdir}/[u-z]*.rb
+%if %{with batteries}
 %exclude %{ruby_libdir}/rubygems.rb
 %exclude %{ruby_libdir}/ubygems.rb
+%endif
 %exclude %{ruby_libdir}/mkmf.rb
 %attr(755,root,root) %{ruby_archdir}/[a-s]*.so
 %attr(755,root,root) %{ruby_archdir}/[u-z]*.so
