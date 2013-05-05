@@ -9,7 +9,7 @@
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
 %bcond_without	tk		# skip building package with Tk bindings
-%bcond_without	batteries	# Don't include rubygems, json or rake
+%bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
 %define		ruby_version	1.9
@@ -85,13 +85,6 @@ Provides:	ruby(ver) = %{ruby_version}
 Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread <= 0.6.3
-%if %{with batteries}
-Provides:	rake = %{rake_ver}
-Provides:	ruby-json = %{json_ver}
-Provides:	ruby-rake = %{rake_ver}
-Obsoletes:	ruby-json <= 1.5.4
-Obsoletes:	ruby-rake < 0.9.2.2
-%endif
 Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -179,12 +172,17 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 Suggests:	ruby-rubygems
 Provides:	ruby-bigdecimal = %{bigdecimal_ver}
 Provides:	ruby-io-console = %{io_console_ver}
+# ruby-modules deprecated, rpm5 generates ruby(abi) itself
+Provides:	ruby-modules(ver) = %{ruby_version}
+%if %{with batteries}
+Provides:	rake = %{rake_ver}
 Provides:	ruby-json = %{json_ver}
 Provides:	ruby-minitest = %{minitest_ver}
 Provides:	ruby-rake = %{rake_ver}
-# ruby-modules deprecated, rpm5 generates ruby(abi) itself
-Provides:	ruby-modules(ver) = %{ruby_version}
+Obsoletes:	ruby-json <= 1.5.4
 Obsoletes:	ruby-minitest <= 1.5.0
+Obsoletes:	ruby-rake < 0.9.2.2
+%endif
 
 %description modules
 Ruby standard modules and utilities:
@@ -389,7 +387,7 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %if %{without batteries}
 # packaged separately
-%{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/{rubygems,rake,json}
+%{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/{rubygems,rake,json,minitest}
 %{__rm} -r $RPM_BUILD_ROOT%{ruby_archdir}/json
 %{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
@@ -413,13 +411,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc NEWS LEGAL README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/ruby
-%if %{with batteries}
-%attr(755,root,root) %{_bindir}/rake
-%endif
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.1.9
 %{_mandir}/man1/ruby.1*
+
 %if %{with batteries}
+# rake
+%attr(755,root,root) %{_bindir}/rake
 %{_mandir}/man1/rake.1*
 %endif
 
@@ -491,15 +489,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/rubygems
 %{ruby_libdir}/rubygems.rb
 %{ruby_libdir}/ubygems.rb
-
-%if %{with batteries}
-%dir %{gem_dir}/gems/rake-%{rake_ver}
-%dir %{gem_dir}/gems/rake-%{rake_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
-%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
-%{gem_dir}/specifications/rake-%{rake_ver}.gemspec
-%{gem_dir}/specifications/json-%{json_ver}.gemspec
-%endif
 %endif
 
 %files modules
@@ -517,14 +506,9 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/io
 %{ruby_libdir}/irb
 %{ruby_libdir}/matrix
-%{ruby_libdir}/minitest
 %{ruby_libdir}/net
 %{ruby_libdir}/openssl
 %{ruby_libdir}/optparse
-%if %{with batteries}
-%{ruby_libdir}/json
-%{ruby_libdir}/rake
-%endif
 %{ruby_libdir}/psych
 %{ruby_libdir}/racc
 %{ruby_libdir}/rbconfig
@@ -564,11 +548,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/enc/trans/*.so
 %dir %{ruby_archdir}/io
 %attr(755,root,root) %{ruby_archdir}/io/*.so
-%if %{with batteries}
-%dir %{ruby_archdir}/json
-%dir %{ruby_archdir}/json/ext
-%attr(755,root,root) %{ruby_archdir}/json/ext/*.so
-%endif
 %dir %{ruby_archdir}/mathn
 %attr(755,root,root) %{ruby_archdir}/mathn/*.so
 %dir %{ruby_archdir}/racc
@@ -577,6 +556,26 @@ rm -rf $RPM_BUILD_ROOT
 
 %{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
 %{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
+
+%if %{with batteries}
+# json
+%{ruby_libdir}/json
+%dir %{ruby_archdir}/json
+%dir %{ruby_archdir}/json/ext
+%attr(755,root,root) %{ruby_archdir}/json/ext/*.so
+%{gem_dir}/specifications/json-%{json_ver}.gemspec
+
+# minitest
+%{ruby_libdir}/minitest
+%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
+
+# rake
+%{ruby_libdir}/rake
+%dir %{gem_dir}/gems/rake-%{rake_ver}
+%dir %{gem_dir}/gems/rake-%{rake_ver}/bin
+%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
+%{gem_dir}/specifications/rake-%{rake_ver}.gemspec
+%endif
 
 # parents of gem_dir
 %dir %{_datadir}/%{name}/gems
