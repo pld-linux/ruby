@@ -86,7 +86,6 @@ Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread <= 0.6.3
 %if %{with batteries}
-Provides:	json = %{json_ver}
 Provides:	rake = %{rake_ver}
 Provides:	ruby-json = %{json_ver}
 Provides:	ruby-rake = %{rake_ver}
