@@ -32,7 +32,7 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	9
+Release:	10
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -237,6 +237,9 @@ Biblioteki statyczne Ruby.
 Summary:	Ruby HTML documentation
 Summary(pl.UTF-8):	Dokumentacja HTML do Ruby
 Group:		Documentation
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description doc
 Ruby HTML documentation: FAQ, guide, core and standard library.
@@ -250,6 +253,9 @@ Summary:	Ruby ri documentation
 Summary(pl.UTF-8):	Dokumentacja Ruby w formacie ri
 Group:		Documentation
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description doc-ri
 Ruby ri documentation.
@@ -261,6 +267,9 @@ Dokumentacja Ruby w formacie ri.
 Summary:	Ruby examples
 Summary(pl.UTF-8):	Przykłady dla języka Ruby
 Group:		Development/Languages
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description examples
 Ruby examples.
@@ -278,6 +287,9 @@ License:	GPL v2 and Ruby and MIT
 Group:		Development/Libraries
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
 Obsoletes:	rdoc <= 0.9.0
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description rdoc
 RDoc produces HTML and command-line documentation for Ruby projects.
