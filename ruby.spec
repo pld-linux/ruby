@@ -14,7 +14,7 @@
 
 %define		ruby_version	1.9
 %define		basever		1.9.3
-%define		patchlevel	392
+%define		patchlevel	426
 %define		doc_version	1_9_3
 %define		json_ver	1.5.5
 %define		rake_ver	0.9.2.2
@@ -32,13 +32,13 @@ Name:		ruby
 Version:	%{basever}.%{patchlevel}
 # NOTE: do not decrease Release, when updating Version,
 # unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	10
+Release:	11
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{ruby_version}/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	a810d64e2255179d2f334eb61fb8519c
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.9/%{name}-%{basever}-p%{patchlevel}.tar.bz2
+# Source0-md5:	c211205e65d7253fc2a4620a34bc9245
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_stdlib_rdocs.tgz
