@@ -213,6 +213,8 @@ Summary:	Ruby development libraries
 Summary(pl.UTF-8):	Biblioteki programistyczne interpretera języka Ruby
 Group:		Development/Languages
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
+Requires:	gcc
+Requires:	glibc-devel
 Requires:	pkgconfig
 
 %description devel
@@ -310,6 +312,7 @@ License:	Ruby or MIT
 Group:		Development/Libraries
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
 Requires:	%{name}-rdoc >= %{rdoc_ver}
+Suggests:	%{name}-devel
 Provides:	rubygems = %{rubygems_ver}
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
