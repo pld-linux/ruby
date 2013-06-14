@@ -1,4 +1,3 @@
-#
 # TODO:
 #	- include ext/ in docs
 #	- replace ri with fastri
@@ -12,14 +11,17 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
+%define		rel			11
 %define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	426
 %define		doc_version	1_9_3
 %define		json_ver	1.5.5
 %define		rake_ver	0.9.2.2
+# when increasing rubygems_ver, please remove "11." prefix in rubygems package release
 %define		rubygems_ver	1.8.11
 %define		minitest_ver	2.5.1
+# when increasing rdoc_ver, please remove "11." prefix in rdoc package release
 %define		rdoc_ver	3.9.5
 %define		bigdecimal_ver	1.1.0
 %define		io_console_ver	0.3
@@ -30,9 +32,7 @@ Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby
 Version:	%{basever}.%{patchlevel}
-# NOTE: do not decrease Release, when updating Version,
-# unless rdoc_ver, rubygems_ver *both* are increased as well
-Release:	11
+Release:	%{rel}
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
@@ -279,15 +279,19 @@ Ruby examples.
 %description examples -l pl.UTF-8
 Przykłady programów w języku Ruby.
 
-# IMPORTANT: keep this as last package, as we reset Epoch
+# IMPORTANT: keep rdoc and rubygems as last packages as we reset epoch/version/release
+# and %{version},%{release} macros may not be used directly as they take last
+# subpackage value not main package one what you intend to use
 %package rdoc
 Summary:	A tool to generate HTML and command-line documentation for Ruby projects
 Summary(pl.UTF-8):	Narzędzie do generowania dokumentacji HTML i linii poleceń dla projektów w Rubym
 Version:	%{rdoc_ver}
+# remove "11." when rdoc_ver is increased
+Release:	11.%{basever}.%{patchlevel}.%{rel}
 Epoch:		0
 License:	GPL v2 and Ruby and MIT
 Group:		Development/Libraries
-Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
+Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
 Obsoletes:	rdoc <= 0.9.0
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
@@ -307,10 +311,12 @@ wyświetlania dokumentacji online.
 Summary:	RubyGems - the Ruby standard for packaging Ruby libraries
 Summary(pl.UTF-8):	RubyGems - standard Ruby'ego pakietowania bibliotek
 Version:	%{rubygems_ver}
+# remove "11." when rubygems_ver is increased
+Release:	11.%{basever}.%{patchlevel}.%{rel}
 Epoch:		0
 License:	Ruby or MIT
 Group:		Development/Libraries
-Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{release}
+Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
 Requires:	%{name}-rdoc >= %{rdoc_ver}
 Suggests:	%{name}-devel
 Provides:	rubygems = %{rubygems_ver}
