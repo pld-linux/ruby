@@ -11,7 +11,7 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel			3
+%define		rel			4
 %define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	429
@@ -378,9 +378,6 @@ Epoch:		0
 License:	MIT
 Group:		Development/Languages
 Obsoletes:	ruby-json-rubyforge
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
 
 %description json
 This is a JSON implementation as a Ruby extension in C.
