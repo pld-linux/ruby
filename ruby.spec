@@ -11,7 +11,7 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel			1
+%define		rel			2
 %define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	429
@@ -175,13 +175,10 @@ Provides:	ruby-io-console = %{io_console_ver}
 # ruby-modules deprecated, rpm5 generates ruby(abi) itself
 Provides:	ruby-modules(ver) = %{ruby_version}
 %if %{with batteries}
-Provides:	rake = %{rake_ver}
 Provides:	ruby-json = %{json_ver}
 Provides:	ruby-minitest = %{minitest_ver}
-Provides:	ruby-rake = %{rake_ver}
 Obsoletes:	ruby-json <= 1.5.4
 Obsoletes:	ruby-minitest <= 1.5.0
-Obsoletes:	ruby-rake < 0.9.2.2
 %endif
 
 %description modules
@@ -279,9 +276,10 @@ Ruby examples.
 %description examples -l pl.UTF-8
 Przykłady programów w języku Ruby.
 
-# IMPORTANT: keep rdoc and rubygems as last packages as we reset epoch/version/release
+# IMPORTANT: keep rdoc, rubygems, rake as last packages as we reset epoch/version/release
 # and %{version},%{release} macros may not be used directly as they take last
 # subpackage value not main package one what you intend to use
+
 %package rdoc
 Summary:	A tool to generate HTML and command-line documentation for Ruby projects
 Summary(pl.UTF-8):	Narzędzie do generowania dokumentacji HTML i linii poleceń dla projektów w Rubym
@@ -331,6 +329,47 @@ libraries.
 %description rubygems -l pl.UTF-8
 RubyGems to standardowe narzędzie języka Ruby do publikowania i
 zarządzania zewnętrznymi bibliotekami.
+
+%package rake
+Summary:	Rake is a Make-like program implemented in Ruby
+Summary(pl.UTF-8):	Program typu Make dla języka Ruby
+Version:	%{rake_ver}
+Release:	%{basever}.%{patchlevel}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Languages
+Provides:	rake = %{rake_ver}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description rake
+Rake is a simple Ruby build program with capabilities similar to make.
+
+It has the following features:
+- Rakefiles (rake's version of Makefiles) are completely defined in
+  standard Ruby syntax. No XML files to edit. No quirky Makefile syntax
+  to worry about (is that a tab or a space?)
+- Users can specify tasks with prerequisites.
+- Rake supports rule patterns to synthesize implicit tasks.
+- Rake is lightweight. It can be distributed with other projects as a
+  single file. Projects that depend upon rake do not require that rake
+  be installed on target systems.
+
+%description rake -l pl.UTF-8
+Rake to prosty program do budowania w języku Ruby o możliwościach
+podobnych do make.
+
+Ma następujące cechy:
+- Pliki Rakefile (rake'owa odmiana plików Makefile) są definiowane
+  całkowicie w standardowej składni języka Ruby. Nie trzeba modyfikować
+  plików XML. Nie trzeba martwić się kaprysami składni Makefile (czy to
+  tabulacja czy spacja?).
+- Użytkownicy mogą określać zadania z ich zależnościami.
+- Rake obsługuje wzorce reguł do tworzenia z nich wynikowych zadań.
+- Rake jest lekki. Może być rozpowszechniany z innymi projektami jako
+  pojedynczy plik. Projekty używające rake'a nie wymagają go
+  zainstalowanego na systemach docelowych.
 
 %prep
 %if %{with bootstrap}
@@ -406,6 +445,8 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1
 
 %{__rm} -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/html
 
+ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake
+
 %if %{without batteries}
 # packaged separately
 %{__rm} -r $RPM_BUILD_ROOT%{ruby_libdir}/{rubygems,rake,json,minitest}
@@ -437,12 +478,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.1.9
 %{_mandir}/man1/ruby.1*
-
-%if %{with batteries}
-# rake
-%attr(755,root,root) %{_bindir}/rake
-%{_mandir}/man1/rake.1*
-%endif
 
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{vendordir}
@@ -512,6 +547,16 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/rubygems
 %{ruby_libdir}/rubygems.rb
 %{ruby_libdir}/ubygems.rb
+
+%files rake
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/rake
+%{_mandir}/man1/rake.1*
+%{ruby_libdir}/rake
+%dir %{gem_dir}/gems/rake-%{rake_ver}
+%dir %{gem_dir}/gems/rake-%{rake_ver}/bin
+%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
+%{gem_dir}/specifications/rake-%{rake_ver}.gemspec
 %endif
 
 %files modules
@@ -593,13 +638,6 @@ rm -rf $RPM_BUILD_ROOT
 # minitest
 %{ruby_libdir}/minitest
 %{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
-
-# rake
-%{ruby_libdir}/rake
-%dir %{gem_dir}/gems/rake-%{rake_ver}
-%dir %{gem_dir}/gems/rake-%{rake_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
-%{gem_dir}/specifications/rake-%{rake_ver}.gemspec
 %endif
 
 # parents of gem_dir
