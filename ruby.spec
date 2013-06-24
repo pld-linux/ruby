@@ -11,7 +11,7 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel			2
+%define		rel			3
 %define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	429
@@ -175,9 +175,7 @@ Provides:	ruby-io-console = %{io_console_ver}
 # ruby-modules deprecated, rpm5 generates ruby(abi) itself
 Provides:	ruby-modules(ver) = %{ruby_version}
 %if %{with batteries}
-Provides:	ruby-json = %{json_ver}
 Provides:	ruby-minitest = %{minitest_ver}
-Obsoletes:	ruby-json <= 1.5.4
 Obsoletes:	ruby-minitest <= 1.5.0
 %endif
 
@@ -276,7 +274,7 @@ Ruby examples.
 %description examples -l pl.UTF-8
 Przykłady programów w języku Ruby.
 
-# IMPORTANT: keep rdoc, rubygems, rake as last packages as we reset epoch/version/release
+# IMPORTANT: keep rdoc, rubygems, rake, json as last packages as we reset epoch/version/release
 # and %{version},%{release} macros may not be used directly as they take last
 # subpackage value not main package one what you intend to use
 
@@ -370,6 +368,25 @@ Ma następujące cechy:
 - Rake jest lekki. Może być rozpowszechniany z innymi projektami jako
   pojedynczy plik. Projekty używające rake'a nie wymagają go
   zainstalowanego na systemach docelowych.
+
+%package json
+Summary:	JSON library for Ruby
+Summary(pl.UTF-8):	Biblioteka JSON dla języka Ruby
+Version:	%{json_ver}
+Release:	%{basever}.%{patchlevel}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Languages
+Obsoletes:	ruby-json-rubyforge
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description json
+This is a JSON implementation as a Ruby extension in C.
+
+%description json -l pl.UTF-8
+Biblioteka JSON dla języka Ruby.
 
 %prep
 %if %{with bootstrap}
@@ -557,6 +574,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
+
+%files json
+%defattr(644,root,root,755)
+%{ruby_libdir}/json
+%dir %{ruby_archdir}/json
+%dir %{ruby_archdir}/json/ext
+%attr(755,root,root) %{ruby_archdir}/json/ext/*.so
+%{gem_dir}/specifications/json-%{json_ver}.gemspec
 %endif
 
 %files modules
@@ -628,13 +653,6 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
 
 %if %{with batteries}
-# json
-%{ruby_libdir}/json
-%dir %{ruby_archdir}/json
-%dir %{ruby_archdir}/json/ext
-%attr(755,root,root) %{ruby_archdir}/json/ext/*.so
-%{gem_dir}/specifications/json-%{json_ver}.gemspec
-
 # minitest
 %{ruby_libdir}/minitest
 %{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
