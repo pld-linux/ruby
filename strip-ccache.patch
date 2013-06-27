@@ -1,0 +1,12 @@
+strip ccache from CC and CXX from rbconfig.rb
+
+--- ruby-1.9.3-p429/tool/mkconfig.rb~	2013-06-27 19:03:54.455442002 +0300
++++ ruby-1.9.3-p429/tool/mkconfig.rb	2013-06-27 19:03:25.464126000 +0300
+@@ -85,6 +85,7 @@
+     when /^sitearchdir$/; sitearchdir_override = val; next
+     when /^vendorarchdir$/; vendorarchdir_override = val; next
+     when /^sitearch/; val = '$(arch)' if val.empty?
++    when /^(CC|CXX)$/; val.sub!(/ccache /, '')
+     end
+     case val
+     when /^\$\(ac_\w+\)$/; next
