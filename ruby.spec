@@ -338,6 +338,7 @@ Epoch:		0
 License:	MIT
 Group:		Development/Languages
 Provides:	rake = %{rake_ver}
+Conflicts:	ruby-modules < 1:1.9.3.429-2
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
 %endif
@@ -379,6 +380,7 @@ Epoch:		0
 License:	MIT
 Group:		Development/Languages
 Obsoletes:	ruby-json-rubyforge
+Conflicts:	ruby-modules < 1:1.9.3.429-3
 
 %description json
 This is a JSON implementation as a Ruby extension in C.
