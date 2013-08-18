@@ -65,7 +65,7 @@ Patch8:		bison3.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
-BuildRequires:	bison
+BuildRequires:	bison >= 1.875
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	libffi-devel
