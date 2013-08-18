@@ -11,7 +11,7 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		1
+%define		rel		2
 %define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	448
