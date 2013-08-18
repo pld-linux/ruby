@@ -1,0 +1,21 @@
+--- ruby-1.9.3-p448/parse.y~	2013-04-11 04:21:43.000000000 +0200
++++ ruby-1.9.3-p448/parse.y	2013-08-18 20:36:49.832045588 +0200
+@@ -277,8 +277,6 @@
+ static int parser_yyerror(struct parser_params*, const char*);
+ #define yyerror(msg) parser_yyerror(parser, (msg))
+ 
+-#define YYLEX_PARAM parser
+-
+ #define lex_strterm		(parser->parser_lex_strterm)
+ #define lex_state		(parser->parser_lex_state)
+ #define cond_stack		(parser->parser_cond_stack)
+@@ -610,7 +608,8 @@
+ #endif
+ %}
+ 
+-%pure_parser
++%pure-parser
++%lex-param   {struct parser_params *parser}
+ %parse-param {struct parser_params *parser}
+ 
+ %union {

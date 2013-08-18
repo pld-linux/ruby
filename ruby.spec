@@ -11,7 +11,7 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel			1
+%define		rel		1
 %define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	448
@@ -61,6 +61,7 @@ Patch5:		site-and-vendor-arch-flags.patch
 # Make mkmf verbose by default
 Patch6:		mkmf-verbose.patch
 Patch7:		strip-ccache.patch
+Patch8:		bison3.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -402,6 +403,7 @@ Biblioteka JSON dla języka Ruby.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
