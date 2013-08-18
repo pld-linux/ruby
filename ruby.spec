@@ -11,10 +11,10 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel			4
+%define		rel			1
 %define		ruby_version	1.9
 %define		basever		1.9.3
-%define		patchlevel	429
+%define		patchlevel	448
 %define		doc_version	1_9_3
 %define		json_ver	1.5.5
 %define		rake_ver	0.9.2.2
@@ -38,7 +38,7 @@ Epoch:		1
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.9/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	c2b2de5ef15ea9b1aaa3152f9112af1b
+# Source0-md5:	aa710d386e5903f78f0231868255e6af
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_stdlib_rdocs.tgz
