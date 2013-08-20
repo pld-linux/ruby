@@ -455,6 +455,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{name}-%{version}} \
 	$RPM_BUILD_ROOT{%{ruby_vendorarchdir},%{ruby_ridir}} \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
+	$RPM_BUILD_ROOT%{ruby_vendordir}/data \
 	$RPM_BUILD_ROOT{%{legacy_archdir}/racc,%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir},%{legacy_libdir}/tasks} \
 
 %{__make} install %{?with_doc:install-doc} \
@@ -503,10 +504,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/%{name}
 %dir %{_libdir}/%{name}/%{vendordir}
 %dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/%{vendordir}
 
 %dir %{ruby_libdir}
 %dir %{ruby_archdir}
+%dir %{ruby_vendordir}
+%dir %{ruby_vendordir}/data
 %dir %{ruby_vendorlibdir}
 %dir %{ruby_vendorarchdir}
 
