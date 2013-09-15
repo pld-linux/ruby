@@ -11,7 +11,7 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		2
+%define		rel		3
 %define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	448
@@ -23,6 +23,7 @@
 %define		minitest_ver	2.5.1
 # when increasing rdoc_ver, please remove "11." prefix in rdoc package release
 %define		rdoc_ver	3.9.5
+%define		irb_ver		0.9.6
 %define		bigdecimal_ver	1.1.0
 %define		io_console_ver	0.3
 Summary:	Ruby - interpreted scripting language
@@ -184,13 +185,11 @@ Obsoletes:	ruby-minitest <= 1.5.0
 %description modules
 Ruby standard modules and utilities:
 - erb - Tiny eRuby
-- irb - interactive Ruby
 - testrb - automatic runner for Test::Unit of Ruby
 
 %description modules -l pl.UTF-8
 Standardowe moduły i narzędzia Ruby:
 - erb - mały eRuby
-- irb - interaktywny Ruby
 - testrb - automatyczny runner dla Ruby Test::Unit
 
 %package tk
@@ -276,9 +275,26 @@ Ruby examples.
 %description examples -l pl.UTF-8
 Przykłady programów w języku Ruby.
 
-# IMPORTANT: keep rdoc, rubygems, rake, json as last packages as we reset epoch/version/release
+# IMPORTANT: keep irb, rdoc, rubygems, rake, json as last packages as we reset epoch/version/release
 # and %{version},%{release} macros may not be used directly as they take last
 # subpackage value not main package one what you intend to use
+
+%package irb
+Summary:	The Interactive Ruby
+Version:	%{irb_ver}
+Group:		Development/Languages
+Release:	%{basever}.%{patchlevel}.%{rel}
+Epoch:		0
+Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
+Provides:	irb = %{version}-%{release}
+Provides:	ruby(irb) = %{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description irb
+The irb is acronym for Interactive Ruby. It evaluates ruby expression
+from the terminal.
 
 %package rdoc
 Summary:	A tool to generate HTML and command-line documentation for Ruby projects
@@ -551,6 +567,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/t*.so
 %endif
 
+%files irb
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/irb
+%{ruby_libdir}/irb.rb
+%{ruby_libdir}/irb
+%{_mandir}/man1/irb.1*
+
 %files rdoc
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rdoc
@@ -593,7 +616,6 @@ rm -rf $RPM_BUILD_ROOT
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb
-%attr(755,root,root) %{_bindir}/irb
 %attr(755,root,root) %{_bindir}/testrb
 %{ruby_libdir}/bigdecimal
 %{ruby_libdir}/cgi
@@ -603,7 +625,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/drb
 %{ruby_libdir}/fiddle
 %{ruby_libdir}/io
-%{ruby_libdir}/irb
 %{ruby_libdir}/matrix
 %{ruby_libdir}/net
 %{ruby_libdir}/openssl
@@ -636,6 +657,7 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{ruby_libdir}/rubygems.rb
 %exclude %{ruby_libdir}/ubygems.rb
 %endif
+%exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
 %attr(755,root,root) %{ruby_archdir}/[a-s]*.so
 %attr(755,root,root) %{ruby_archdir}/[u-z]*.so
@@ -672,7 +694,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}
 %dir %{gem_dir}/specifications
 %{_mandir}/man1/erb.1*
-%{_mandir}/man1/irb.1*
 %{_mandir}/man1/ri.1*
 %{_mandir}/man1/testrb.1*
 
