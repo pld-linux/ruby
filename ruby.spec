@@ -6,12 +6,15 @@
 %bcond_with	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	onigurma
 
-%if "%{pld_release}" == "th"
-%define		ruby_suffix 18
-%else
-%define		ruby_suffix %{nil}
+# in ac enable with default_ruby
+%if "%{pld_release}" == "ac" && 0%{!?_without_default_ruby:1}
+# if commandline --without was given. respect that
+%define		with_default_ruby	1
 %endif
+
+%define		ver_suffix	18
 %define		ruby_ver	1.8
+%define		ruby_suffix %{!?with_default_ruby:%{ver_suffix}}
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 %define		ruby_rdocdir	%{_datadir}/rdoc
 %define		stdlibdoc_version	0.10.1
