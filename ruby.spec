@@ -15,7 +15,7 @@
 %define		ruby_ridir	%{_datadir}/ri/%{ruby_ver}/system
 %define		ruby_rdocdir	%{_datadir}/rdoc
 %define		stdlibdoc_version	0.10.1
-%define		patchlevel 371
+%define		patchlevel 374
 %define		basever 1.8.7
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -29,7 +29,7 @@ Epoch:		1
 License:	The Ruby License
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/%{ruby_ver}/ruby-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	c27526b298659a186bdb5107fcec2341
+# Source0-md5:	83c92e2b57ea08f31187060098b2200b
 Source1:	http://www.ibiblio.org/pub/languages/ruby/doc/ruby-texi-1.4-en.tar.gz
 # Source1-md5:	839fda4af52b5c5c6d21f879f7fc62bf
 Source2:	http://www.math.sci.hokudai.ac.jp/~gotoken/ruby/ruby-uguide-981227.tar.gz
