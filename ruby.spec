@@ -14,12 +14,11 @@
 %define		rel		1
 %define		ruby_version	1.9
 %define		basever		1.9.3
-%define		patchlevel	484
+%define		patchlevel	545
 %define		doc_version	1_9_3
 %define		json_ver	1.5.5
 %define		rake_ver	0.9.2.2
-# when increasing rubygems_ver, please remove "11." prefix in rubygems package release
-%define		rubygems_ver	1.8.11
+%define		rubygems_ver	1.8.23.2
 %define		minitest_ver	2.5.1
 # when increasing rdoc_ver, please remove "11." prefix in rdoc package release
 %define		rdoc_ver	3.9.5
@@ -39,7 +38,7 @@ Epoch:		1
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.9/%{name}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	03f5b08804927ceabe5122cb90f5d0a9
+# Source0-md5:	4743c1dc48491070bae8fc8b423bc1a7
 Source1:	http://www.ruby-doc.org/download/%{name}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{name}_%{doc_version}_stdlib_rdocs.tgz
@@ -324,8 +323,7 @@ wyświetlania dokumentacji online.
 Summary:	RubyGems - the Ruby standard for packaging Ruby libraries
 Summary(pl.UTF-8):	RubyGems - standard Ruby'ego pakietowania bibliotek
 Version:	%{rubygems_ver}
-# remove "11." when rubygems_ver is increased
-Release:	11.%{basever}.%{patchlevel}.%{rel}
+Release:	%{basever}.%{patchlevel}.%{rel}
 Epoch:		0
 License:	Ruby or MIT
 Group:		Development/Libraries
@@ -429,6 +427,12 @@ find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
 
 %build
+rubygems_ver=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rubygems.rb | xargs)
+if [ $rubygems_ver != %{rubygems_ver} ]; then
+	echo "Set %%define rubygems_ver to $rubygems_ver and re-run."
+	exit 1
+fi
+
 cp -f /usr/share/automake/config.sub .
 
 # build ruby-1.8.7 first
