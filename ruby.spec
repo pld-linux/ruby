@@ -501,7 +501,7 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
-	$RPM_BUILD_ROOT%{ruby_vendorarchdir} 
+	$RPM_BUILD_ROOT%{ruby_vendorarchdir} \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
 	$RPM_BUILD_ROOT%{ruby_vendordir}/data \
 
