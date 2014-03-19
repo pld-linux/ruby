@@ -11,7 +11,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		0.1
+%define		rel		0.2
 %define		ruby_version	2.0
 %define		ver_suffix	20
 %define		basever		2.0.0
@@ -484,7 +484,6 @@ cd ..
 	--with-rubyarchhdrdir=%{_includedir}/%{oname}-%{ruby_version} \
 	--with-sitearchhdrdir='$(sitehdrdir)/$(arch)' \
 	--with-vendorarchhdrdir='$(vendorhdrdir)/$(arch)' \
-	--with-search-path="%{legacy_loadpaths}" \
 	--enable-shared \
 	--enable-pthread \
 	--enable-multiarch \
@@ -503,6 +502,7 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel} \
+	$RPM_BUILD_ROOT%{ruby_ridir} \
 
 #install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{oname}-%{version}} \
 #	$RPM_BUILD_ROOT{%{ruby_vendorarchdir},%{ruby_ridir}} \
