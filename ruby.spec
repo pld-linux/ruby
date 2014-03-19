@@ -13,11 +13,10 @@
 
 %define		rel		0.2
 %define		ruby_version	2.0
-%define		ver_suffix	20
 %define		basever		2.0.0
 %define		patchlevel	353
 
-%define		ruby_suffix %{!?with_default_ruby:%{ver_suffix}}
+%define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	1_9_3
 
 %define		bigdecimal_ver	1.2.0
@@ -108,9 +107,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 #%define	gem_dir			%{_datadir}/%{oname}/gems/%{ruby_version}
 %define	gem_dir			%{_datadir}/%{oname}/%{ruby_version}/gems
 
-# The RubyGems library has to stay out of Ruby directory three, since the
-# RubyGems should be share by all Ruby implementations.
-%define	rubygems_dir		%{_datadir}/rubygems
+# location where rubygems is installed
+%define	rubygems_dir		%{ruby_libdir}
 
 %define	ruby_archdir		%{_libdir}/%{oname}/%{ruby_version}
 %define	ruby_libarchdir		%{_libdir}/%{oname}/%{ruby_version}
@@ -502,19 +500,15 @@ cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel} \
-	$RPM_BUILD_ROOT%{ruby_ridir} \
-
-#install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{oname}-%{version}} \
-#	$RPM_BUILD_ROOT{%{ruby_vendorarchdir},%{ruby_ridir}} \
-#	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
-#	$RPM_BUILD_ROOT%{ruby_vendordir}/data \
-
-#	$RPM_BUILD_ROOT{%{legacy_archdir}/racc,%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir},%{legacy_libdir}/tasks} \
+install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
+	$RPM_BUILD_ROOT%{ruby_vendorarchdir} 
+	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
+	$RPM_BUILD_ROOT%{ruby_vendordir}/data \
 
 %{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
 
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
@@ -575,8 +569,8 @@ rm -rf $RPM_BUILD_ROOT
 # common dirs for ruby vendor modules
 #%dir %{ruby_vendorlibdir}/net
 
-# legacy dirs. when everything rebuilt in Th not using these dirs. drop them
 %if 0
+# legacy dirs. when everything rebuilt in Th not using these dirs. drop them
 %dir %{legacy_archdir}
 %dir %{legacy_sitedir}
 %dir %{legacy_sitelibdir}
