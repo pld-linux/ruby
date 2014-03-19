@@ -98,9 +98,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	ruby_ridir		%{_datadir}/ri/%{ruby_version}/system
 %define	gem_dir			%{_datadir}/%{oname}/gems/%{ruby_version}
 
-# The RubyGems library has to stay out of Ruby directory three, since the
-# RubyGems should be share by all Ruby implementations.
-%define	rubygems_dir		%{_datadir}/rubygems
+# location where rubygems is installed
+%define	rubygems_dir		%{ruby_libdir}
 
 %define	ruby_archdir		%{_libdir}/%{oname}/%{ruby_version}
 %define	ruby_libdir		%{_datadir}/%{oname}/%{ruby_version}
@@ -463,7 +462,6 @@ cd ..
 	--with-sitearchdir=%{ruby_sitearchdir} \
 	--with-vendordir=%(dirname %{ruby_vendorlibdir}) \
 	--with-vendorarchdir=%{ruby_vendorarchdir} \
-	--with-rubygemsdir=%{rubygems_dir} \
 	--with-search-path="%{legacy_loadpaths}" \
 	--enable-shared \
 	--enable-pthread \
@@ -604,9 +602,9 @@ rm -rf $RPM_BUILD_ROOT
 %files rubygems
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/gem%{ruby_suffix}
-%{ruby_libdir}/rubygems
-%{ruby_libdir}/rubygems.rb
-%{ruby_libdir}/ubygems.rb
+%{rubygems_dir}/rubygems
+%{rubygems_dir}/rubygems.rb
+%{rubygems_dir}/ubygems.rb
 
 %files rake
 %defattr(644,root,root,755)
