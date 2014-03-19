@@ -3,7 +3,6 @@
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
 #   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
-#   - custom-rubygems-location.patch
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -195,6 +194,8 @@ Provides:	ruby-modules(ver) = %{ruby_version}
 Provides:	ruby-minitest = %{minitest_ver}
 Obsoletes:	ruby-minitest <= 1.5.0
 %endif
+# FIXME later
+Provides:	ruby(abi) = %{ruby_version}
 
 %description modules
 Ruby standard modules and utilities:
@@ -296,9 +297,9 @@ Przykłady programów w języku Ruby.
 %package irb
 Summary:	The Interactive Ruby
 Version:	%{irb_ver}
-Group:		Development/Languages
 Release:	%{basever}.%{patchlevel}.%{rel}
 Epoch:		0
+Group:		Development/Languages
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
 Provides:	irb = %{version}-%{release}
 Provides:	ruby(irb) = %{version}-%{release}
@@ -547,8 +548,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS LEGAL README README.EXT ChangeLog 
-#ToDo
+%doc NEWS LEGAL README README.EXT ChangeLog
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
@@ -567,8 +567,8 @@ rm -rf $RPM_BUILD_ROOT
 
 #%dir %{_datadir}/ri
 #%dir %{_datadir}/ri/%{ruby_version}
-#%dir %{ruby_ridir}
-#
+%dir %{ruby_ridir}
+
 #%dir %{ruby_rdocdir}
 
 # common dirs for ruby vendor modules
@@ -629,6 +629,7 @@ rm -rf $RPM_BUILD_ROOT
 %files rubygems
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/gem%{ruby_suffix}
+%dir %{rubygems_dir}
 %{rubygems_dir}/rubygems
 %{rubygems_dir}/rubygems.rb
 %{rubygems_dir}/ubygems.rb
