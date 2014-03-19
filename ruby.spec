@@ -78,6 +78,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
 # boostrap needs ruby binary, erb module
+%{!?with_bootstrap:BuildRequires:	rpm-rubyprov}
 %{!?with_bootstrap:BuildRequires:	ruby-modules}
 %{!?with_bootstrap:BuildRequires:	ruby}
 BuildRequires:	sed >= 4.0
