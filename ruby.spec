@@ -566,8 +566,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_vendorlibdir}
 %dir %{ruby_vendorarchdir}
 
-#%dir %{_datadir}/ri
-#%dir %{_datadir}/ri/%{ruby_version}
+%dir %{_datadir}/ri
+%dir %{_datadir}/ri/%{ruby_version}
 %dir %{ruby_ridir}
 
 #%dir %{ruby_rdocdir}
