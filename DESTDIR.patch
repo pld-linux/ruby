@@ -1,0 +1,73 @@
+From 28e8a4ad0146fef37b514bde9a27ba5b6f7c34c5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?V=C3=ADt=20Ondruch?= <vondruch@redhat.com>
+Date: Tue, 2 Jul 2013 11:51:50 +0200
+Subject: [PATCH] Revert "mkmf.rb: prefix install_dirs only with DESTDIR"
+
+Fixes issues with DESTDIR.
+https://bugs.ruby-lang.org/issues/8115
+
+This reverts commit 7e1d5045943835ff906850e7b3bc71f985ae5f36.
+---
+ lib/mkmf.rb | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/lib/mkmf.rb b/lib/mkmf.rb
+index ee89198..cca487e 100644
+--- a/lib/mkmf.rb
++++ b/lib/mkmf.rb
+@@ -189,21 +189,21 @@ module MakeMakefile
+       ]
+     elsif $configure_args.has_key?('--vendor')
+       dirs = [
+-        ['BINDIR',        '$(DESTDIR)$(bindir)'],
+-        ['RUBYCOMMONDIR', '$(DESTDIR)$(vendordir)$(target_prefix)'],
+-        ['RUBYLIBDIR',    '$(DESTDIR)$(vendorlibdir)$(target_prefix)'],
+-        ['RUBYARCHDIR',   '$(DESTDIR)$(vendorarchdir)$(target_prefix)'],
+-        ['HDRDIR',        '$(DESTDIR)$(rubyhdrdir)/ruby$(target_prefix)'],
+-        ['ARCHHDRDIR',    '$(DESTDIR)$(rubyhdrdir)/$(arch)/ruby$(target_prefix)'],
++        ['BINDIR',        '$(bindir)'],
++        ['RUBYCOMMONDIR', '$(vendordir)$(target_prefix)'],
++        ['RUBYLIBDIR',    '$(vendorlibdir)$(target_prefix)'],
++        ['RUBYARCHDIR',   '$(vendorarchdir)$(target_prefix)'],
++        ['HDRDIR',        '$(rubyhdrdir)/ruby$(target_prefix)'],
++        ['ARCHHDRDIR',    '$(rubyhdrdir)/$(arch)/ruby$(target_prefix)'],
+       ]
+     else
+       dirs = [
+-        ['BINDIR',        '$(DESTDIR)$(bindir)'],
+-        ['RUBYCOMMONDIR', '$(DESTDIR)$(sitedir)$(target_prefix)'],
+-        ['RUBYLIBDIR',    '$(DESTDIR)$(sitelibdir)$(target_prefix)'],
+-        ['RUBYARCHDIR',   '$(DESTDIR)$(sitearchdir)$(target_prefix)'],
+-        ['HDRDIR',        '$(DESTDIR)$(rubyhdrdir)/ruby$(target_prefix)'],
+-        ['ARCHHDRDIR',    '$(DESTDIR)$(rubyhdrdir)/$(arch)/ruby$(target_prefix)'],
++        ['BINDIR',        '$(bindir)'],
++        ['RUBYCOMMONDIR', '$(sitedir)$(target_prefix)'],
++        ['RUBYLIBDIR',    '$(sitelibdir)$(target_prefix)'],
++        ['RUBYARCHDIR',   '$(sitearchdir)$(target_prefix)'],
++        ['HDRDIR',        '$(rubyhdrdir)/ruby$(target_prefix)'],
++        ['ARCHHDRDIR',    '$(rubyhdrdir)/$(arch)/ruby$(target_prefix)'],
+       ]
+     end
+     dirs << ['target_prefix', (target_prefix ? "/#{target_prefix}" : "")]
+@@ -1728,7 +1728,6 @@ SRC
+   end
+ 
+   def with_destdir(dir)
+-    return dir unless $extmk
+     dir = dir.sub($dest_prefix_pattern, '')
+     /\A\$[\(\{]/ =~ dir ? dir : "$(DESTDIR)"+dir
+   end
+@@ -1787,8 +1786,8 @@ ECHO = $(ECHO1:0=@echo)
+ #### Start of system configuration section. ####
+ #{"top_srcdir = " + $top_srcdir.sub(%r"\A#{Regexp.quote($topdir)}/", "$(topdir)/") if $extmk}
+ srcdir = #{srcdir.gsub(/\$\((srcdir)\)|\$\{(srcdir)\}/) {mkintpath(CONFIG[$1||$2]).unspace}}
+-topdir = #{mkintpath(topdir = $extmk ? CONFIG["topdir"] : $topdir).unspace}
+-hdrdir = #{(hdrdir = CONFIG["hdrdir"]) == topdir ? "$(topdir)" : mkintpath(hdrdir).unspace}
++topdir = #{mkintpath($extmk ? CONFIG["topdir"] : $topdir).unspace}
++hdrdir = #{mkintpath(CONFIG["hdrdir"]).unspace}
+ arch_hdrdir = #{$arch_hdrdir.quote}
+ PATH_SEPARATOR = #{CONFIG['PATH_SEPARATOR']}
+ VPATH = #{vpath.join(CONFIG['PATH_SEPARATOR'])}
+-- 
+1.8.2.1
+
