@@ -528,7 +528,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc NEWS LEGAL README README.EXT ChangeLog ToDo
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libruby.so.1.9
+%attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
 %{_mandir}/man1/ruby%{ruby_suffix}.1*
 
 %dir %{_libdir}/%{oname}
