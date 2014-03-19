@@ -490,7 +490,7 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{oname}-%{version}} 
 %{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
 
-cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{version}
+cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 
@@ -724,4 +724,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files examples
 %defattr(644,root,root,755)
-%{_examplesdir}/%{oname}-%{version}
+%{_examplesdir}/%{oname}-*
