@@ -14,11 +14,10 @@
 
 %define		rel		1
 %define		ruby_version	1.9
-%define		ver_suffix	19
 %define		basever		1.9.3
 %define		patchlevel	545
 
-%define		ruby_suffix %{!?with_default_ruby:%{ver_suffix}}
+%define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	1_9_3
 %define		json_ver	1.5.5
 %define		rake_ver	0.9.2.2
