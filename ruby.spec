@@ -481,8 +481,8 @@ cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{oname}-%{version}} \
-	$RPM_BUILD_ROOT{%{ruby_vendorarchdir},%{ruby_ridir}} \
+install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
+	$RPM_BUILD_ROOT{%{ruby_vendorarchdir} \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
 	$RPM_BUILD_ROOT%{ruby_vendordir}/data \
 	$RPM_BUILD_ROOT{%{legacy_archdir}/racc,%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir},%{legacy_libdir}/tasks} \
@@ -490,6 +490,7 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{_examplesdir}/%{oname}-%{version}} 
 %{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
 
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
