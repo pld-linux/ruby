@@ -202,7 +202,7 @@ Group:		Development/Languages
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 
 %description tk
-This pachage contains Ruby/Tk bindings.
+This package contains Ruby/Tk bindings.
 
 %description tk -l pl.UTF-8
 Ten pakiet zawiera wiązania Ruby/Tk.
@@ -285,9 +285,9 @@ Przykłady programów w języku Ruby.
 %package irb
 Summary:	The Interactive Ruby
 Version:	%{irb_ver}
-Group:		Development/Languages
 Release:	%{basever}.%{patchlevel}.%{rel}
 Epoch:		0
+Group:		Development/Languages
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
 Provides:	irb = %{version}-%{release}
 Provides:	ruby(irb) = %{version}-%{release}
