@@ -437,6 +437,11 @@ if [ $rubygems_ver != %{rubygems_ver} ]; then
 	echo "Set %%define rubygems_ver to $rubygems_ver and re-run."
 	exit 1
 fi
+rdoc_ver=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rdoc.rb | xargs)
+if [ $rdoc_ver != %{rdoc_ver} ]; then
+	echo "Set %%define rdoc_ver to $rdoc_ver and re-run."
+	exit 1
+fi
 
 cp -f /usr/share/automake/config.sub .
 
