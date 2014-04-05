@@ -1,4 +1,5 @@
 strip ccache from CC and CXX from rbconfig.rb
+as a side effect, we need to pass CC to sub-makes
 
 --- ruby-2.0.0-p353/tool/mkconfig.rb~	2013-03-24 17:42:06.000000000 +0200
 +++ ruby-2.0.0-p353/tool/mkconfig.rb	2014-03-18 10:34:08.489251715 +0200
@@ -10,3 +11,32 @@ strip ccache from CC and CXX from rbconfig.rb
      when /^arch$/; if val.empty? then val = arch else arch = val end
      when /^sitearch$/; val = '$(arch)' if val.empty?
      end
+--- ruby-2.0.0-p451/common.mk	2014-04-05 16:16:52.983112032 +0300
++++ ruby-2.0.0-p451/common.mk	2014-04-05 16:26:58.679843426 +0300
+@@ -176,7 +176,7 @@
+ configure-ext: $(EXTS_MK)
+ 
+ build-ext: $(EXTS_MK)
+-	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) $(EXTSTATIC) LIBRUBY_EXTS=$(LIBRUBY_EXTS) ENCOBJS="$(ENCOBJS)"
++	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) $(EXTSTATIC) LIBRUBY_EXTS=$(LIBRUBY_EXTS) ENCOBJS="$(ENCOBJS)" CC="$(CC)"
+ 
+ $(MKMAIN_CMD): $(MKFILES) all-incs $(PREP) $(RBCONFIG) $(LIBRUBY)
+ 	$(Q)$(MINIRUBY) $(srcdir)/ext/extmk.rb --make="$(MAKE)" --command-output=$@ $(EXTMK_ARGS)
+@@ -545,7 +545,7 @@
+ 	$(ECHO) making $@
+ 	$(Q) $(MAKE) -f $(ENC_MK) V="$(V)" \
+ 		RUBY="$(MINIRUBY)" MINIRUBY="$(MINIRUBY)" \
+-		$(MFLAGS) $@
++		$(MFLAGS) CC="$(CC)" $@
+ 
+ 
+ libenc enc: {$(VPATH)}encdb.h
+@@ -860,7 +860,7 @@
+ 
+ srcs-enc: $(ENC_MK)
+ 	$(ECHO) making srcs under enc
+-	$(Q) $(MAKE) -f $(ENC_MK) RUBY="$(MINIRUBY)" MINIRUBY="$(MINIRUBY)" $(MFLAGS) srcs
++	$(Q) $(MAKE) -f $(ENC_MK) RUBY="$(MINIRUBY)" MINIRUBY="$(MINIRUBY)" CC="$(CC)" $(MFLAGS) srcs
+ 
+ all-incs: incs
+ incs: $(INSNS) {$(VPATH)}node_name.inc {$(VPATH)}encdb.h {$(VPATH)}transdb.h {$(VPATH)}known_errors.inc \
