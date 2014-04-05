@@ -18,7 +18,7 @@
 %define		patchlevel	451
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	1_9_3
+%define		doc_version	2_0_0
 
 %define		bigdecimal_ver	1.2.0
 %define		io_console_ver	0.4.2
@@ -49,9 +49,9 @@ Source0:	ftp://ftp.ruby-lang.org/pub/ruby/2.0/%{oname}-%{basever}-p%{patchlevel}
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	ec622612428672c432b6f65dd31a84b5
+# Source2-md5:	d838ca9045cb72f07285f59b1e7d9368
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	1892aadde51d36106c513bced2193dff
+# Source3-md5:	e15b646e1b26b504ceb1a5f75e4a962c
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
