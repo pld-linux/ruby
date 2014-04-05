@@ -73,6 +73,7 @@ Patch9:		DESTDIR.patch
 Patch10:	empty-ruby-version.patch
 Patch11:	rubygems-2.0.0-binary-extensions.patch
 Patch12:	custom-rubygems-location.patch
+Patch13:	readline-6.3.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -437,6 +438,7 @@ Biblioteka JSON dla języka Ruby.
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
@@ -692,8 +694,10 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/tsort.rb
 %{ruby_libdir}/[u-z]*.rb
 %if %{with batteries}
-#%exclude %{ruby_libdir}/rubygems.rb
-#%exclude %{ruby_libdir}/ubygems.rb
+%exclude %{ruby_libdir}/rubygems.rb
+%exclude %{ruby_libdir}/ubygems.rb
+%exclude %{ruby_libdir}/rbconfig/datadir.rb
+%exclude %{ruby_libdir}/rbconfig/obsolete.rb
 %endif
 %exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
