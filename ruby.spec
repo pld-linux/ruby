@@ -13,7 +13,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		0.4
+%define		rel		0.5
 %define		ruby_version	2.0
 %define		basever		2.0.0
 %define		patchlevel	451
@@ -119,16 +119,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # This is the local lib/arch and should not be used for packaging.
 %define	sitedir			site_ruby
-%define	ruby_sitedir		%{_prefix}/local/share/%{oname}/%{sitedir}
 %define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{oname}/%{sitedir}/%{ruby_version}
-%define	ruby_sitelibdir		%{_prefix}/local/share/%{oname}/%{sitedir}/%{ruby_version}
+%define	ruby_sitelibdir		%{_prefix}/local/share/%{oname}/%{sitedir}
 
 # This is the general location for libs/archs compatible with all
 # or most of the Ruby versions available in the PLD repositories.
 %define	vendordir		vendor_ruby
-%define	ruby_vendordir		%{_datadir}/%{oname}/%{vendordir}
 %define	ruby_vendorarchdir	%{_libdir}/%{oname}/%{vendordir}/%{ruby_version}
-%define	ruby_vendorlibdir	%{_datadir}/%{oname}/%{vendordir}/%{ruby_version}
+%define	ruby_vendorlibdir	%{_datadir}/%{oname}/%{vendordir}
 
 # TODO: drop legacy loadpaths after all ruby modules rebuilt in Th
 %define	legacy_libdir		%{_libdir}/%{oname}/%{ruby_version}
@@ -507,7 +505,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
 	$RPM_BUILD_ROOT%{ruby_vendorarchdir} \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
-	$RPM_BUILD_ROOT%{ruby_vendordir}/data \
+	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/data \
 
 %{__make} install %{?with_doc:install-doc} \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -559,8 +557,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{ruby_libdir}
 %dir %{ruby_archdir}
-%dir %{ruby_vendordir}
-#%dir %{ruby_vendordir}/data
 %dir %{ruby_vendorlibdir}
 %dir %{ruby_vendorarchdir}
 
@@ -571,7 +567,8 @@ rm -rf $RPM_BUILD_ROOT
 #%dir %{ruby_rdocdir}
 
 # common dirs for ruby vendor modules
-#%dir %{ruby_vendorlibdir}/net
+%dir %{ruby_vendorlibdir}/data
+%dir %{ruby_vendorlibdir}/net
 
 %if 0
 # legacy dirs. when everything rebuilt in Th not using these dirs. drop them
