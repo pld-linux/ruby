@@ -101,6 +101,7 @@ Provides:	ruby(ver) = %{ruby_version}
 Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread <= 0.6.3
+Conflicts:	rpm-build-macros < 1.692
 Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
