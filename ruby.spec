@@ -4,6 +4,7 @@
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
 #   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
 # - fix requires/provides 'ruby(abi) = '
+# - nil this macro: %ruby_mod_ver_requires_eq "Requires: ruby-modules(ver) = "
 # - fix tk build
 #
 # Conditional build:
