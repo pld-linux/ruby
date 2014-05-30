@@ -6,6 +6,11 @@
 # - fix requires/provides 'ruby(abi) = '
 # - nil this macro: %ruby_mod_ver_requires_eq "Requires: ruby-modules(ver) = "
 # - fix tk build
+# - %ruby_version is empty and rpm error then
+# - vendor packages get installed to /usr/share/ruby/vendor_ruby/PACKAGE, which
+#   will be installed fine on ruby < 2.0, but not usable as path not in include
+#   path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
+#   for packages with gem deps it's simple: ruby-listen-2.7.1-0.2.noarch marks ruby-modules-2.0.0.451-0.17.x86_64 (cap /usr/share/gems/specifications)
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -14,10 +19,10 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		0.5
+%define		rel		0.18
 %define		ruby_version	2.0
 %define		basever		2.0.0
-%define		patchlevel	451
+%define		patchlevel	481
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_0_0
@@ -47,7 +52,7 @@ Epoch:		1
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 Source0:	ftp://ftp.ruby-lang.org/pub/ruby/2.0/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	908e4d1dbfe7362b15892f16af05adf8
+# Source0-md5:	ea406a8d415a1a5d8365596d4288f3da
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
@@ -75,7 +80,6 @@ Patch9:		DESTDIR.patch
 Patch10:	empty-ruby-version.patch
 Patch11:	rubygems-2.0.0-binary-extensions.patch
 Patch12:	custom-rubygems-location.patch
-Patch13:	readline-6.3.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -88,7 +92,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
-# boostrap needs ruby binary, erb module
+# bootstrap needs ruby binary, erb module
 %{!?with_bootstrap:BuildRequires:	rpm-rubyprov}
 %{!?with_bootstrap:BuildRequires:	ruby-modules}
 %{!?with_bootstrap:BuildRequires:	ruby}
@@ -439,7 +443,6 @@ Biblioteka JSON dla języka Ruby.
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
-%patch13 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
