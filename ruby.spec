@@ -447,6 +447,10 @@ Biblioteka JSON dla języka Ruby.
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
 
+# Install custom operating_system.rb.
+install -d lib/rubygems/defaults
+cp -p %{SOURCE6} lib/rubygems/defaults
+
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
 find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
@@ -523,8 +527,7 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 %{__rm} -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/html
 
 # detect this runtime, "make install" is affected by operating_system.rb what is installed in system!
-# TODO: use freshly built ruby&rubygems
-gem_dir=$(ruby -r rubygems -e 'puts Gem.default_dir')
+gem_dir=$(./miniruby -I. -Ilib -r rubygems -e 'puts Gem.default_dir')
 
 # Move gems root into common directory, out of Ruby directory structure.
 install -d $RPM_BUILD_ROOT%{gem_dir}
@@ -617,10 +620,6 @@ sed -i '/^end$/ i\
 
 sed -i '/^end$/ i\
   s.require_paths = ["lib"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
-
-# Install custom operating_system.rb.
-install -d $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/defaults
-cp -p %{SOURCE6} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/defaults
 
 ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%{ruby_suffix}
 
