@@ -19,7 +19,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		0.18
+%define		rel		0.19
 %define		ruby_version	2.0
 %define		basever		2.0.0
 %define		patchlevel	481
@@ -112,7 +112,7 @@ Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	ruby_ridir		%{_datadir}/ri/%{ruby_version}/system
+%define	ruby_ridir		%{_datadir}/ri/system
 %define	gem_dir			%{_datadir}/gems
 %define	gem_libdir		%{_libdir}/gems/%{oname}
 
@@ -516,7 +516,7 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/data \
 
-%{__make} install %{?with_doc:install-doc} \
+%{__make} install %{?with_doc:install-doc -j1} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
@@ -637,8 +637,8 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 
 %if %{with doc}
 # too much .ri
-#%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/cache.ri
-#%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/created.rid
+%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/cache.ri
+%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/created.rid
 %endif
 
 %clean
@@ -664,8 +664,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_vendorlibdir}
 %dir %{ruby_vendorarchdir}
 
-%dir %{_datadir}/ri
-%dir %{_datadir}/ri/%{ruby_version}
+%dir %{dirname:%{ruby_ridir}}
 %dir %{ruby_ridir}
 %dir %{ruby_rdocdir}
 
