@@ -11,6 +11,9 @@
 #   will be installed fine on ruby < 2.0, but not usable as path not in include
 #   path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
 #   for packages with gem deps it's simple: ruby-listen-2.7.1-0.2.noarch marks ruby-modules-2.0.0.451-0.17.x86_64 (cap /usr/share/gems/specifications)
+# - File::FNM_CASEFOLD does not work at all:
+#   $ LC_ALL=C ruby -e 'Dir.glob("/usr/lib64/*tk8.5.*", File::FNM_CASEFOLD).find{|file| puts file}'
+#   -e:1:in `glob': invalid byte sequence in US-ASCII (ArgumentError)
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -19,7 +22,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		0.19
+%define		rel		0.20
 %define		ruby_version	2.0
 %define		basever		2.0.0
 %define		patchlevel	481
@@ -446,6 +449,10 @@ Biblioteka JSON dla języka Ruby.
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
+
+# File::FNM_CASEFOLD gives ArgumentError errors, disabling it seems to make tk configure to succeed
+# http://sprunge.us/CXEO
+%{__sed} -i -e 's/, File::FNM_CASEFOLD//' ext/tk/extconf.rb
 
 # Install custom operating_system.rb.
 install -d lib/rubygems/defaults
