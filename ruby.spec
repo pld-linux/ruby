@@ -19,7 +19,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		0.19
+%define		rel		0.21
 %define		ruby_version	2.0
 %define		basever		2.0.0
 %define		patchlevel	481
@@ -519,6 +519,10 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
 %{__make} install %{?with_doc:install-doc -j1} \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# Version is empty if --with-ruby-version is specified.
+# http://bugs.ruby-lang.org/issues/7807
+sed -i -e 's/Version: \${ruby_version}/Version: %{ruby_version}/' $RPM_BUILD_ROOT%{_pkgconfigdir}/%{oname}-%{ruby_version}.pc
+
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
@@ -539,7 +543,7 @@ mv $RPM_BUILD_ROOT${gem_dir}/{gems,specifications} $RPM_BUILD_ROOT%{gem_dir}
 # NOTE: when making symlinks, do not symlink paths that could be directories,
 # as there may came files from other packages as well. actually, unlikely as
 # the links to got system dir and only ruby may package there (other distro
-# packages should go to vendo dirs)
+# packages should go to vendor dirs)
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
 mv $RPM_BUILD_ROOT%{ruby_libdir}/rake* $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
 ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake $RPM_BUILD_ROOT%{ruby_libdir}
@@ -687,7 +691,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libruby.so
 %{_includedir}/%{oname}-%{ruby_version}
-%{_pkgconfigdir}/ruby-%{ruby_version}.pc
+%{_pkgconfigdir}/%{oname}-%{ruby_version}.pc
 %{ruby_libdir}/mkmf.rb
 
 %files static
