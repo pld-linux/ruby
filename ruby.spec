@@ -7,12 +7,12 @@
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
-%bcond_without	tk		# skip building package with Tk bindings
+%bcond_with	tk		# skip building package with Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		2
+%define		rel		3
 %define		ruby_version	1.9
 %define		basever		1.9.3
 %define		patchlevel	547
