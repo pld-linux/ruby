@@ -3,10 +3,11 @@
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
 #   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
-# - vendor packages get installed to /usr/share/ruby/vendor_ruby/PACKAGE, which
-#   will be installed fine on ruby < 2.0, but not usable as path not in include
-#   path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
+# - vendor *noarch* packages get installed to /usr/share/ruby/vendor_ruby/PACKAGE, which
+#   will be installed fine on ruby < 2.0, but not usable as dir not in included
+#   in load_path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
 #   for packages with gem deps it's simple: ruby-listen-2.7.1-0.2.noarch marks ruby-modules-2.0.0.451-0.17.x86_64 (cap /usr/share/gems/specifications)
+#   add that dir to legacy loadpath?
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
