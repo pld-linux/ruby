@@ -3,7 +3,6 @@
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
 #   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
-# - nil this macro: %ruby_mod_ver_requires_eq "Requires: ruby-modules(ver) = "
 # - vendor packages get installed to /usr/share/ruby/vendor_ruby/PACKAGE, which
 #   will be installed fine on ruby < 2.0, but not usable as path not in include
 #   path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
