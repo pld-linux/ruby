@@ -3,10 +3,7 @@
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
 #   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
-# - fix requires/provides 'ruby(abi) = '
 # - nil this macro: %ruby_mod_ver_requires_eq "Requires: ruby-modules(ver) = "
-# - fix tk build
-# - %ruby_version is empty and rpm error then
 # - vendor packages get installed to /usr/share/ruby/vendor_ruby/PACKAGE, which
 #   will be installed fine on ruby < 2.0, but not usable as path not in include
 #   path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
@@ -14,7 +11,7 @@
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
-%bcond_without	tk		# skip building package with Tk bindings
+%bcond_with	tk		# build Tk bindings (tcl8.6 is not supported)
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
