@@ -453,6 +453,9 @@ find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
 	-o -name 'ruby.1' -o -name '*.html' -o -name '*.tcl' ')' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
 
+# no configure option to disable, so just rm
+%{!?with_tk:rm -rf ext/tk}
+
 %build
 rubygems_ver=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rubygems.rb | xargs)
 if [ $rubygems_ver != %{rubygems_ver} ]; then
