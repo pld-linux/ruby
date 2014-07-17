@@ -3,31 +3,38 @@
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
 #   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
-#   - custom-rubygems-location.patch
+# - vendor *noarch* packages get installed to /usr/share/ruby/vendor_ruby/PACKAGE, which
+#   will be installed fine on ruby < 2.0, but not usable as dir not in included
+#   in load_path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
+#   for packages with gem deps it's simple: ruby-listen-2.7.1-0.2.noarch marks ruby-modules-2.0.0.451-0.17.x86_64 (cap /usr/share/gems/specifications)
+#   add that dir to legacy loadpath?
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
-%bcond_with	tk		# skip building package with Tk bindings
+%bcond_with	tk		# build Tk bindings (tcl8.6 is not supported)
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		3
-%define		ruby_version	1.9
-%define		basever		1.9.3
-%define		patchlevel	547
+%define		rel		1
+%define		ruby_version	2.0
+%define		basever		2.0.0
+%define		patchlevel	481
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	1_9_3
-%define		json_ver	1.5.5
-%define		rake_ver	0.9.2.2
-%define		rubygems_ver	1.8.23.2
-%define		minitest_ver	2.5.1
-# when increasing rdoc_ver, please remove "11." prefix in rdoc package release
-%define		rdoc_ver	3.9.5
+%define		doc_version	2_0_0
+
+%define		bigdecimal_ver	1.2.0
+%define		io_console_ver	0.4.2
 %define		irb_ver		0.9.6
-%define		bigdecimal_ver	1.1.0
-%define		io_console_ver	0.3
+%define		json_ver	1.7.7
+%define		minitest_ver	4.3.2
+%define		psych_ver	2.0.0
+%define		rake_ver	0.9.6
+%define		rdoc_ver	4.0.0
+%define		rubygems_ver	2.0.14
+%define		test_unit_ver	2.0.0.0
+
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -41,30 +48,36 @@ Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.9/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	5363d399be7f827c77bf8ae5d1a69b38
+Source0:	ftp://ftp.ruby-lang.org/pub/ruby/2.0/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
+# Source0-md5:	ea406a8d415a1a5d8365596d4288f3da
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	ec622612428672c432b6f65dd31a84b5
+# Source2-md5:	e93307804295a43512cafbf660a4cbe0
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	1892aadde51d36106c513bced2193dff
+# Source3-md5:	900186f317b51edfbb2f5317f8855719
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
 Source5:	testrb.1
+Source6:	operating_system.rb
 Patch0:		%{oname}-lib64.patch
 Patch1:		%{oname}-ffs.patch
 Patch2:		fix-bison-invocation.patch
 # http://redmine.ruby-lang.org/issues/5231
-Patch3:		disable-versioned-paths.patch
+#Patch3:		disable-versioned-paths.patch
 # TODO: Should be submitted upstream?
-Patch4:		arch-specific-dir.patch
+#Patch4:		arch-specific-dir.patch
 # http://redmine.ruby-lang.org/issues/5281
-Patch5:		site-and-vendor-arch-flags.patch
+#Patch5:		site-and-vendor-arch-flags.patch
 # Make mkmf verbose by default
 Patch6:		mkmf-verbose.patch
 Patch7:		strip-ccache.patch
+Patch8:		duplicated-paths.patch
+Patch9:		DESTDIR.patch
+Patch10:	empty-ruby-version.patch
+Patch11:	rubygems-2.0.0-binary-extensions.patch
+Patch12:	custom-rubygems-location.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -77,7 +90,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
-# boostrap needs ruby binary, erb module
+# bootstrap needs ruby binary, erb module
 %{!?with_bootstrap:BuildRequires:	rpm-rubyprov}
 %{!?with_bootstrap:BuildRequires:	ruby-modules}
 %{!?with_bootstrap:BuildRequires:	ruby}
@@ -91,31 +104,32 @@ Provides:	ruby(ver) = %{ruby_version}
 Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread <= 0.6.3
+Conflicts:	rpm-build-macros < 1.694
 Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	ruby_ridir		%{_datadir}/ri/%{ruby_version}/system
-%define	gem_dir			%{_datadir}/%{oname}/gems/%{ruby_version}
+%define	ruby_ridir		%{_datadir}/ri/system
+%define	gem_dir			%{_datadir}/gems
+%define	gem_libdir		%{_libdir}/gems/%{oname}
 
 # location where rubygems is installed
 %define	rubygems_dir		%{ruby_libdir}
 
 %define	ruby_archdir		%{_libdir}/%{oname}/%{ruby_version}
+%define	ruby_libarchdir		%{_libdir}/%{oname}/%{ruby_version}
 %define	ruby_libdir		%{_datadir}/%{oname}/%{ruby_version}
 
 # This is the local lib/arch and should not be used for packaging.
 %define	sitedir			site_ruby
-%define	ruby_sitedir		%{_prefix}/local/share/%{oname}/%{sitedir}
 %define	ruby_sitearchdir	%{_prefix}/local/%{_lib}/%{oname}/%{sitedir}/%{ruby_version}
-%define	ruby_sitelibdir		%{_prefix}/local/share/%{oname}/%{sitedir}/%{ruby_version}
+%define	ruby_sitelibdir		%{_prefix}/local/share/%{oname}/%{sitedir}
 
 # This is the general location for libs/archs compatible with all
 # or most of the Ruby versions available in the PLD repositories.
 %define	vendordir		vendor_ruby
-%define	ruby_vendordir		%{_datadir}/%{oname}/%{vendordir}
 %define	ruby_vendorarchdir	%{_libdir}/%{oname}/%{vendordir}/%{ruby_version}
-%define	ruby_vendorlibdir	%{_datadir}/%{oname}/%{vendordir}/%{ruby_version}
+%define	ruby_vendorlibdir	%{_datadir}/%{oname}/%{vendordir}
 
 # TODO: drop legacy loadpaths after all ruby modules rebuilt in Th
 %define	legacy_libdir		%{_libdir}/%{oname}/%{ruby_version}
@@ -183,6 +197,8 @@ Provides:	ruby-modules(ver) = %{ruby_version}
 Provides:	ruby-minitest = %{minitest_ver}
 Obsoletes:	ruby-minitest <= 1.5.0
 %endif
+# FIXME later
+Provides:	ruby(abi) = %{ruby_version}
 
 %description modules
 Ruby standard modules and utilities:
@@ -302,8 +318,7 @@ from the terminal.
 Summary:	A tool to generate HTML and command-line documentation for Ruby projects
 Summary(pl.UTF-8):	Narzędzie do generowania dokumentacji HTML i linii poleceń dla projektów w Rubym
 Version:	%{rdoc_ver}
-# remove "11." when rdoc_ver is increased
-Release:	11.%{basever}.%{patchlevel}.%{rel}
+Release:	%{basever}.%{patchlevel}.%{rel}
 Epoch:		0
 License:	GPL v2 and Ruby and MIT
 Group:		Development/Libraries
@@ -415,20 +430,32 @@ Biblioteka JSON dla języka Ruby.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+#%patch3 -p1
+#%patch4 -p1
+#%patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
+
+# Install custom operating_system.rb.
+install -d lib/rubygems/defaults
+cp -p %{SOURCE6} lib/rubygems/defaults
 
 find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 
 find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
 	-o -name 'ruby.1' -o -name '*.html' -o -name '*.tcl' ')' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
+
+# no configure option to disable, so just rm
+%{!?with_tk:rm -rf ext/tk}
 
 %build
 rubygems_ver=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rubygems.rb | xargs)
@@ -456,18 +483,23 @@ cd ..
 %configure \
 	%{?with_bootstrap:--with-baseruby=%{oname}-1.8.7-p330/miniruby} \
 	--program-suffix=%{ruby_suffix} \
-	--with-rubylibprefix=%(dirname %{ruby_libdir}) \
-	--with-archdir=%{ruby_archdir} \
-	--with-sitedir=%(dirname %{ruby_sitelibdir}) \
+	--with-rubygemsdir=%{rubygems_dir} \
+	--with-rubylibprefix=%{ruby_libdir} \
+	--with-rubyarchprefix=%{ruby_archdir} \
+	--with-sitedir=%{ruby_sitelibdir} \
 	--with-sitearchdir=%{ruby_sitearchdir} \
-	--with-vendordir=%(dirname %{ruby_vendorlibdir}) \
+	--with-vendordir=%{ruby_vendorlibdir} \
 	--with-vendorarchdir=%{ruby_vendorarchdir} \
-	--with-search-path="%{legacy_loadpaths}" \
+	--with-rubyhdrdir=%{_includedir}/%{oname}-%{ruby_version} \
+	--with-rubyarchhdrdir=%{_includedir}/%{oname}-%{ruby_version} \
+	--with-sitearchhdrdir='$(sitehdrdir)/$(arch)' \
+	--with-vendorarchhdrdir='$(vendorhdrdir)/$(arch)' \
 	--enable-shared \
 	--enable-pthread \
+	--enable-multiarch \
 	--disable-rubygems \
 	--disable-install-doc \
-	--with-ruby-version=minor
+	--with-ruby-version=''
 
 %{__make} -j1 main \
 	COPY="cp -p" Q= \
@@ -480,13 +512,16 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
-	$RPM_BUILD_ROOT{%{ruby_vendorarchdir} \
+	$RPM_BUILD_ROOT%{ruby_vendorarchdir} \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
-	$RPM_BUILD_ROOT%{ruby_vendordir}/data \
-	$RPM_BUILD_ROOT{%{legacy_archdir}/racc,%{legacy_sitelibdir},%{legacy_sitearchdir},%{legacy_vendorarchdir},%{legacy_libdir}/tasks} \
+	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/data \
 
-%{__make} install %{?with_doc:install-doc} \
+%{__make} install %{?with_doc:install-doc -j1} \
 	DESTDIR=$RPM_BUILD_ROOT
+
+# Version is empty if --with-ruby-version is specified.
+# http://bugs.ruby-lang.org/issues/7807
+sed -i -e 's/Version: \${ruby_version}/Version: %{ruby_version}/' $RPM_BUILD_ROOT%{_pkgconfigdir}/%{oname}-%{ruby_version}.pc
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
@@ -494,6 +529,101 @@ cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 
 %{__rm} -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/html
+
+# detect this runtime, "make install" is affected by operating_system.rb what is installed in system!
+gem_dir=$(./miniruby -I. -Ilib -r rubygems -e 'puts Gem.default_dir')
+
+# Move gems root into common directory, out of Ruby directory structure.
+install -d $RPM_BUILD_ROOT%{gem_dir}
+mv $RPM_BUILD_ROOT${gem_dir}/{gems,specifications} $RPM_BUILD_ROOT%{gem_dir}
+
+# Move bundled rubygems to %gem_dir
+# make symlinks for io-console and bigdecimal, which are considered to be part of stdlib by other Gems
+# make symlinks for all packages, so they would work without rubygems
+# NOTE: when making symlinks, do not symlink paths that could be directories,
+# as there may came files from other packages as well. actually, unlikely as
+# the links to got system dir and only ruby may package there (other distro
+# packages should go to vendor dirs)
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libdir}/rake* $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
+ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake $RPM_BUILD_ROOT%{ruby_libdir}
+ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake.rb $RPM_BUILD_ROOT%{ruby_libdir}
+mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rake-%{rake_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libdir}/rdoc* $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
+ln -s %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib/rdoc $RPM_BUILD_ROOT%{ruby_libdir}
+ln -s %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib/rdoc.rb $RPM_BUILD_ROOT%{ruby_libdir}
+mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rdoc-%{rdoc_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
+install -d $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bigdecimal-%{bigdecimal_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+ln -s %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal
+ln -s %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so
+
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
+install -d $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
+mv $RPM_BUILD_ROOT%{ruby_libdir}/io $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libarchdir}/io/console.so $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
+mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/io-console-%{io_console_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+ln -s %{gem_dir}/gems/io-console-%{io_console_ver}/lib/io $RPM_BUILD_ROOT%{ruby_libdir}/io
+ln -s %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so $RPM_BUILD_ROOT%{ruby_libarchdir}/io/console.so
+
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/json-%{json_ver}/lib
+install -d $RPM_BUILD_ROOT%{gem_libdir}/json-%{json_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libdir}/json* $RPM_BUILD_ROOT%{gem_dir}/gems/json-%{json_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libarchdir}/json $RPM_BUILD_ROOT%{gem_libdir}/json-%{json_ver}/lib
+mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/json-%{json_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+ln -s %{gem_dir}/gems/json-%{json_ver}/lib/json $RPM_BUILD_ROOT%{ruby_libdir}/json
+ln -s %{gem_dir}/gems/json-%{json_ver}/lib/json.rb $RPM_BUILD_ROOT%{ruby_libdir}/json.rb
+install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
+ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/parser.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
+ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/generator.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
+
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libdir}/minitest $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
+ln -s %{gem_dir}/gems/minitest-%{minitest_ver}/lib/minitest $RPM_BUILD_ROOT%{ruby_libdir}
+mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/minitest-%{minitest_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
+install -d $RPM_BUILD_ROOT%{ruby_libdir}/test
+mv $RPM_BUILD_ROOT%{ruby_libdir}/test/unit $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
+ln -s %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib/unit $RPM_BUILD_ROOT%{ruby_libdir}/test
+mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/test-unit-%{test_unit_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
+install -d $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libdir}/psych* $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
+mv $RPM_BUILD_ROOT%{ruby_libarchdir}/psych.so $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib/
+mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/psych-%{psych_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+ln -s %{gem_dir}/gems/psych-%{psych_ver}/lib/psych $RPM_BUILD_ROOT%{ruby_libdir}/psych
+ln -s %{gem_dir}/gems/psych-%{psych_ver}/lib/psych.rb $RPM_BUILD_ROOT%{ruby_libdir}/psych.rb
+ln -s %{gem_libdir}/psych-%{psych_ver}/lib/psych.so $RPM_BUILD_ROOT%{ruby_archdir}/psych.so
+
+# Adjust the gemspec files so that the gems will load properly
+sed -i '/^end$/ i\
+  s.require_paths = ["lib"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/rake-%{rake_ver}.gemspec
+
+sed -i '/^end$/ i\
+  s.require_paths = ["lib"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/rdoc-%{rdoc_ver}.gemspec
+
+sed -i '/^end$/ i\
+  s.require_paths = ["lib"]\
+  s.extensions = ["bigdecimal.so"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
+
+sed -i '/^end$/ i\
+  s.require_paths = ["lib"]\
+  s.extensions = ["io/console.so"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
+
+sed -i '/^end$/ i\
+  s.require_paths = ["lib"]\
+  s.extensions = ["json/ext/parser.so", "json/ext/generator.so"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/json-%{json_ver}.gemspec
+
+sed -i '/^end$/ i\
+  s.require_paths = ["lib"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
 
 ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%{ruby_suffix}
 
@@ -505,7 +635,7 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 %{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
-%{__rm} $RPM_BUILD_ROOT%{gem_dir}/specifications/{json,minitest,rake}-*.gemspec
+%{__rm} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/{json,minitest,rake}-*.gemspec
 %{?with_doc:%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON}
 %endif
 
@@ -523,7 +653,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS LEGAL README README.EXT ChangeLog ToDo
+%doc NEWS LEGAL README README.EXT ChangeLog
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
@@ -535,20 +665,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{ruby_libdir}
 %dir %{ruby_archdir}
-%dir %{ruby_vendordir}
-%dir %{ruby_vendordir}/data
 %dir %{ruby_vendorlibdir}
 %dir %{ruby_vendorarchdir}
 
-%dir %{_datadir}/ri
-%dir %{_datadir}/ri/%{ruby_version}
+%dir %{dirname:%{ruby_ridir}}
 %dir %{ruby_ridir}
-
 %dir %{ruby_rdocdir}
 
 # common dirs for ruby vendor modules
+%dir %{ruby_vendorlibdir}/data
 %dir %{ruby_vendorlibdir}/net
 
+%if 0
 # legacy dirs. when everything rebuilt in Th not using these dirs. drop them
 %dir %{legacy_archdir}
 %dir %{legacy_sitedir}
@@ -557,12 +685,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{legacy_vendorarchdir}
 %dir %{legacy_libdir}/tasks
 %dir %{legacy_archdir}/racc
+%endif
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libruby.so
 %{_includedir}/%{oname}-%{ruby_version}
-%{_pkgconfigdir}/ruby-%{ruby_version}.pc
+%{_pkgconfigdir}/%{oname}-%{ruby_version}.pc
 %{ruby_libdir}/mkmf.rb
 
 %files static
@@ -593,6 +722,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rdoc%{ruby_suffix}.1*
 %{ruby_libdir}/rdoc
 %dir %{gem_dir}/gems/rdoc-%{rdoc_ver}
+%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
 %dir %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin
 %attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc
 %{gem_dir}/specifications/rdoc-%{rdoc_ver}.gemspec
@@ -602,9 +732,11 @@ rm -rf $RPM_BUILD_ROOT
 %files rubygems
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/gem%{ruby_suffix}
+%dir %{rubygems_dir}
 %{rubygems_dir}/rubygems
 %{rubygems_dir}/rubygems.rb
 %{rubygems_dir}/ubygems.rb
+%{rubygems_dir}/rbconfig
 
 %files rake
 %defattr(644,root,root,755)
@@ -612,6 +744,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/rake%{ruby_suffix}.1*
 %{ruby_libdir}/rake
 %dir %{gem_dir}/gems/rake-%{rake_ver}
+%{gem_dir}/gems/rake-%{rake_ver}/lib
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
@@ -622,14 +755,21 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_archdir}/json
 %dir %{ruby_archdir}/json/ext
 %attr(755,root,root) %{ruby_archdir}/json/ext/*.so
+
+%dir %{gem_libdir}/json-%{json_ver}
+%dir %{gem_libdir}/json-%{json_ver}/lib
+%dir %{gem_libdir}/json-%{json_ver}/lib/json
+%dir %{gem_libdir}/json-%{json_ver}/lib/json/ext
+%attr(755,root,root) %{gem_libdir}/json-%{json_ver}/lib/json/ext/generator.so
+%attr(755,root,root) %{gem_libdir}/json-%{json_ver}/lib/json/ext/parser.so
+
+%{gem_dir}/gems/json-%{json_ver}
 %{gem_dir}/specifications/json-%{json_ver}.gemspec
 %endif
 
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
-%attr(755,root,root) %{_bindir}/testrb%{ruby_suffix}
-%{ruby_libdir}/bigdecimal
 %{ruby_libdir}/cgi
 %{ruby_libdir}/date
 %{ruby_libdir}/digest
@@ -641,7 +781,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/net
 %{ruby_libdir}/openssl
 %{ruby_libdir}/optparse
-%{ruby_libdir}/psych
 %{ruby_libdir}/racc
 %{ruby_libdir}/rbconfig
 %{ruby_libdir}/rexml
@@ -649,7 +788,8 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/ripper
 %{ruby_libdir}/rss
 %{ruby_libdir}/shell
-%{ruby_libdir}/syck
+#%{ruby_libdir}/syck
+%{ruby_libdir}/syslog
 %{ruby_libdir}/test
 %{ruby_libdir}/uri
 %{ruby_libdir}/webrick
@@ -668,6 +808,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with batteries}
 %exclude %{ruby_libdir}/rubygems.rb
 %exclude %{ruby_libdir}/ubygems.rb
+%exclude %{ruby_libdir}/rbconfig/datadir.rb
+%exclude %{ruby_libdir}/rbconfig/obsolete.rb
 %endif
 %exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
@@ -689,25 +831,54 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/racc/*.so
 %{ruby_archdir}/rbconfig.rb
 
+# bigdecimal
 %{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
+%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}
+%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
+%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+%attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
+%{ruby_libdir}/bigdecimal
+
+%dir %{_libdir}/gems
+%dir %{_libdir}/gems/%{oname}
+
+# io-console
 %{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
+%{gem_dir}/gems/io-console-%{io_console_ver}
+%dir %{gem_libdir}/io-console-%{io_console_ver}
+%dir %{gem_libdir}/io-console-%{io_console_ver}/lib
+%dir %{gem_libdir}/io-console-%{io_console_ver}/lib/io
+%attr(755,root,root) %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so
 
 %if %{with batteries}
 # minitest
 %{ruby_libdir}/minitest
+%{gem_dir}/gems/minitest-%{minitest_ver}
 %{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
 %endif
 
-# parents of gem_dir
-%dir %{_datadir}/%{oname}/gems
-#%dir %{_datadir}/%{oname}/gems/%{ruby_version}
-%dir %{_datadir}/%{oname}/gems/%{ruby_version}/gems
+%{gem_dir}/specifications/psych-%{psych_ver}.gemspec
+%{gem_dir}/gems/psych-%{psych_ver}
+%{ruby_libdir}/psych
+%dir %{gem_libdir}/psych-%{psych_ver}
+%dir %{gem_libdir}/psych-%{psych_ver}/lib
+%attr(755,root,root) %{gem_libdir}/psych-%{psych_ver}/lib/psych.so
+
+# test-unit
+%{gem_dir}/specifications/test-unit-%{test_unit_ver}.gemspec
+%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}
+%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
+%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin
+%attr(755,root,root) %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin/testrb
+%attr(755,root,root) %{_bindir}/testrb%{ruby_suffix}
+%{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %dir %{gem_dir}
+%dir %{gem_dir}/gems
 %dir %{gem_dir}/specifications
+%dir %{gem_dir}/specifications/default
 %{_mandir}/man1/erb%{ruby_suffix}.1*
 %{_mandir}/man1/ri%{ruby_suffix}.1*
-%{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %files doc
 %defattr(644,root,root,755)
