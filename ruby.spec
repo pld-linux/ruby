@@ -64,20 +64,13 @@ Source6:	operating_system.rb
 Patch0:		%{oname}-lib64.patch
 Patch1:		%{oname}-ffs.patch
 Patch2:		fix-bison-invocation.patch
-# http://redmine.ruby-lang.org/issues/5231
-#Patch3:		disable-versioned-paths.patch
-# TODO: Should be submitted upstream?
-#Patch4:		arch-specific-dir.patch
-# http://redmine.ruby-lang.org/issues/5281
-#Patch5:		site-and-vendor-arch-flags.patch
-# Make mkmf verbose by default
-Patch6:		mkmf-verbose.patch
-Patch7:		strip-ccache.patch
-Patch8:		duplicated-paths.patch
-Patch9:		DESTDIR.patch
-Patch10:	empty-ruby-version.patch
-Patch11:	rubygems-2.0.0-binary-extensions.patch
-Patch12:	custom-rubygems-location.patch
+Patch3:		mkmf-verbose.patch
+Patch4:		strip-ccache.patch
+Patch5:		duplicated-paths.patch
+Patch6:		DESTDIR.patch
+Patch7:		empty-ruby-version.patch
+Patch8:		rubygems-2.0.0-binary-extensions.patch
+Patch9:		custom-rubygems-location.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -430,16 +423,13 @@ Biblioteka JSON dla języka Ruby.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-#%patch3 -p1
-#%patch4 -p1
-#%patch5 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
