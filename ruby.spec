@@ -317,6 +317,10 @@ Epoch:		0
 License:	GPL v2 and Ruby and MIT
 Group:		Development/Libraries
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
+Requires:	%{name}-json
+# should the above be versioned?
+# = 0:%{json_ver}-%{basever}.%{patchlevel}.%{rel}
+Epoch:		0
 Obsoletes:	rdoc <= 0.9.0
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
