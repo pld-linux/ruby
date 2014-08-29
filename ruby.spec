@@ -318,7 +318,6 @@ Group:		Development/Libraries
 Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
 Requires:	%{name}-irb >= %{irb_ver}
 Requires:	%{name}-json >= %{json_ver}
-Epoch:		0
 Obsoletes:	rdoc <= 0.9.0
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
