@@ -16,7 +16,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		2
+%define		rel		3
 %define		ruby_version	2.0
 %define		basever		2.0.0
 %define		patchlevel	481
@@ -434,7 +434,7 @@ Biblioteka JSON dla języka Ruby.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
-%patch10 -p1
+#%patch10 -p1 broken
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
