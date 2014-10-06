@@ -738,6 +738,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rake%{ruby_suffix}
 %{_mandir}/man1/rake%{ruby_suffix}.1*
 %{ruby_libdir}/rake
+%{ruby_libdir}/rake.rb
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %{gem_dir}/gems/rake-%{rake_ver}/lib
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
@@ -799,7 +800,12 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/tmpdir.rb
 %{ruby_libdir}/tracer.rb
 %{ruby_libdir}/tsort.rb
-%{ruby_libdir}/[u-z]*.rb
+%{ruby_libdir}/un.rb
+%{ruby_libdir}/uri.rb
+%{ruby_libdir}/weakref.rb
+%{ruby_libdir}/webrick.rb
+%{ruby_libdir}/xmlrpc.rb
+%{ruby_libdir}/yaml.rb
 %if %{with batteries}
 %exclude %{ruby_libdir}/rubygems.rb
 %exclude %{ruby_libdir}/ubygems.rb
@@ -808,8 +814,37 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
-%attr(755,root,root) %{ruby_archdir}/[a-s]*.so
-%attr(755,root,root) %{ruby_archdir}/[u-z]*.so
+%exclude %{ruby_libdir}/rake.rb
+
+%{ruby_archdir}/rbconfig.rb
+%attr(755,root,root) %{ruby_archdir}/bigdecimal.so
+%attr(755,root,root) %{ruby_archdir}/continuation.so
+%attr(755,root,root) %{ruby_archdir}/coverage.so
+%attr(755,root,root) %{ruby_archdir}/curses.so
+%attr(755,root,root) %{ruby_archdir}/date_core.so
+%attr(755,root,root) %{ruby_archdir}/dbm.so
+%attr(755,root,root) %{ruby_archdir}/digest.so
+%attr(755,root,root) %{ruby_archdir}/dl.so
+%attr(755,root,root) %{ruby_archdir}/etc.so
+%attr(755,root,root) %{ruby_archdir}/fcntl.so
+%attr(755,root,root) %{ruby_archdir}/fiber.so
+%attr(755,root,root) %{ruby_archdir}/fiddle.so
+%attr(755,root,root) %{ruby_archdir}/gdbm.so
+%attr(755,root,root) %{ruby_archdir}/nkf.so
+%attr(755,root,root) %{ruby_archdir}/objspace.so
+%attr(755,root,root) %{ruby_archdir}/openssl.so
+%attr(755,root,root) %{ruby_archdir}/pathname.so
+%attr(755,root,root) %{ruby_archdir}/psych.so
+%attr(755,root,root) %{ruby_archdir}/pty.so
+%attr(755,root,root) %{ruby_archdir}/readline.so
+%attr(755,root,root) %{ruby_archdir}/ripper.so
+%attr(755,root,root) %{ruby_archdir}/sdbm.so
+%attr(755,root,root) %{ruby_archdir}/socket.so
+%attr(755,root,root) %{ruby_archdir}/stringio.so
+%attr(755,root,root) %{ruby_archdir}/strscan.so
+%attr(755,root,root) %{ruby_archdir}/syslog.so
+%attr(755,root,root) %{ruby_archdir}/zlib.so
+
 %dir %{ruby_archdir}/digest
 %attr(755,root,root) %{ruby_archdir}/digest/*.so
 %dir %{ruby_archdir}/dl
@@ -824,7 +859,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/mathn/*.so
 %dir %{ruby_archdir}/racc
 %attr(755,root,root) %{ruby_archdir}/racc/*.so
-%{ruby_archdir}/rbconfig.rb
 
 # bigdecimal
 %{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
