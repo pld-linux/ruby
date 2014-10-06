@@ -8,9 +8,9 @@
 -    arch_pat="`echo \"${arch}\" | sed 's/\\./\\\\./g'`"
 -    sitearch_pat="`echo \"${sitearch}\" | sed 's/\\./\\\\./g'`"
 -    val="`echo '\"'\"${val}\"'\"' |
-+    exec_prefix_pat="$(echo "${exec_prefix}" | sed 's/\\./\\\\./g')"
-+    arch_pat="$(echo "${arch}" | sed 's/\\./\\\\./g')"
-+    sitearch_pat="$(echo "${sitearch}" | sed 's/\\./\\\\./g')"
++    exec_prefix_pat="$(echo "${exec_prefix}" | sed 's/\./\\./g')"
++    arch_pat="$(echo "${arch}" | sed 's/\./\\./g')"
++    sitearch_pat="$(echo "${sitearch}" | sed 's/\./\\./g')"
 +    val="$(echo '"'"${val}"'"' |
  	sed \
 -	    -e 's/\${\([[A-Z][A-Z_]]*\)}/\"\1\"/g' \
@@ -74,7 +74,7 @@
      done
      expr=['s/${[^${}"]*}/"&"/g;'"${expr};"'s/"\(\${[^${}"]*}\)"/\1/g']
 -    eval $var='"`echo \"\\\"${'$var'}\\\"\" | sed \"$expr;s/\\\"//g\"`"'
-+    eval $var='"$(echo "\\"${'$var'}\\"" | sed "$expr;s/\\"//g")"'
++    eval $var='"$(echo "\"${'$var'}\"" | sed "$expr;s/\"//g")"'
  }
  
  rubylibprefix='${libdir}/${RUBY_BASE_NAME}'
