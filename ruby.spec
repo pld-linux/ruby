@@ -434,7 +434,7 @@ Biblioteka JSON dla języka Ruby.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
-#%patch10 -p1 broken
+%patch10 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
