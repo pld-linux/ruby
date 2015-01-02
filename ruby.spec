@@ -72,6 +72,7 @@ Patch7:		empty-ruby-version.patch
 Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
 Patch10:	%{oname}-posixsh.patch
+Patch11:	x32-asm.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -435,6 +436,7 @@ Biblioteka JSON dla języka Ruby.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
