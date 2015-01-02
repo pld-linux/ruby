@@ -5,7 +5,7 @@
  def find_X11(*opt_paths)
    defaults =
 -    [ "/usr/X11*/lib", "/usr/lib/X11*", "/usr/local/X11*", "/usr/openwin/lib" ]
-+    [ "/usr/X11*/lib", "/usr/X11*/lib64", "/usr/lib/X11*", "/usr/lib64/X11*", "/usr/local/X11*", "/usr/openwin/lib" ]
++    [ "/usr/X11*/lib", "/usr/X11*/lib64", "/usr/X11*/libx32", "/usr/lib/X11*", "/usr/lib64/X11*", "/usr/libx32/X11*", "/usr/local/X11*", "/usr/openwin/lib" ]
    paths = []
    opt_paths.compact.each{|path| paths.concat(Dir.glob(path.strip.chomp('/'), File::FNM_CASEFOLD))}
    defaults.compact.each{|path| paths.concat(Dir.glob(path.strip.chomp('/'), File::FNM_CASEFOLD))}
