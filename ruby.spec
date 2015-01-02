@@ -12,10 +12,10 @@
 %bcond_with	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		3
+%define		rel		1
 %define		ruby_version	1.9
 %define		basever		1.9.3
-%define		patchlevel	547
+%define		patchlevel	551
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	1_9_3
@@ -41,8 +41,8 @@ Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
-Source0:	ftp://ftp.ruby-lang.org/pub/ruby/1.9/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	5363d399be7f827c77bf8ae5d1a69b38
+Source0:	http://ftp.ruby-lang.org/pub/ruby/1.9/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
+# Source0-md5:	0d8b272b05c3449dc848bb7570f65bfe
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
