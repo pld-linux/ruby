@@ -16,7 +16,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		5
+%define		rel		6
 %define		ruby_version	2.0
 %define		basever		2.0.0
 %define		patchlevel	598
@@ -729,7 +729,6 @@ rm -rf $RPM_BUILD_ROOT
 %files rubygems
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/gem%{ruby_suffix}
-%dir %{rubygems_dir}
 %{rubygems_dir}/rubygems
 %{rubygems_dir}/rubygems.rb
 %{rubygems_dir}/ubygems.rb
