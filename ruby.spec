@@ -16,10 +16,10 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		6
+%define		rel		1
 %define		ruby_version	2.0
 %define		basever		2.0.0
-%define		patchlevel	598
+%define		patchlevel	643
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_0_0
@@ -49,7 +49,7 @@ Epoch:		1
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 Source0:	https://ftp.ruby-lang.org/pub/ruby/2.0/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	a3f3908103a7d209d1d1cf4712e3953c
+# Source0-md5:	1390888cac6cd175e6f164eff378cdde
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
@@ -67,7 +67,6 @@ Patch2:		fix-bison-invocation.patch
 Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
 Patch5:		duplicated-paths.patch
-Patch6:		DESTDIR.patch
 Patch7:		empty-ruby-version.patch
 Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
@@ -431,7 +430,6 @@ Biblioteka JSON dla języka Ruby.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
