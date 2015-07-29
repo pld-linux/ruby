@@ -495,7 +495,7 @@ cd ..
 	--enable-multiarch \
 	--disable-rubygems \
 	--disable-install-doc \
-	--with-ruby-version=''
+	--with-ruby-version=minor
 
 %{__make} -j1 main \
 	COPY="cp -p" Q= \
