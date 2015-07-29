@@ -16,13 +16,13 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		1
-%define		ruby_version	2.0
-%define		basever		2.0.0
-%define		patchlevel	645
+%define		rel		0.1
+%define		ruby_version	2.1
+%define		basever		2.1
+%define		patchlevel	6
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_0_0
+%define		doc_version	2_1_0
 
 %define		bigdecimal_ver	1.2.0
 %define		io_console_ver	0.4.2
@@ -31,8 +31,8 @@
 %define		minitest_ver	4.3.2
 %define		psych_ver	2.0.0
 %define		rake_ver	0.9.6
-%define		rdoc_ver	4.0.0
-%define		rubygems_ver	2.0.14
+%define		rdoc_ver	4.1.0
+%define		rubygems_ver	2.2.3
 %define		test_unit_ver	2.0.0.0
 
 %define		oname	ruby
@@ -49,14 +49,14 @@ Epoch:		1
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
-Source0:	https://ftp.ruby-lang.org/pub/ruby/2.0/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	d576240c97cfcc3ed9bdc457eb1e8280
+Source0:	https://ftp.ruby-lang.org/pub/ruby/2.1/%{oname}-%{basever}.%{patchlevel}.tar.xz
+# Source0-md5:	ec6f10ca331ce947802ede86259513a8
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	e93307804295a43512cafbf660a4cbe0
+# Source2-md5:	bf479c714ba189f9df633600b40aeef5
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	900186f317b51edfbb2f5317f8855719
+# Source3-md5:	3515d672874a1e48d4a8fd32c50639e7
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
@@ -424,22 +424,18 @@ This is a JSON implementation as a Ruby extension in C.
 Biblioteka JSON dla języka Ruby.
 
 %prep
-%if %{with bootstrap}
-%setup -q -n %{oname}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a100
-%else
-%setup -q -n %{oname}-%{basever}-p%{patchlevel} -a1 -a2 -a3
-%endif
+%setup -q -n %{oname}-%{basever}.%{patchlevel} -a1 -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
+#%patch5 -p1
+#%patch7 -p1
+#%patch8 -p1
+#%patch9 -p1
+#%patch10 -p1
+#%patch11 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
