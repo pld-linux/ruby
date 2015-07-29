@@ -48,6 +48,7 @@ Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
+# https://www.ruby-lang.org/en/downloads/
 Source0:	https://ftp.ruby-lang.org/pub/ruby/2.0/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
 # Source0-md5:	d576240c97cfcc3ed9bdc457eb1e8280
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
@@ -84,12 +85,16 @@ BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
-# bootstrap needs ruby binary, erb module
-%{!?with_bootstrap:BuildRequires:	rpm-rubyprov}
-%{!?with_bootstrap:BuildRequires:	ruby-modules}
-%{!?with_bootstrap:BuildRequires:	ruby}
 BuildRequires:	sed >= 4.0
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
 BuildRequires:	yaml-devel
+%if %{without bootstrap}
+# bootstrap needs ruby binary, erb module
+BuildRequires:	rpm-rubyprov
+BuildRequires:	ruby
+BuildRequires:	ruby-modules
+%endif
 %if %{with tk}
 BuildRequires:	tk-devel
 %endif
@@ -317,9 +322,9 @@ Release:	%{basever}.%{patchlevel}.%{rel}
 Epoch:		0
 License:	GPL v2 and Ruby and MIT
 Group:		Development/Libraries
-Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
 Requires:	%{name}-irb >= %{irb_ver}
 Requires:	%{name}-json >= %{json_ver}
+Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
 Obsoletes:	rdoc <= 0.9.0
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
