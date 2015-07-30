@@ -24,16 +24,16 @@
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_1_0
 
-%define		bigdecimal_ver	1.2.0
-%define		io_console_ver	0.4.2
+%define		bigdecimal_ver	1.2.4
+%define		io_console_ver	0.4.3
 %define		irb_ver		0.9.6
-%define		json_ver	1.7.7
-%define		minitest_ver	4.3.2
-%define		psych_ver	2.0.0
-%define		rake_ver	0.9.6
+%define		json_ver	1.8.1
+%define		minitest_ver	4.7.5
+%define		psych_ver	2.0.5
+%define		rake_ver	10.1.0
 %define		rdoc_ver	4.1.0
 %define		rubygems_ver	2.2.3
-%define		test_unit_ver	2.0.0.0
+%define		test_unit_ver	2.1.6.0
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
