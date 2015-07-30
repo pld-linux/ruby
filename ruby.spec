@@ -73,6 +73,7 @@ Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
 Patch10:	%{oname}-posixsh.patch
 Patch11:	x32-asm.patch
+Patch12:	archlibdir.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -436,6 +437,7 @@ Biblioteka JSON dla języka Ruby.
 %patch9 -p1
 #%patch10 -p1
 #%patch11 -p1
+%patch12 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
@@ -479,6 +481,7 @@ cd ..
 %configure \
 	%{?with_bootstrap:--with-baseruby=%{oname}-1.8.7-p330/miniruby} \
 	--program-suffix=%{ruby_suffix} \
+	--with-archlibdir=%{_libdir} \
 	--with-rubygemsdir=%{rubygems_dir} \
 	--with-rubylibprefix=%{ruby_libdir} \
 	--with-rubyarchprefix=%{ruby_archdir} \
@@ -852,7 +855,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/socket.rb
 %{ruby_libdir}/sync.rb
 %{ruby_libdir}/tempfile.rb
-%{ruby_libdir}/thread.rb
 %{ruby_libdir}/thwait.rb
 %{ruby_libdir}/time.rb
 %{ruby_libdir}/timeout.rb
@@ -880,7 +882,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/bigdecimal.so
 %attr(755,root,root) %{ruby_archdir}/continuation.so
 %attr(755,root,root) %{ruby_archdir}/coverage.so
-%attr(755,root,root) %{ruby_archdir}/curses.so
+#%attr(755,root,root) %{ruby_archdir}/curses.so
 %attr(755,root,root) %{ruby_archdir}/date_core.so
 %attr(755,root,root) %{ruby_archdir}/dbm.so
 %attr(755,root,root) %{ruby_archdir}/digest.so
@@ -898,6 +900,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/pty.so
 %attr(755,root,root) %{ruby_archdir}/readline.so
 %attr(755,root,root) %{ruby_archdir}/ripper.so
+%attr(755,root,root) %{ruby_archdir}/thread.so
 %attr(755,root,root) %{ruby_archdir}/sdbm.so
 %attr(755,root,root) %{ruby_archdir}/socket.so
 %attr(755,root,root) %{ruby_archdir}/stringio.so
@@ -919,6 +922,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/mathn/*.so
 %dir %{ruby_archdir}/racc
 %attr(755,root,root) %{ruby_archdir}/racc/*.so
+%dir %{ruby_archdir}/rbconfig
+%attr(755,root,root) %{ruby_archdir}/rbconfig/sizeof.so
 
 # bigdecimal
 %{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
