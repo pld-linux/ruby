@@ -2,12 +2,6 @@
 #	- include ext/ in docs
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
-#   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
-# - vendor *noarch* packages get installed to /usr/share/ruby/vendor_ruby/PACKAGE, which
-#   will be installed fine on ruby < 2.0, but not usable as dir not in included
-#   in load_path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
-#   for packages with gem deps it's simple: ruby-listen-2.7.1-0.2.noarch marks ruby-modules-2.0.0.451-0.17.x86_64 (cap /usr/share/gems/specifications)
-#   add that dir to legacy loadpath?
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -16,7 +10,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		0.1
+%define		rel		0.2
 %define		ruby_version	2.1
 %define		basever		2.1
 %define		patchlevel	6
@@ -130,21 +124,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	vendordir		vendor_ruby
 %define	ruby_vendorarchdir	%{_libdir}/%{oname}/%{vendordir}/%{ruby_version}
 %define	ruby_vendorlibdir	%{_datadir}/%{oname}/%{vendordir}
-
-# TODO: drop legacy loadpaths after all ruby modules rebuilt in Th
-%define	legacy_libdir		%{_libdir}/%{oname}/%{ruby_version}
-%define	legacy_archdir		%{_libdir}/%{oname}/%{ruby_version}/%{_target_cpu}-linux
-%define	legacy_sitedir		%{_libdir}/%{oname}/%{sitedir}
-%define	legacy_sitelibdir	%{_libdir}/%{oname}/%{sitedir}/%{ruby_version}
-%define	legacy_sitearchdir	%{_libdir}/%{oname}/%{sitedir}/%{ruby_version}/%{_target_cpu}-linux
-%define	legacy_vendordir	%{_libdir}/%{oname}/%{vendordir}
-%define	legacy_vendorlibdir	%{_libdir}/%{oname}/%{vendordir}/%{ruby_version}
-%define	legacy_vendorarchdir	%{_libdir}/%{oname}/%{vendordir}/%{ruby_version}/%{_target_cpu}-linux
-
-%define	legacy_siteloadpath	%{legacy_sitelibdir}\\0%{legacy_sitearchdir}\\0%{legacy_sitedir}
-%define	legacy_vendorloadpath	%{legacy_vendorarchdir}
-%define	legacy_loadpath		%{legacy_archdir}
-%define	legacy_loadpaths	%{legacy_siteloadpath}\\0%{legacy_vendorloadpath}\\0%{legacy_loadpath}
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
 # (SEGV or "unexpected break" on miniruby run during build)
@@ -674,17 +653,6 @@ rm -rf $RPM_BUILD_ROOT
 # common dirs for ruby vendor modules
 %dir %{ruby_vendorlibdir}/data
 %dir %{ruby_vendorlibdir}/net
-
-%if 0
-# legacy dirs. when everything rebuilt in Th not using these dirs. drop them
-%dir %{legacy_archdir}
-%dir %{legacy_sitedir}
-%dir %{legacy_sitelibdir}
-%dir %{legacy_sitearchdir}
-%dir %{legacy_vendorarchdir}
-%dir %{legacy_libdir}/tasks
-%dir %{legacy_archdir}/racc
-%endif
 
 %files devel
 %defattr(644,root,root,755)
