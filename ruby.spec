@@ -509,7 +509,7 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 %{__rm} -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/html
 
 # detect this runtime, "make install" is affected by operating_system.rb what is installed in system!
-gem_dir=$(./miniruby -Ilib -I. -I.ext/common ./tool/runruby.rb -- --disable-gems -r$(basename *-linux-fake.rb .rb) -r rubygems -e 'puts Gem.default_dir')
+gem_dir=$(./miniruby -Ilib -I. -I.ext/common ./tool/runruby.rb -- --disable-gems -r$(basename *-linux*-fake.rb .rb) -r rubygems -e 'puts Gem.default_dir')
 
 # Move gems root into common directory, out of Ruby directory structure.
 install -d $RPM_BUILD_ROOT%{gem_dir}
