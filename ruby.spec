@@ -489,6 +489,10 @@ cd ..
 %endif
 
 %if %{with tests}
+# unset these, as testsuite does "git commit" somewhere, which points to pld .spec repo. doh
+unset GIT_DIR GIT_WORK_TREE
+
+unset GIT
 DISABLE_TESTS=""
 
 %ifarch armv7l armv7hl armv7hnl
