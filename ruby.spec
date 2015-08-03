@@ -547,7 +547,7 @@ for cert in \
 	DigiCertHighAssuranceEVRootCA.pem \
 	EntrustnetSecureServerCertificationAuthority.pem \
 	GeoTrustGlobalCA.pem \
-do
+; do
 	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/$cert
 done
 
