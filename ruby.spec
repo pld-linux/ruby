@@ -9,6 +9,7 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
+%bcond_without	tests		# build without tests
 
 %define		rel		0.2
 %define		ruby_version	2.1
@@ -487,6 +488,45 @@ cd ..
 %{__make} -j1 rdoc
 %endif
 
+%if %{with tests}
+DISABLE_TESTS=""
+
+%ifarch armv7l armv7hl armv7hnl
+# test_call_double(DL::TestDL) fails on ARM HardFP
+# http://bugs.ruby-lang.org/issues/6592
+DISABLE_TESTS="-x test_dl2.rb $DISABLE_TESTS"
+%endif
+
+# test_debug(TestRubyOptions) fails due to LoadError reported in debug mode,
+# when abrt.rb cannot be required (seems to be easier way then customizing
+# the test suite).
+touch abrt.rb
+
+# TestSignal#test_hup_me hangs up the test suite.
+# http://bugs.ruby-lang.org/issues/8997
+sed -i '/def test_hup_me/,/end if Process.respond_to/ s/^/#/' test/ruby/test_signal.rb
+
+# Fix "Could not find 'minitest'" error.
+# http://bugs.ruby-lang.org/issues/9259
+sed -i "/^  gem 'minitest', '~> 4.0'/ s/^/#/" lib/rubygems/test_case.rb
+
+# Segmentation fault.
+# https://bugs.ruby-lang.org/issues/9198
+sed -i '/^  def test_machine_stackoverflow/,/^  end/ s/^/#/' test/ruby/test_exception.rb
+
+# Don't test wrap ciphers to prevent "OpenSSL::Cipher::CipherError: wrap mode
+# not allowed" error.
+# https://bugs.ruby-lang.org/issues/10229
+sed -i '/assert(OpenSSL::Cipher::Cipher.new(name).is_a?(OpenSSL::Cipher::Cipher))/i \
+        next if /wrap/ =~ name' test/openssl/test_cipher.rb
+
+# Test is broken due to SSLv3 disabled in Fedora.
+# https://bugs.ruby-lang.org/issues/10046
+sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ssl_session.rb
+
+%{__make} check TESTS="-v $DISABLE_TESTS"
+%endif
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
@@ -500,6 +540,16 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
 # Version is empty if --with-ruby-version is specified.
 # http://bugs.ruby-lang.org/issues/7807
 sed -i -e 's/Version: \${ruby_version}/Version: %{ruby_version}/' $RPM_BUILD_ROOT%{_pkgconfigdir}/%{oname}-%{ruby_version}.pc
+
+# Kill bundled certificates, as they should be part of ca-certificates.
+for cert in \
+	Class3PublicPrimaryCertificationAuthority.pem \
+	DigiCertHighAssuranceEVRootCA.pem \
+	EntrustnetSecureServerCertificationAuthority.pem \
+	GeoTrustGlobalCA.pem \
+do
+	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/$cert
+done
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
