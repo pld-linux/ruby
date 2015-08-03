@@ -9,7 +9,7 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
-%bcond_without	tests		# build without tests
+%bcond_with	tests		# build without tests
 
 %define		rel		0.2
 %define		ruby_version	2.1
