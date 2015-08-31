@@ -16,7 +16,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		1
+%define		rel		2
 %define		ruby_version	2.0
 %define		basever		2.0.0
 %define		patchlevel	647
@@ -32,7 +32,7 @@
 %define		psych_ver	2.0.0
 %define		rake_ver	0.9.6
 %define		rdoc_ver	4.0.0
-%define		rubygems_ver	2.0.14
+%define		rubygems_ver	2.0.14.1
 %define		test_unit_ver	2.0.0.0
 
 %define		oname	ruby
