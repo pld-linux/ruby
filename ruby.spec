@@ -14,7 +14,7 @@
 %define		rel		1
 %define		ruby_version	2.1
 %define		basever		2.1
-%define		patchlevel	6
+%define		patchlevel	7
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_1_0
@@ -45,7 +45,7 @@ License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://ftp.ruby-lang.org/pub/ruby/2.1/%{oname}-%{basever}.%{patchlevel}.tar.xz
-# Source0-md5:	ec6f10ca331ce947802ede86259513a8
+# Source0-md5:	2e43a1d32cc16975a6b5d3ffce399199
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
