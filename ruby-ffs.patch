@@ -1,12 +1,10 @@
-diff -ur ruby-1.9.2-p290-o//configure.in ruby-1.9.2-p290/configure.in
---- ruby-1.9.2-p290-o//configure.in	2011-08-27 20:31:47.000000000 -0600
-+++ ruby-1.9.2-p290/configure.in	2011-08-27 20:35:03.000000000 -0600
-@@ -1184,7 +1184,7 @@
- else
-   AC_LIBOBJ([signbit])
- fi
--AC_CHECK_FUNCS(fmod killpg wait4 waitpid fork spawnv syscall __syscall chroot getcwd eaccess\
-+AC_CHECK_FUNCS(fmod killpg wait4 waitpid fork spawnv syscall __syscall chroot getcwd eaccess ffs\
- 	      truncate ftruncate ftello chsize times utimes utimensat fcntl lockf lstat\
- 	      truncate64 ftruncate64 ftello64 fseeko fseeko64 \
- 	      link symlink readlink readdir_r fsync fdatasync fchown\
+--- ruby-2.1.6/configure.in~	2015-03-30 18:35:08.000000000 +0300
++++ ruby-2.1.6/configure.in	2015-07-30 00:20:25.106114075 +0300
+@@ -1886,6 +1886,7 @@
+ AC_CHECK_FUNCS(fchown)
+ AC_CHECK_FUNCS(fcntl)
+ AC_CHECK_FUNCS(fdatasync)
++AC_CHECK_FUNCS(ffs)
+ AC_CHECK_FUNCS(fmod)
+ AC_CHECK_FUNCS(fork)
+ AC_CHECK_FUNCS(fsync)

@@ -12,6 +12,15 @@ module Gem
     private :previous_but_one_dir_to
 
     ##
+    # Tries to detect, if arguments and environment variables suggest that
+    # 'gem install' is executed from rpmbuild.
+
+    def rpmbuild?
+      (ARGV.include?('--install-dir') || ARGV.include?('-i')) && ENV['RPM_PACKAGE_NAME']
+    end
+    private :rpmbuild?
+
+    ##
     # Default gems locations allowed on FHS system (/usr, /usr/share).
     # The locations are derived from directories specified during build
     # configuration.
@@ -78,8 +87,26 @@ module Gem
     end
 
     def default_ext_dir_for base_dir
-      dirs = Gem.default_dirs.detect {|location, paths| paths[:gem_dir] == base_dir}
-      dirs && File.join(dirs.last[:ext_dir], RbConfig::CONFIG['RUBY_INSTALL_NAME'])
+      dir = if rpmbuild?
+        build_dir = base_dir.chomp Gem.default_dirs[:system][:gem_dir]
+        if build_dir != base_dir
+          File.join build_dir, Gem.default_dirs[:system][:ext_dir]
+        end
+      else
+        dirs = Gem.default_dirs.detect {|location, paths| paths[:gem_dir] == base_dir}
+        dirs && dirs.last[:ext_dir]
+      end
+      dir && File.join(dir, RbConfig::CONFIG['RUBY_INSTALL_NAME'])
+    end
+
+    # This method should be available since RubyGems 2.2 until RubyGems 3.0.
+    # https://github.com/rubygems/rubygems/issues/749
+    if method_defined? :install_extension_in_lib
+      remove_method :install_extension_in_lib
+
+      def install_extension_in_lib
+        false
+      end
     end
   end
 end

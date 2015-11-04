@@ -2,12 +2,6 @@
 #	- include ext/ in docs
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
-#   - fix inconsistencies with versioned vs not-versioned dirs (see dirname hacks in configure)
-# - vendor *noarch* packages get installed to /usr/share/ruby/vendor_ruby/PACKAGE, which
-#   will be installed fine on ruby < 2.0, but not usable as dir not in included
-#   in load_path, how to force vendor packages built with ruby 2.0 pull ruby 2.0?
-#   for packages with gem deps it's simple: ruby-listen-2.7.1-0.2.noarch marks ruby-modules-2.0.0.451-0.17.x86_64 (cap /usr/share/gems/specifications)
-#   add that dir to legacy loadpath?
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -15,25 +9,26 @@
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
+%bcond_with	tests		# build without tests
 
-%define		rel		2
-%define		ruby_version	2.0
-%define		basever		2.0.0
-%define		patchlevel	647
+%define		rel		1
+%define		ruby_version	2.1
+%define		basever		2.1
+%define		patchlevel	6
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_0_0
+%define		doc_version	2_1_0
 
-%define		bigdecimal_ver	1.2.0
-%define		io_console_ver	0.4.2
+%define		bigdecimal_ver	1.2.4
+%define		io_console_ver	0.4.3
 %define		irb_ver		0.9.6
-%define		json_ver	1.7.7
-%define		minitest_ver	4.3.2
-%define		psych_ver	2.0.0
-%define		rake_ver	0.9.6
-%define		rdoc_ver	4.0.0
-%define		rubygems_ver	2.0.14.1
-%define		test_unit_ver	2.0.0.0
+%define		json_ver	1.8.1
+%define		minitest_ver	4.7.5
+%define		psych_ver	2.0.5
+%define		rake_ver	10.1.0
+%define		rdoc_ver	4.1.0
+%define		rubygems_ver	2.2.3
+%define		test_unit_ver	2.1.6.0
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -49,14 +44,14 @@ Epoch:		1
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
-Source0:	https://ftp.ruby-lang.org/pub/ruby/2.0/%{oname}-%{basever}-p%{patchlevel}.tar.bz2
-# Source0-md5:	27a3ea1a8b8bca1a6de43a7d08e88b69
+Source0:	https://ftp.ruby-lang.org/pub/ruby/2.1/%{oname}-%{basever}.%{patchlevel}.tar.xz
+# Source0-md5:	ec6f10ca331ce947802ede86259513a8
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	e93307804295a43512cafbf660a4cbe0
+# Source2-md5:	bf479c714ba189f9df633600b40aeef5
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	900186f317b51edfbb2f5317f8855719
+# Source3-md5:	3515d672874a1e48d4a8fd32c50639e7
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
@@ -73,6 +68,7 @@ Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
 Patch10:	%{oname}-posixsh.patch
 Patch11:	x32-asm.patch
+Patch12:	archlibdir.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -129,21 +125,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	vendordir		vendor_ruby
 %define	ruby_vendorarchdir	%{_libdir}/%{oname}/%{vendordir}/%{ruby_version}
 %define	ruby_vendorlibdir	%{_datadir}/%{oname}/%{vendordir}
-
-# TODO: drop legacy loadpaths after all ruby modules rebuilt in Th
-%define	legacy_libdir		%{_libdir}/%{oname}/%{ruby_version}
-%define	legacy_archdir		%{_libdir}/%{oname}/%{ruby_version}/%{_target_cpu}-linux
-%define	legacy_sitedir		%{_libdir}/%{oname}/%{sitedir}
-%define	legacy_sitelibdir	%{_libdir}/%{oname}/%{sitedir}/%{ruby_version}
-%define	legacy_sitearchdir	%{_libdir}/%{oname}/%{sitedir}/%{ruby_version}/%{_target_cpu}-linux
-%define	legacy_vendordir	%{_libdir}/%{oname}/%{vendordir}
-%define	legacy_vendorlibdir	%{_libdir}/%{oname}/%{vendordir}/%{ruby_version}
-%define	legacy_vendorarchdir	%{_libdir}/%{oname}/%{vendordir}/%{ruby_version}/%{_target_cpu}-linux
-
-%define	legacy_siteloadpath	%{legacy_sitelibdir}\\0%{legacy_sitearchdir}\\0%{legacy_sitedir}
-%define	legacy_vendorloadpath	%{legacy_vendorarchdir}
-%define	legacy_loadpath		%{legacy_archdir}
-%define	legacy_loadpaths	%{legacy_siteloadpath}\\0%{legacy_vendorloadpath}\\0%{legacy_loadpath}
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
 # (SEGV or "unexpected break" on miniruby run during build)
@@ -424,22 +405,19 @@ This is a JSON implementation as a Ruby extension in C.
 Biblioteka JSON dla języka Ruby.
 
 %prep
-%if %{with bootstrap}
-%setup -q -n %{oname}-%{basever}-p%{patchlevel} -a1 -a2 -a3 -a100
-%else
-%setup -q -n %{oname}-%{basever}-p%{patchlevel} -a1 -a2 -a3
-%endif
+%setup -q -n %{oname}-%{basever}.%{patchlevel} -a1 -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch7 -p1
-%patch8 -p1
+#%patch7 -p1
+#%patch8 -p1
 %patch9 -p1
-%patch10 -p1
-%patch11 -p1
+#%patch10 -p1
+#%patch11 -p1
+%patch12 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
@@ -483,6 +461,7 @@ cd ..
 %configure \
 	%{?with_bootstrap:--with-baseruby=%{oname}-1.8.7-p330/miniruby} \
 	--program-suffix=%{ruby_suffix} \
+	--with-archlibdir=%{_libdir} \
 	--with-rubygemsdir=%{rubygems_dir} \
 	--with-rubylibprefix=%{ruby_libdir} \
 	--with-rubyarchprefix=%{ruby_archdir} \
@@ -499,7 +478,7 @@ cd ..
 	--enable-multiarch \
 	--disable-rubygems \
 	--disable-install-doc \
-	--with-ruby-version=''
+	--with-ruby-version='' \
 
 %{__make} -j1 main \
 	COPY="cp -p" Q= \
@@ -507,6 +486,49 @@ cd ..
 
 %if %{with doc}
 %{__make} -j1 rdoc
+%endif
+
+%if %{with tests}
+# unset these, as testsuite does "git commit" somewhere, which points to pld .spec repo. doh
+unset GIT_DIR GIT_WORK_TREE
+
+unset GIT
+DISABLE_TESTS=""
+
+%ifarch armv7l armv7hl armv7hnl
+# test_call_double(DL::TestDL) fails on ARM HardFP
+# http://bugs.ruby-lang.org/issues/6592
+DISABLE_TESTS="-x test_dl2.rb $DISABLE_TESTS"
+%endif
+
+# test_debug(TestRubyOptions) fails due to LoadError reported in debug mode,
+# when abrt.rb cannot be required (seems to be easier way then customizing
+# the test suite).
+touch abrt.rb
+
+# TestSignal#test_hup_me hangs up the test suite.
+# http://bugs.ruby-lang.org/issues/8997
+sed -i '/def test_hup_me/,/end if Process.respond_to/ s/^/#/' test/ruby/test_signal.rb
+
+# Fix "Could not find 'minitest'" error.
+# http://bugs.ruby-lang.org/issues/9259
+sed -i "/^  gem 'minitest', '~> 4.0'/ s/^/#/" lib/rubygems/test_case.rb
+
+# Segmentation fault.
+# https://bugs.ruby-lang.org/issues/9198
+sed -i '/^  def test_machine_stackoverflow/,/^  end/ s/^/#/' test/ruby/test_exception.rb
+
+# Don't test wrap ciphers to prevent "OpenSSL::Cipher::CipherError: wrap mode
+# not allowed" error.
+# https://bugs.ruby-lang.org/issues/10229
+sed -i '/assert(OpenSSL::Cipher::Cipher.new(name).is_a?(OpenSSL::Cipher::Cipher))/i \
+        next if /wrap/ =~ name' test/openssl/test_cipher.rb
+
+# Test is broken due to SSLv3 disabled in Fedora.
+# https://bugs.ruby-lang.org/issues/10046
+sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ssl_session.rb
+
+%{__make} check TESTS="-v $DISABLE_TESTS"
 %endif
 
 %install
@@ -523,6 +545,16 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
 # http://bugs.ruby-lang.org/issues/7807
 sed -i -e 's/Version: \${ruby_version}/Version: %{ruby_version}/' $RPM_BUILD_ROOT%{_pkgconfigdir}/%{oname}-%{ruby_version}.pc
 
+# Kill bundled certificates, as they should be part of ca-certificates.
+for cert in \
+	Class3PublicPrimaryCertificationAuthority.pem \
+	DigiCertHighAssuranceEVRootCA.pem \
+	EntrustnetSecureServerCertificationAuthority.pem \
+	GeoTrustGlobalCA.pem \
+; do
+	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/$cert
+done
+
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
@@ -531,7 +563,7 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 %{__rm} -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/html
 
 # detect this runtime, "make install" is affected by operating_system.rb what is installed in system!
-gem_dir=$(./miniruby -I. -Ilib -r rubygems -e 'puts Gem.default_dir')
+gem_dir=$(./miniruby -Ilib -I. -I.ext/common ./tool/runruby.rb -- --disable-gems -r$(basename *-linux*-fake.rb .rb) -r rubygems -e 'puts Gem.default_dir')
 
 # Move gems root into common directory, out of Ruby directory structure.
 install -d $RPM_BUILD_ROOT%{gem_dir}
@@ -675,17 +707,6 @@ rm -rf $RPM_BUILD_ROOT
 # common dirs for ruby vendor modules
 %dir %{ruby_vendorlibdir}/data
 %dir %{ruby_vendorlibdir}/net
-
-%if 0
-# legacy dirs. when everything rebuilt in Th not using these dirs. drop them
-%dir %{legacy_archdir}
-%dir %{legacy_sitedir}
-%dir %{legacy_sitelibdir}
-%dir %{legacy_sitearchdir}
-%dir %{legacy_vendorarchdir}
-%dir %{legacy_libdir}/tasks
-%dir %{legacy_archdir}/racc
-%endif
 
 %files devel
 %defattr(644,root,root,755)
@@ -856,7 +877,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/socket.rb
 %{ruby_libdir}/sync.rb
 %{ruby_libdir}/tempfile.rb
-%{ruby_libdir}/thread.rb
 %{ruby_libdir}/thwait.rb
 %{ruby_libdir}/time.rb
 %{ruby_libdir}/timeout.rb
@@ -884,7 +904,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/bigdecimal.so
 %attr(755,root,root) %{ruby_archdir}/continuation.so
 %attr(755,root,root) %{ruby_archdir}/coverage.so
-%attr(755,root,root) %{ruby_archdir}/curses.so
+#%attr(755,root,root) %{ruby_archdir}/curses.so
 %attr(755,root,root) %{ruby_archdir}/date_core.so
 %attr(755,root,root) %{ruby_archdir}/dbm.so
 %attr(755,root,root) %{ruby_archdir}/digest.so
@@ -902,6 +922,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/pty.so
 %attr(755,root,root) %{ruby_archdir}/readline.so
 %attr(755,root,root) %{ruby_archdir}/ripper.so
+%attr(755,root,root) %{ruby_archdir}/thread.so
 %attr(755,root,root) %{ruby_archdir}/sdbm.so
 %attr(755,root,root) %{ruby_archdir}/socket.so
 %attr(755,root,root) %{ruby_archdir}/stringio.so
@@ -923,6 +944,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/mathn/*.so
 %dir %{ruby_archdir}/racc
 %attr(755,root,root) %{ruby_archdir}/racc/*.so
+%dir %{ruby_archdir}/rbconfig
+%attr(755,root,root) %{ruby_archdir}/rbconfig/sizeof.so
 
 # bigdecimal
 %{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
