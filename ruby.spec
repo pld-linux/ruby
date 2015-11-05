@@ -27,8 +27,8 @@
 %define		psych_ver	2.0.5
 %define		rake_ver	10.1.0
 %define		rdoc_ver	4.1.0
-%define		rubygems_ver	2.2.3
-%define		test_unit_ver	2.1.6.0
+%define		rubygems_ver	2.2.5
+%define		test_unit_ver	2.1.7.0
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
