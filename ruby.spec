@@ -5,7 +5,7 @@
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
-%bcond_with	tk		# build Tk bindings (tcl8.6 is not supported)
+%bcond_without	tk		# Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
@@ -15,6 +15,7 @@
 %define		ruby_version	2.1
 %define		basever		2.1
 %define		patchlevel	7
+%define		pkg_version	%{basever}.%{patchlevel}
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_1_0
@@ -37,14 +38,14 @@ Summary(pl.UTF-8):	Ruby - interpretowany język skryptowy
 Summary(pt_BR.UTF-8):	Linguagem de script orientada a objeto
 Summary(zh_CN.UTF-8):	ruby - 一种快速高效的面向对象脚本编程语言
 Name:		ruby%{ruby_suffix}
-Version:	%{basever}.%{patchlevel}
+Version:	%{pkg_version}
 Release:	%{rel}
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, ...
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
-Source0:	https://ftp.ruby-lang.org/pub/ruby/2.1/%{oname}-%{basever}.%{patchlevel}.tar.xz
+Source0:	https://ftp.ruby-lang.org/pub/ruby/2.1/%{oname}-%{pkg_version}.tar.xz
 # Source0-md5:	2e43a1d32cc16975a6b5d3ffce399199
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
@@ -63,28 +64,29 @@ Patch2:		fix-bison-invocation.patch
 Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
 Patch5:		duplicated-paths.patch
-Patch7:		empty-ruby-version.patch
+# obsolete?
 Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
-Patch10:	%{oname}-posixsh.patch
-Patch11:	x32-asm.patch
 Patch12:	archlibdir.patch
 URL:		http://www.ruby-lang.org/
-BuildRequires:	autoconf >= 2.60
+BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake
 BuildRequires:	bison >= 1.875
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel >= 1.8.3
+BuildRequires:	gmp-devel
 BuildRequires:	libffi-devel
 BuildRequires:	ncurses-devel
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 0.9.6
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
 BuildRequires:	sed >= 4.0
+BuildRequires:	systemtap-sdt-devel
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 BuildRequires:	yaml-devel
+BuildRequires:	zlib-devel
 %if %{without bootstrap}
 # bootstrap needs ruby binary, erb module
 BuildRequires:	rpm-rubyprov
@@ -92,7 +94,8 @@ BuildRequires:	ruby
 BuildRequires:	ruby-modules
 %endif
 %if %{with tk}
-BuildRequires:	tk-devel
+BuildRequires:	tk-devel >= 8.4
+BuildRequires:	tk-devel < 8.7
 %endif
 Requires(post,postun):	/sbin/ldconfig
 Provides:	ruby(ver) = %{ruby_version}
@@ -281,10 +284,10 @@ Przykłady programów w języku Ruby.
 %package irb
 Summary:	The Interactive Ruby
 Version:	%{irb_ver}
-Release:	%{basever}.%{patchlevel}.%{rel}
+Release:	%{pkg_version}.%{rel}
 Epoch:		0
 Group:		Development/Languages
-Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
+Requires:	%{name}-modules = 1:%{pkg_version}-%{rel}
 Provides:	irb = %{version}-%{release}
 Provides:	ruby(irb) = %{version}-%{release}
 %if "%{_rpmversion}" >= "5"
@@ -299,13 +302,13 @@ from the terminal.
 Summary:	A tool to generate HTML and command-line documentation for Ruby projects
 Summary(pl.UTF-8):	Narzędzie do generowania dokumentacji HTML i linii poleceń dla projektów w Rubym
 Version:	%{rdoc_ver}
-Release:	%{basever}.%{patchlevel}.%{rel}
+Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	GPL v2 and Ruby and MIT
 Group:		Development/Libraries
 Requires:	%{name}-irb >= %{irb_ver}
 Requires:	%{name}-json >= %{json_ver}
-Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
+Requires:	%{name}-modules = 1:%{pkg_version}-%{rel}
 Obsoletes:	rdoc <= 0.9.0
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
@@ -325,11 +328,11 @@ wyświetlania dokumentacji online.
 Summary:	RubyGems - the Ruby standard for packaging Ruby libraries
 Summary(pl.UTF-8):	RubyGems - standard Ruby'ego pakietowania bibliotek
 Version:	%{rubygems_ver}
-Release:	%{basever}.%{patchlevel}.%{rel}
+Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	Ruby or MIT
 Group:		Development/Libraries
-Requires:	%{name}-modules = 1:%{basever}.%{patchlevel}-%{rel}
+Requires:	%{name}-modules = 1:%{pkg_version}-%{rel}
 Requires:	%{name}-rdoc >= %{rdoc_ver}
 Suggests:	%{name}-devel
 Provides:	rubygems = %{rubygems_ver}
@@ -349,7 +352,7 @@ zarządzania zewnętrznymi bibliotekami.
 Summary:	Rake is a Make-like program implemented in Ruby
 Summary(pl.UTF-8):	Program typu Make dla języka Ruby
 Version:	%{rake_ver}
-Release:	%{basever}.%{patchlevel}.%{rel}
+Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	MIT
 Group:		Development/Languages
@@ -391,7 +394,7 @@ Ma następujące cechy:
 Summary:	JSON library for Ruby
 Summary(pl.UTF-8):	Biblioteka JSON dla języka Ruby
 Version:	%{json_ver}
-Release:	%{basever}.%{patchlevel}.%{rel}
+Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	MIT
 Group:		Development/Languages
@@ -405,18 +408,15 @@ This is a JSON implementation as a Ruby extension in C.
 Biblioteka JSON dla języka Ruby.
 
 %prep
-%setup -q -n %{oname}-%{basever}.%{patchlevel} -a1 -a2 -a3 %{?with_bootstrap:-a100}
+%setup -q -n %{oname}-%{pkg_version} -a1 -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-#%patch7 -p1
 #%patch8 -p1
 %patch9 -p1
-#%patch10 -p1
-#%patch11 -p1
 %patch12 -p1
 
 # must be regenerated with new bison
@@ -473,11 +473,11 @@ cd ..
 	--with-rubyarchhdrdir=%{_includedir}/%{oname}-%{ruby_version} \
 	--with-sitearchhdrdir='$(sitehdrdir)/$(arch)' \
 	--with-vendorarchhdrdir='$(vendorhdrdir)/$(arch)' \
-	--enable-shared \
-	--enable-pthread \
 	--enable-multiarch \
-	--disable-rubygems \
+	--enable-pthread \
+	--enable-shared \
 	--disable-install-doc \
+	--disable-rubygems \
 	--with-ruby-version='' \
 
 %{__make} -j1 main \
@@ -555,8 +555,8 @@ for cert in \
 	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/$cert
 done
 
-install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
-cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{basever}.%{patchlevel}
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}
+cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
 cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 
@@ -567,7 +567,7 @@ gem_dir=$(./miniruby -Ilib -I. -I.ext/common ./tool/runruby.rb -- --disable-gems
 
 # Move gems root into common directory, out of Ruby directory structure.
 install -d $RPM_BUILD_ROOT%{gem_dir}
-mv $RPM_BUILD_ROOT${gem_dir}/{gems,specifications} $RPM_BUILD_ROOT%{gem_dir}
+%{__mv} $RPM_BUILD_ROOT${gem_dir}/{gems,specifications} $RPM_BUILD_ROOT%{gem_dir}
 
 # Move bundled rubygems to %gem_dir
 # make symlinks for io-console and bigdecimal, which are considered to be part of stdlib by other Gems
@@ -577,38 +577,38 @@ mv $RPM_BUILD_ROOT${gem_dir}/{gems,specifications} $RPM_BUILD_ROOT%{gem_dir}
 # the links to got system dir and only ruby may package there (other distro
 # packages should go to vendor dirs)
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libdir}/rake* $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/rake* $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
 ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake $RPM_BUILD_ROOT%{ruby_libdir}
 ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake.rb $RPM_BUILD_ROOT%{ruby_libdir}
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rake-%{rake_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rake-%{rake_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libdir}/rdoc* $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/rdoc* $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
 ln -s %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib/rdoc $RPM_BUILD_ROOT%{ruby_libdir}
 ln -s %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib/rdoc.rb $RPM_BUILD_ROOT%{ruby_libdir}
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rdoc-%{rdoc_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rdoc-%{rdoc_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bigdecimal-%{bigdecimal_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bigdecimal-%{bigdecimal_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 ln -s %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal
 ln -s %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
-mv $RPM_BUILD_ROOT%{ruby_libdir}/io $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libarchdir}/io/console.so $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/io-console-%{io_console_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/io $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/io/console.so $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/io-console-%{io_console_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 ln -s %{gem_dir}/gems/io-console-%{io_console_ver}/lib/io $RPM_BUILD_ROOT%{ruby_libdir}/io
 ln -s %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so $RPM_BUILD_ROOT%{ruby_libarchdir}/io/console.so
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/json-%{json_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/json-%{json_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libdir}/json* $RPM_BUILD_ROOT%{gem_dir}/gems/json-%{json_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libarchdir}/json $RPM_BUILD_ROOT%{gem_libdir}/json-%{json_ver}/lib
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/json-%{json_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/json* $RPM_BUILD_ROOT%{gem_dir}/gems/json-%{json_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/json $RPM_BUILD_ROOT%{gem_libdir}/json-%{json_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/json-%{json_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 ln -s %{gem_dir}/gems/json-%{json_ver}/lib/json $RPM_BUILD_ROOT%{ruby_libdir}/json
 ln -s %{gem_dir}/gems/json-%{json_ver}/lib/json.rb $RPM_BUILD_ROOT%{ruby_libdir}/json.rb
 install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
@@ -616,9 +616,9 @@ ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/parser.so $RPM_BUILD_ROOT%{rub
 ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/generator.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libdir}/minitest $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/minitest $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
 ln -s %{gem_dir}/gems/minitest-%{minitest_ver}/lib/minitest $RPM_BUILD_ROOT%{ruby_libdir}
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/minitest-%{minitest_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/minitest-%{minitest_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 install -d $RPM_BUILD_ROOT%{ruby_libdir}/test
@@ -628,9 +628,9 @@ mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/test-unit-%{test_unit_ver}.g
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libdir}/psych* $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
-mv $RPM_BUILD_ROOT%{ruby_libarchdir}/psych.so $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib/
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/psych-%{psych_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/psych* $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/psych.so $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib/
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/psych-%{psych_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 ln -s %{gem_dir}/gems/psych-%{psych_ver}/lib/psych $RPM_BUILD_ROOT%{ruby_libdir}/psych
 ln -s %{gem_dir}/gems/psych-%{psych_ver}/lib/psych.rb $RPM_BUILD_ROOT%{ruby_libdir}/psych.rb
 ln -s %{gem_libdir}/psych-%{psych_ver}/lib/psych.so $RPM_BUILD_ROOT%{ruby_archdir}/psych.so
@@ -658,6 +658,16 @@ sed -i '/^end$/ i\
   s.require_paths = ["lib"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
 
 ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%{ruby_suffix}
+
+%{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
+	$RPM_BUILD_ROOT%{ruby_libdir}/abbrev.rb \
+	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/bin/rake \
+	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc \
+	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri \
+	$RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/bin/testrb \
+	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
+	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper,rss}/*.rb \
+	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
 
 %if %{without batteries}
 # packaged separately
@@ -722,11 +732,16 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with tk}
 %files tk
 %defattr(644,root,root,755)
+%doc ext/tk/{ChangeLog.tkextlib,MANUAL_tcltklib.eng,README.fork}
+%lang(ja) %doc ext/tk/MANUAL_tcltklib.ja
+%{ruby_libdir}/multi-tk.rb
+%{ruby_libdir}/remote-tk.rb
 %{ruby_libdir}/tcltk.rb
 %{ruby_libdir}/tk*.rb
 %{ruby_libdir}/tk
 %{ruby_libdir}/tkextlib
-%attr(755,root,root) %{ruby_archdir}/t*.so
+%attr(755,root,root) %{ruby_archdir}/tcltklib.so
+%attr(755,root,root) %{ruby_archdir}/tkutil.so
 %endif
 
 %files irb
@@ -809,7 +824,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/ripper
 %{ruby_libdir}/rss
 %{ruby_libdir}/shell
-#%{ruby_libdir}/syck
 %{ruby_libdir}/syslog
 %{ruby_libdir}/test
 %{ruby_libdir}/uri
@@ -904,7 +918,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/bigdecimal.so
 %attr(755,root,root) %{ruby_archdir}/continuation.so
 %attr(755,root,root) %{ruby_archdir}/coverage.so
-#%attr(755,root,root) %{ruby_archdir}/curses.so
 %attr(755,root,root) %{ruby_archdir}/date_core.so
 %attr(755,root,root) %{ruby_archdir}/dbm.so
 %attr(755,root,root) %{ruby_archdir}/digest.so
@@ -1010,4 +1023,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files examples
 %defattr(644,root,root,755)
-%{_examplesdir}/%{oname}-*
+%{_examplesdir}/%{oname}-%{pkg_version}
