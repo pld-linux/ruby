@@ -14,7 +14,7 @@
 %define		rel		1
 %define		ruby_version	2.1
 %define		basever		2.1
-%define		patchlevel	7
+%define		patchlevel	8
 %define		pkg_version	%{basever}.%{patchlevel}
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
@@ -29,7 +29,7 @@
 %define		rake_ver	10.1.0
 %define		rdoc_ver	4.1.0
 %define		rubygems_ver	2.2.5
-%define		test_unit_ver	2.1.7.0
+%define		test_unit_ver	2.1.8.0
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -46,7 +46,7 @@ License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://ftp.ruby-lang.org/pub/ruby/2.1/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	2e43a1d32cc16975a6b5d3ffce399199
+# Source0-md5:	f18ed96bd1d5890f97a17d0d17aaefdd
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
