@@ -16,7 +16,7 @@
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 
-%define		rel		2
+%define		rel		3
 %define		ruby_version	2.0
 %define		basever		2.0.0
 %define		patchlevel	648
@@ -198,7 +198,7 @@ Obsoletes:	ruby-minitest <= 1.5.0
 %endif
 # FIXME later
 Provides:	ruby(abi) = %{ruby_version}
-%requires_ge_to	openssl	openssl-devel
+%requires_eq_to	openssl	openssl-devel
 
 %description modules
 Ruby standard modules and utilities:
