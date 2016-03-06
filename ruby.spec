@@ -198,7 +198,7 @@ Obsoletes:	ruby-minitest <= 1.5.0
 %endif
 # FIXME later
 Provides:	ruby(abi) = %{ruby_version}
-%requires_eq_to	openssl	openssl-devel
+%requires_ge_to	openssl	openssl-devel
 
 %description modules
 Ruby standard modules and utilities:
