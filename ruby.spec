@@ -256,10 +256,11 @@ cd ..
 	--enable-pthread
 
 %{__make}
+
+%if %{with doc}
 %{__make} clean -C ruby-texi-1.4-en
 %{__make} info -C ruby-texi-1.4-en
 
-%if %{with doc}
 mkdir rdoc
 
 RUBYLIB=".:lib:$(find ext .ext -type d | tr '\n' ':')"
