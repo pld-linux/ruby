@@ -1,28 +1,25 @@
-strip ccache from CC and CXX from rbconfig.rb
-as a side effect, we need to pass CC to sub-makes
-
---- ruby-2.0.0-p353/tool/mkconfig.rb~	2013-03-24 17:42:06.000000000 +0200
-+++ ruby-2.0.0-p353/tool/mkconfig.rb	2014-03-18 10:34:08.489251715 +0200
-@@ -77,6 +77,7 @@
-     when /^(?:MAJOR|MINOR|TEENY)$/; next
-     when /^RUBY_INSTALL_NAME$/; next if $install_name
-     when /^RUBY_SO_NAME$/; next if $so_name
+--- ruby-2.2.5/tool/mkconfig.rb.orig	2016-09-19 13:53:05.152982868 +0200
++++ ruby-2.2.5/tool/mkconfig.rb	2016-09-19 14:01:04.182988081 +0200
+@@ -79,6 +79,7 @@
+     when /^LIBRUBY_D?LD/; next
+     when /^RUBY_INSTALL_NAME$/; next vars[name] = (install_name = val).dup if $install_name
+     when /^RUBY_SO_NAME$/; next vars[name] = (so_name = val).dup if $so_name
 +    when /^(CC|CXX)$/; val.sub!(/ccache /, '')
      when /^arch$/; if val.empty? then val = arch else arch = val end
      when /^sitearch$/; val = '$(arch)' if val.empty?
      end
---- ruby-2.0.0-p451/common.mk	2014-04-05 16:16:52.983112032 +0300
-+++ ruby-2.0.0-p451/common.mk	2014-04-05 16:26:58.679843426 +0300
-@@ -176,7 +176,7 @@
+--- ruby-2.2.5/common.mk.orig	2016-03-29 23:07:26.000000000 +0200
++++ ruby-2.2.5/common.mk	2016-09-19 14:02:16.189655531 +0200
+@@ -186,7 +186,7 @@
  configure-ext: $(EXTS_MK)
  
  build-ext: $(EXTS_MK)
--	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) $(EXTSTATIC) LIBRUBY_EXTS=$(LIBRUBY_EXTS) ENCOBJS="$(ENCOBJS)"
-+	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) $(EXTSTATIC) LIBRUBY_EXTS=$(LIBRUBY_EXTS) ENCOBJS="$(ENCOBJS)" CC="$(CC)"
+-	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) libdir="$(libdir)" LIBRUBY_EXTS=$(LIBRUBY_EXTS) \
++	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) libdir="$(libdir)" LIBRUBY_EXTS=$(LIBRUBY_EXTS) CC="$(CC)" \
+ 	    ENCOBJS="$(ENCOBJS)" UPDATE_LIBRARIES=no $(EXTSTATIC)
  
- $(MKMAIN_CMD): $(MKFILES) all-incs $(PREP) $(RBCONFIG) $(LIBRUBY)
- 	$(Q)$(MINIRUBY) $(srcdir)/ext/extmk.rb --make="$(MAKE)" --command-output=$@ $(EXTMK_ARGS)
-@@ -545,7 +545,7 @@
+ prog: program wprogram
+@@ -598,7 +598,7 @@
  	$(ECHO) making $@
  	$(Q) $(MAKE) -f $(ENC_MK) V="$(V)" \
  		RUBY="$(MINIRUBY)" MINIRUBY="$(MINIRUBY)" \
@@ -31,12 +28,12 @@ as a side effect, we need to pass CC to sub-makes
  
  
  libenc enc: {$(VPATH)}encdb.h
-@@ -860,7 +860,7 @@
+@@ -737,7 +737,7 @@
  
  srcs-enc: $(ENC_MK)
  	$(ECHO) making srcs under enc
 -	$(Q) $(MAKE) -f $(ENC_MK) RUBY="$(MINIRUBY)" MINIRUBY="$(MINIRUBY)" $(MFLAGS) srcs
 +	$(Q) $(MAKE) -f $(ENC_MK) RUBY="$(MINIRUBY)" MINIRUBY="$(MINIRUBY)" CC="$(CC)" $(MFLAGS) srcs
  
- all-incs: incs
- incs: $(INSNS) {$(VPATH)}node_name.inc {$(VPATH)}encdb.h {$(VPATH)}transdb.h {$(VPATH)}known_errors.inc \
+ all-incs: incs {$(VPATH)}encdb.h {$(VPATH)}transdb.h
+ incs: $(INSNS) {$(VPATH)}node_name.inc {$(VPATH)}known_errors.inc \

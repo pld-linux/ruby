@@ -11,25 +11,27 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		1
-%define		ruby_version	2.1
-%define		basever		2.1
-%define		patchlevel	10
+%define debug 1
+
+%define		rel		0.1
+%define		ruby_version	2.2
+%define		basever		2.2
+%define		patchlevel	5
 %define		pkg_version	%{basever}.%{patchlevel}
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_1_0
+%define		doc_version	2_2_2
 
-%define		bigdecimal_ver	1.2.4
+%define		bigdecimal_ver	1.2.6
 %define		io_console_ver	0.4.3
 %define		irb_ver		0.9.6
 %define		json_ver	1.8.1
-%define		minitest_ver	4.7.5
-%define		psych_ver	2.0.5
-%define		rake_ver	10.1.0
-%define		rdoc_ver	4.1.0
-%define		rubygems_ver	2.2.5
-%define		test_unit_ver	%{pkg_version}.0
+%define		minitest_ver	5.4.3
+%define		psych_ver	2.0.8
+%define		rake_ver	10.4.2
+%define		rdoc_ver	4.2.0
+%define		rubygems_ver	2.4.5.1
+%define		test_unit_ver	3.0.8
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -45,25 +47,26 @@ Epoch:		1
 License:	(Ruby or BSD) and Public Domain
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
-Source0:	https://ftp.ruby-lang.org/pub/ruby/2.1/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	2d1eee7fcf152df41ed22665b02f1c3d
+Source0:	https://ftp.ruby-lang.org/pub/ruby/2.2/%{oname}-%{pkg_version}.tar.xz
+# Source0-md5:	4b9506c37e908b5b17215b66b2760438
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	bf479c714ba189f9df633600b40aeef5
+# Source2-md5:	e20a00c072f7498cd59c349d5ba1496e
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	3515d672874a1e48d4a8fd32c50639e7
+# Source3-md5:	15ee8617bc4ed21f4186028f114eea86
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
 Patch0:		%{oname}-lib64.patch
-Patch1:		%{oname}-ffs.patch
+#Patch1:		%{oname}-ffs.patch
 Patch2:		fix-bison-invocation.patch
 Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
-Patch5:		duplicated-paths.patch
+Patch5:		ruby-version.patch
+Patch6:		duplicated-paths.patch
 # obsolete?
 Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
@@ -410,11 +413,12 @@ Biblioteka JSON dla języka Ruby.
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a1 -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
-%patch1 -p1
+#%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 #%patch8 -p1
 %patch9 -p1
 %patch12 -p1
@@ -615,16 +619,16 @@ install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/parser.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/generator.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 
-install -d $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
-%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/minitest $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
+#install -d $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
+#%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/minitest $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
 ln -s %{gem_dir}/gems/minitest-%{minitest_ver}/lib/minitest $RPM_BUILD_ROOT%{ruby_libdir}
-%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/minitest-%{minitest_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+#%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/minitest-%{minitest_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
-install -d $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
+#install -d $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 install -d $RPM_BUILD_ROOT%{ruby_libdir}/test
-mv $RPM_BUILD_ROOT%{ruby_libdir}/test/unit $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
+#mv $RPM_BUILD_ROOT%{ruby_libdir}/test/unit $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 ln -s %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib/unit $RPM_BUILD_ROOT%{ruby_libdir}/test
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/test-unit-%{test_unit_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+#mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/test-unit-%{test_unit_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib
@@ -664,7 +668,6 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/bin/rake \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri \
-	$RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/bin/testrb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper,rss}/*.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
@@ -695,7 +698,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS LEGAL README README.EXT ChangeLog
+%doc NEWS LEGAL README.md README.EXT ChangeLog
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
@@ -807,9 +810,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
 %{ruby_libdir}/cgi
-%{ruby_libdir}/date
+#%{ruby_libdir}/date
 %{ruby_libdir}/digest
-%{ruby_libdir}/dl
+#%{ruby_libdir}/dl
 %{ruby_libdir}/drb
 %{ruby_libdir}/fiddle
 %{ruby_libdir}/io
@@ -837,13 +840,13 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/benchmark.rb
 %{ruby_libdir}/cgi.rb
 %{ruby_libdir}/cmath.rb
-%{ruby_libdir}/complex.rb
+#%{ruby_libdir}/complex.rb
 %{ruby_libdir}/csv.rb
 %{ruby_libdir}/date.rb
 %{ruby_libdir}/debug.rb
 %{ruby_libdir}/delegate.rb
 %{ruby_libdir}/digest.rb
-%{ruby_libdir}/dl.rb
+#%{ruby_libdir}/dl.rb
 %{ruby_libdir}/drb.rb
 %{ruby_libdir}/e2mmap.rb
 %{ruby_libdir}/erb.rb
@@ -853,7 +856,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/find.rb
 %{ruby_libdir}/forwardable.rb
 %{ruby_libdir}/getoptlong.rb
-%{ruby_libdir}/gserver.rb
+#%{ruby_libdir}/gserver.rb
 %{ruby_libdir}/ipaddr.rb
 %{ruby_libdir}/json.rb
 %{ruby_libdir}/kconv.rb
@@ -876,7 +879,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/profiler.rb
 %{ruby_libdir}/pstore.rb
 %{ruby_libdir}/psych.rb
-%{ruby_libdir}/rational.rb
+#%{ruby_libdir}/rational.rb
 %{ruby_libdir}/rdoc.rb
 %{ruby_libdir}/resolv-replace.rb
 %{ruby_libdir}/resolv.rb
@@ -908,7 +911,7 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{ruby_libdir}/rubygems.rb
 %exclude %{ruby_libdir}/ubygems.rb
 %exclude %{ruby_libdir}/rbconfig/datadir.rb
-%exclude %{ruby_libdir}/rbconfig/obsolete.rb
+#%exclude %{ruby_libdir}/rbconfig/obsolete.rb
 %endif
 %exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
@@ -921,7 +924,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/date_core.so
 %attr(755,root,root) %{ruby_archdir}/dbm.so
 %attr(755,root,root) %{ruby_archdir}/digest.so
-%attr(755,root,root) %{ruby_archdir}/dl.so
+#%attr(755,root,root) %{ruby_archdir}/dl.so
 %attr(755,root,root) %{ruby_archdir}/etc.so
 %attr(755,root,root) %{ruby_archdir}/fcntl.so
 %attr(755,root,root) %{ruby_archdir}/fiber.so
@@ -945,8 +948,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{ruby_archdir}/digest
 %attr(755,root,root) %{ruby_archdir}/digest/*.so
-%dir %{ruby_archdir}/dl
-%attr(755,root,root) %{ruby_archdir}/dl/callback.so
+#%dir %{ruby_archdir}/dl
+#%attr(755,root,root) %{ruby_archdir}/dl/callback.so
 %dir %{ruby_archdir}/enc
 %attr(755,root,root) %{ruby_archdir}/enc/*.so
 %dir %{ruby_archdir}/enc/trans
@@ -997,9 +1000,9 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/specifications/test-unit-%{test_unit_ver}.gemspec
 %dir %{gem_dir}/gems/test-unit-%{test_unit_ver}
 %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
-%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin/testrb
-%attr(755,root,root) %{_bindir}/testrb%{ruby_suffix}
+#%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin
+#%attr(755,root,root) %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin/testrb
+#%attr(755,root,root) %{_bindir}/testrb%{ruby_suffix}
 %{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %dir %{gem_dir}
