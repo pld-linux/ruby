@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		1
+%define		rel		2
 %define		ruby_version	2.1
 %define		basever		2.1
 %define		patchlevel	10
