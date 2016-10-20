@@ -34,6 +34,7 @@
 %define		rdoc_ver	4.2.0
 %define		rubygems_ver	2.4.5.1
 %define		test_unit_ver	3.0.8
+%define		power_assert_ver 0.2.2
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -45,8 +46,11 @@ Name:		ruby%{ruby_suffix}
 Version:	%{pkg_version}
 Release:	%{rel}
 Epoch:		1
-# Public Domain for example for: include/ruby/st.h, strftime.c, ...
-License:	(Ruby or BSD) and Public Domain
+# Public Domain for example for: include/ruby/st.h, strftime.c, missing/*, ...
+# MIT and CCO: ccan/*
+# zlib: ext/digest/md5/md5.*, ext/nkf/nkf-utf8/nkf.c
+# UCD: some of enc/trans/**/*.src
+License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://ftp.ruby-lang.org/pub/ruby/2.2/%{oname}-%{pkg_version}.tar.xz
@@ -99,8 +103,8 @@ BuildRequires:	ruby
 BuildRequires:	ruby-modules
 %endif
 %if %{with tk}
-BuildRequires:	tk-devel >= 8.4
 BuildRequires:	tk-devel < 8.7
+BuildRequires:	tk-devel >= 8.4
 %endif
 Requires(post,postun):	/sbin/ldconfig
 Provides:	ruby(ver) = %{ruby_version}
@@ -309,7 +313,8 @@ Summary(pl.UTF-8):	Narzędzie do generowania dokumentacji HTML i linii poleceń 
 Version:	%{rdoc_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
-License:	GPL v2 and Ruby and MIT
+# SIL: lib/rdoc/generator/template/darkfish/css/fonts.css
+License:	GPLv2 and Ruby and MIT and SIL
 Group:		Development/Libraries
 Requires:	%{name}-irb >= %{irb_ver}
 Requires:	%{name}-json >= %{json_ver}
@@ -401,7 +406,8 @@ Summary(pl.UTF-8):	Biblioteka JSON dla języka Ruby
 Version:	%{json_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
-License:	MIT
+# UCD: ext/json/generator/generator.c
+License:	(Ruby or GPLv2) and UCD
 Group:		Development/Languages
 Obsoletes:	ruby-json-rubyforge
 Conflicts:	ruby-modules < 1:1.9.3.429-3
@@ -412,6 +418,42 @@ This is a JSON implementation as a Ruby extension in C.
 %description json -l pl.UTF-8
 Biblioteka JSON dla języka Ruby.
 
+%package power_assert
+# The Summary/Description fields are rather poor.
+# https://github.com/k-tsj/power_assert/issues/3
+Summary:	Power Assert for Ruby
+Version:	%{power_assert_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	Ruby or BSD
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description power_assert
+Power Assert for Ruby.
+
+%package test-unit
+# The Summary/Description fields are rather poor.
+# https://github.com/test-unit/test-unit/issues/73
+Summary:	Improved version of Test::Unit bundled in Ruby 1.8.x
+Version:	%{test_unit_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+Group:		Development/Libraries
+# lib/test/unit/diff.rb is a double license of the Ruby license and PSF license.
+# lib/test-unit.rb is a dual license of the Ruby license and LGPLv2.1 or later.
+License:	(Ruby or BSD) and (Ruby or BSD or Python) and (Ruby or BSD or LGPLv2+)
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description test-unit
+Ruby 1.9.x bundles minitest not Test::Unit. Test::Unit bundled in Ruby
+1.8.x had not been improved but unbundled Test::Unit (test-unit) is
+improved actively.
+
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a1 -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
@@ -419,7 +461,7 @@ Biblioteka JSON dla języka Ruby.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
+#%patch5 -p1
 %patch6 -p1
 #%patch8 -p1
 %patch9 -p1
@@ -427,6 +469,10 @@ Biblioteka JSON dla języka Ruby.
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
+
+# Remove bundled libraries to be sure they are not used.
+%{__rm} -r ext/psych/yaml
+%{__rm} -r ext/fiddle/libffi*
 
 # Install custom operating_system.rb.
 install -d lib/rubygems/defaults
@@ -557,6 +603,8 @@ for cert in \
 	DigiCertHighAssuranceEVRootCA.pem \
 	EntrustnetSecureServerCertificationAuthority.pem \
 	GeoTrustGlobalCA.pem \
+	AddTrustExternalCARoot.pem \
+	AddTrustExternalCARoot-2048.pem \
 ; do
 	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/$cert
 done
@@ -663,6 +711,16 @@ sed -i '/^end$/ i\
 sed -i '/^end$/ i\
   s.require_paths = ["lib"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
 
+# Push the .gemspecs through the RubyGems to let them write the stub headers.
+# This speeds up loading of libraries and avoids warnings in Spring:
+# https://github.com/rubygems/rubygems/pull/694
+for s in rake-%{rake_ver}.gemspec rdoc-%{rdoc_ver}.gemspec json-%{json_ver}.gemspec; do
+	s="$RPM_BUILD_ROOT%{gem_dir}/specifications/$s"
+	%{__make} runruby TESTRUN_SCRIPT="-rubygems \
+	-e \"spec = Gem::Specification.load('$s')\" \
+	-e \"File.write '$s', spec.to_ruby\""
+done
+
 ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%{ruby_suffix}
 
 %{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
@@ -700,7 +758,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS LEGAL README.md README.EXT ChangeLog
+%doc NEWS LEGAL BSDL README.md README.EXT ChangeLog
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
