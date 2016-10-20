@@ -107,7 +107,6 @@ BuildRequires:	tk-devel < 8.7
 BuildRequires:	tk-devel >= 8.4
 %endif
 Requires(post,postun):	/sbin/ldconfig
-Provides:	ruby(ver) = %{ruby_version}
 Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread <= 0.6.3
