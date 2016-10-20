@@ -185,10 +185,6 @@ Provides:	ruby-bigdecimal = %{bigdecimal_ver}
 Provides:	ruby-io-console = %{io_console_ver}
 # ruby-modules deprecated, rpm5 generates ruby(abi) itself
 Provides:	ruby-modules(ver) = %{ruby_version}
-%if %{with batteries}
-Provides:	ruby-minitest = %{minitest_ver}
-Obsoletes:	ruby-minitest <= 1.5.0
-%endif
 # FIXME later
 Provides:	ruby(abi) = %{ruby_version}
 %requires_ge_to	openssl	openssl-devel
@@ -417,6 +413,31 @@ This is a JSON implementation as a Ruby extension in C.
 
 %description json -l pl.UTF-8
 Biblioteka JSON dla języka Ruby.
+
+%package minitest
+Summary:	Minitest provides a complete suite of testing facilities
+Version:	%{minitest_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description minitest
+minitest/unit is a small and incredibly fast unit testing framework.
+
+minitest/spec is a functionally complete spec engine.
+
+minitest/benchmark is an awesome way to assert the performance of your
+algorithms in a repeatable manner.
+
+minitest/mock by Steven Baker, is a beautifully tiny mock object
+framework.
+
+minitest/pride shows pride in testing and adds coloring to your test
+output.
 
 %package power_assert
 # The Summary/Description fields are rather poor.
@@ -872,6 +893,13 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{gem_dir}/gems/power_assert-%{power_assert_ver}/.*
 %{gem_dir}/specifications/power_assert-%{power_assert_ver}.gemspec
 
+%files minitest
+%defattr(644,root,root,755)
+%{ruby_libdir}/minitest
+%{gem_dir}/gems/minitest-%{minitest_ver}
+%exclude %{gem_dir}/gems/minitest-%{minitest_ver}/.*
+%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
+
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
@@ -1047,13 +1075,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_libdir}/io-console-%{io_console_ver}/lib
 %dir %{gem_libdir}/io-console-%{io_console_ver}/lib/io
 %attr(755,root,root) %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so
-
-%if %{with batteries}
-# minitest
-%{ruby_libdir}/minitest
-%{gem_dir}/gems/minitest-%{minitest_ver}
-%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
-%endif
 
 %{gem_dir}/specifications/psych-%{psych_ver}.gemspec
 %{gem_dir}/gems/psych-%{psych_ver}
