@@ -11,6 +11,8 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
+# prevent some weird build error:
+# readlink: unrecognized option '--library=pthread'
 %define debug 1
 
 %define		rel		0.1
