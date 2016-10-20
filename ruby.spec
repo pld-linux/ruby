@@ -690,16 +690,10 @@ install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/parser.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/generator.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 
-#install -d $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
-#%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/minitest $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
 ln -s %{gem_dir}/gems/minitest-%{minitest_ver}/lib/minitest $RPM_BUILD_ROOT%{ruby_libdir}
-#%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/minitest-%{minitest_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
-#install -d $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 install -d $RPM_BUILD_ROOT%{ruby_libdir}/test
-#mv $RPM_BUILD_ROOT%{ruby_libdir}/test/unit $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 ln -s %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib/unit $RPM_BUILD_ROOT%{ruby_libdir}/test
-#mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/test-unit-%{test_unit_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib
@@ -752,6 +746,9 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper,rss}/*.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
+
+# strip gem own tests
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/test
 
 %if %{without batteries}
 # packaged separately
@@ -899,6 +896,13 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/minitest-%{minitest_ver}
 %exclude %{gem_dir}/gems/minitest-%{minitest_ver}/.*
 %{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
+
+%files test-unit
+%defattr(644,root,root,755)
+%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}
+%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
+%{gem_dir}/specifications/test-unit-%{test_unit_ver}.gemspec
+%{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %files modules
 %defattr(644,root,root,755)
@@ -1082,15 +1086,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_libdir}/psych-%{psych_ver}
 %dir %{gem_libdir}/psych-%{psych_ver}/lib
 %attr(755,root,root) %{gem_libdir}/psych-%{psych_ver}/lib/psych.so
-
-# test-unit
-%{gem_dir}/specifications/test-unit-%{test_unit_ver}.gemspec
-%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}
-%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
-#%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin
-#%attr(755,root,root) %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin/testrb
-#%attr(755,root,root) %{_bindir}/testrb%{ruby_suffix}
-%{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %dir %{gem_dir}
 %dir %{gem_dir}/gems
