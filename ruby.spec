@@ -866,6 +866,12 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/specifications/json-%{json_ver}.gemspec
 %endif
 
+%files power_assert
+%defattr(644,root,root,755)
+%{gem_dir}/gems/power_assert-%{power_assert_ver}
+%exclude %{gem_dir}/gems/power_assert-%{power_assert_ver}/.*
+%{gem_dir}/specifications/power_assert-%{power_assert_ver}.gemspec
+
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
