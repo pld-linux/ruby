@@ -747,8 +747,13 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper,rss}/*.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
 
-# strip gem own tests
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/test
+# gem non library files
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/test
+%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,.??*,design_rationale.rb}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{doc,sample,test}
+%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/test
+%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,.??*,power_assert.gemspec}
 
 %if %{without batteries}
 # packaged separately
@@ -886,15 +891,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files power_assert
 %defattr(644,root,root,755)
-%{gem_dir}/gems/power_assert-%{power_assert_ver}
-%exclude %{gem_dir}/gems/power_assert-%{power_assert_ver}/.*
+%dir %{gem_dir}/gems/power_assert-%{power_assert_ver}
+%{gem_dir}/gems/power_assert-%{power_assert_ver}/lib
 %{gem_dir}/specifications/power_assert-%{power_assert_ver}.gemspec
 
 %files minitest
 %defattr(644,root,root,755)
 %{ruby_libdir}/minitest
 %{gem_dir}/gems/minitest-%{minitest_ver}
-%exclude %{gem_dir}/gems/minitest-%{minitest_ver}/.*
 %{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
 
 %files test-unit
