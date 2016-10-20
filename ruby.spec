@@ -15,7 +15,7 @@
 # readlink: unrecognized option '--library=pthread'
 %define debug 1
 
-%define		rel		0.1
+%define		rel		0.2
 %define		ruby_version	2.2
 %define		basever		2.2
 %define		patchlevel	5
@@ -971,6 +971,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/open-uri.rb
 %{ruby_libdir}/open3.rb
 %{ruby_libdir}/openssl.rb
+%{ruby_libdir}/optionparser.rb
 %{ruby_libdir}/optparse.rb
 %{ruby_libdir}/ostruct.rb
 %{ruby_libdir}/pathname.rb
@@ -1003,6 +1004,8 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/tracer.rb
 %{ruby_libdir}/tsort.rb
 %{ruby_libdir}/un.rb
+%{ruby_libdir}/unicode_normalize
+%{ruby_libdir}/unicode_normalize.rb
 %{ruby_libdir}/uri.rb
 %{ruby_libdir}/weakref.rb
 %{ruby_libdir}/webrick.rb
