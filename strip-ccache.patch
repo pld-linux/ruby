@@ -8,15 +8,15 @@
      when /^arch$/; if val.empty? then val = arch else arch = val end
      when /^sitearch$/; val = '$(arch)' if val.empty?
      end
---- ruby-2.2.5/common.mk.orig	2016-03-29 23:07:26.000000000 +0200
-+++ ruby-2.2.5/common.mk	2016-09-19 14:02:16.189655531 +0200
+--- ruby-2.2.7/common.mk~	2017-04-19 20:22:53.000000000 +0300
++++ ruby-2.2.7/common.mk	2017-04-19 20:23:24.847180464 +0300
 @@ -186,7 +186,7 @@
  configure-ext: $(EXTS_MK)
  
  build-ext: $(EXTS_MK)
 -	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) libdir="$(libdir)" LIBRUBY_EXTS=$(LIBRUBY_EXTS) \
 +	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) libdir="$(libdir)" LIBRUBY_EXTS=$(LIBRUBY_EXTS) CC="$(CC)" \
- 	    ENCOBJS="$(ENCOBJS)" UPDATE_LIBRARIES=no $(EXTSTATIC)
+ 	    EXTENCS="$(ENCOBJS)" UPDATE_LIBRARIES=no $(EXTSTATIC)
  
  prog: program wprogram
 @@ -598,7 +598,7 @@

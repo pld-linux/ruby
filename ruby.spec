@@ -18,7 +18,7 @@
 %define		rel		0.2
 %define		ruby_version	2.2
 %define		basever		2.2
-%define		patchlevel	5
+%define		patchlevel	7
 %define		pkg_version	%{basever}.%{patchlevel}
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
@@ -32,7 +32,7 @@
 %define		psych_ver	2.0.8
 %define		rake_ver	10.4.2
 %define		rdoc_ver	4.2.0
-%define		rubygems_ver	2.4.5.1
+%define		rubygems_ver	2.4.5.2
 %define		test_unit_ver	3.0.8
 %define		power_assert_ver 0.2.2
 
@@ -54,7 +54,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://ftp.ruby-lang.org/pub/ruby/2.2/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	4b9506c37e908b5b17215b66b2760438
+# Source0-md5:	d55c94d9258121d3780e331712f3d15f
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
