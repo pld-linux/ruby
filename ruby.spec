@@ -35,6 +35,7 @@
 %define		rubygems_ver	2.5.2
 %define		test_unit_ver	3.1.5
 %define		power_assert_ver 0.2.6
+%define		did_you_mean_ver 1.0.0
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -452,7 +453,9 @@ BuildArch:	noarch
 %endif
 
 %description power_assert
-Power Assert for Ruby.
+Power Assert shows each value of variables and method calls in the
+expression. It is useful for testing, providing which value wasn't
+correct when the condition is not satisfied.
 
 %package test-unit
 # The Summary/Description fields are rather poor.
@@ -473,6 +476,21 @@ BuildArch:	noarch
 Ruby 1.9.x bundles minitest not Test::Unit. Test::Unit bundled in Ruby
 1.8.x had not been improved but unbundled Test::Unit (test-unit) is
 improved actively.
+
+%package did_you_mean
+Summary:	"Did you mean?" experience in Ruby
+Version:	%{did_you_mean_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description did_you_mean
+"did you mean?" experience in Ruby: the error message will tell you
+the right one when you misspelled something.
 
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a1 -a2 -a3 %{?with_bootstrap:-a100}
@@ -750,11 +768,10 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 
 # gem non library files
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/test
-#%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,.??*,design_rationale.rb}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{doc,sample,test}
 %{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/test
-#%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,.??*,power_assert.gemspec}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,doc,test}
 
 %if %{without batteries}
 # packaged separately
@@ -908,6 +925,13 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 %{gem_dir}/specifications/test-unit-%{test_unit_ver}.gemspec
 %{_mandir}/man1/testrb%{ruby_suffix}.1*
+
+%files did_you_mean
+%dir %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}
+%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/benchmark
+%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/evaluation
+%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/lib
+%{gem_dir}/specifications/did_you_mean-%{did_you_mean_ver}.gemspec
 
 %files modules
 %defattr(644,root,root,755)
