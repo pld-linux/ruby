@@ -15,26 +15,26 @@
 # readlink: unrecognized option '--library=pthread'
 %define debug 1
 
-%define		rel		0.2
-%define		ruby_version	2.2
-%define		basever		2.2
-%define		patchlevel	7
+%define		rel		0.1
+%define		ruby_version	2.3
+%define		basever		2.3
+%define		patchlevel	3
 %define		pkg_version	%{basever}.%{patchlevel}
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_2_5
 
-%define		bigdecimal_ver	1.2.6
-%define		io_console_ver	0.4.3
+%define		bigdecimal_ver	1.2.8
+%define		io_console_ver	0.4.5
 %define		irb_ver		0.9.6
-%define		json_ver	1.8.1
-%define		minitest_ver	5.4.3
-%define		psych_ver	2.0.8
+%define		json_ver	1.8.3
+%define		minitest_ver	5.8.5
+%define		psych_ver	2.1.0
 %define		rake_ver	10.4.2
-%define		rdoc_ver	4.2.0
-%define		rubygems_ver	2.4.5.2
-%define		test_unit_ver	3.0.8
-%define		power_assert_ver 0.2.2
+%define		rdoc_ver	4.2.1
+%define		rubygems_ver	2.5.2
+%define		test_unit_ver	3.1.5
+%define		power_assert_ver 0.2.6
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -54,7 +54,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://ftp.ruby-lang.org/pub/ruby/2.2/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	d55c94d9258121d3780e331712f3d15f
+# Source0-md5:	0cba3d1b677d2695236ace62ca6d2255
 Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
 # Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
@@ -650,11 +650,13 @@ install -d $RPM_BUILD_ROOT%{gem_dir}
 # as there may came files from other packages as well. actually, unlikely as
 # the links to got system dir and only ruby may package there (other distro
 # packages should go to vendor dirs)
+%if 0
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/rake* $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
 ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake $RPM_BUILD_ROOT%{ruby_libdir}
 ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake.rb $RPM_BUILD_ROOT%{ruby_libdir}
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rake-%{rake_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%endif
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/rdoc* $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
@@ -748,11 +750,11 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 
 # gem non library files
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/test
-%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,.??*,design_rationale.rb}
+#%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,.??*,design_rationale.rb}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{doc,sample,test}
 %{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/test
-%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,.??*,power_assert.gemspec}
+#%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,.??*,power_assert.gemspec}
 
 %if %{without batteries}
 # packaged separately
@@ -761,7 +763,7 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-*
 %{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
-%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
+#%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
 %{__rm} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/{json,minitest,rake}-*.gemspec
 %{?with_doc:%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON}
 %endif
@@ -784,7 +786,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
-%{_mandir}/man1/ruby%{ruby_suffix}.1*
+#%{_mandir}/man1/ruby%{ruby_suffix}.1*
 
 %dir %{_libdir}/%{oname}
 %dir %{_libdir}/%{oname}/%{vendordir}
@@ -861,9 +863,9 @@ rm -rf $RPM_BUILD_ROOT
 %files rake
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rake%{ruby_suffix}
-%{_mandir}/man1/rake%{ruby_suffix}.1*
-%{ruby_libdir}/rake
-%{ruby_libdir}/rake.rb
+#%{_mandir}/man1/rake%{ruby_suffix}.1*
+#%{ruby_libdir}/rake
+#%{ruby_libdir}/rake.rb
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %{gem_dir}/gems/rake-%{rake_ver}/lib
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
@@ -1019,7 +1021,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
-%exclude %{ruby_libdir}/rake.rb
+#%exclude %{ruby_libdir}/rake.rb
 
 %{ruby_archdir}/rbconfig.rb
 %attr(755,root,root) %{ruby_archdir}/bigdecimal.so
