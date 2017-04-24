@@ -589,7 +589,6 @@ cd ..
 	--with-sitearchhdrdir='$(sitehdrdir)/$(arch)' \
 	--with-vendorarchhdrdir='$(vendorhdrdir)/$(arch)' \
 	--enable-multiarch \
-	--enable-pthread \
 	--enable-shared \
 	--disable-install-doc \
 	--disable-rubygems \
