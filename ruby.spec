@@ -768,10 +768,10 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 
 # gem non library files
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/test
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{doc,sample,test}
-%{__rm} $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/test
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,test}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,doc,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc,test}
 
 %if %{without batteries}
 # packaged separately
@@ -885,6 +885,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{ruby_libdir}/rake.rb
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %{gem_dir}/gems/rake-%{rake_ver}/lib
+%{gem_dir}/gems/rake-%{rake_ver}/rakelib
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
@@ -927,6 +928,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %files did_you_mean
+%defattr(644,root,root,755)
 %dir %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}
 %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/benchmark
 %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/evaluation
