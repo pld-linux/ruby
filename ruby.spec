@@ -803,7 +803,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
-#%{_mandir}/man1/ruby%{ruby_suffix}.1*
+%{_mandir}/man1/ruby%{ruby_suffix}.1*
 
 %dir %{_libdir}/%{oname}
 %dir %{_libdir}/%{oname}/%{vendordir}
