@@ -13,6 +13,9 @@
 
 # prevent some weird build error:
 # readlink: unrecognized option '--library=pthread'
+# caused by:
+# $ chrpath -l /home/users/glen/tmp/ruby-2.3.3-root-glen/usr/lib64/ruby/2.3/enc/encdb.so
+# /home/users/glen/tmp/ruby-2.3.3-root-glen/usr/lib64/ruby/2.3/enc/encdb.so: RPATH=--library=pthread
 %define debug 1
 
 %define		rel		0.1
