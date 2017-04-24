@@ -1107,6 +1107,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/syslog.so
 %attr(755,root,root) %{ruby_archdir}/zlib.so
 
+%dir %{ruby_archdir}/cgi
+%attr(755,root,root) %{ruby_archdir}/cgi/escape.so
 %dir %{ruby_archdir}/digest
 %attr(755,root,root) %{ruby_archdir}/digest/*.so
 #%dir %{ruby_archdir}/dl
