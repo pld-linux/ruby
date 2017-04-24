@@ -36,6 +36,7 @@
 %define		test_unit_ver	3.1.5
 %define		power_assert_ver 0.2.6
 %define		did_you_mean_ver 1.0.0
+%define		net_telnet_ver	0.1.1
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -492,6 +493,27 @@ BuildArch:	noarch
 "did you mean?" experience in Ruby: the error message will tell you
 the right one when you misspelled something.
 
+%package net-telnet
+Summary:	Provides telnet client functionality
+Version:	%{net_telnet_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description net-telnet
+Provides telnet client functionality.
+
+This class also has, through delegation, all the methods of a socket
+object (by default, a TCPSocket, but can be set by the Proxy option to
+new()). This provides methods such as close() to end the session and
+sysread() to read data directly from the host, instead of via the
+waitfor() mechanism. Note that if you do use sysread() directly when
+in telnet mode, you should probably pass the output through
+preprocess() to extract telnet command sequences.
+
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a1 -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
@@ -772,6 +794,7 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,test}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,doc,test}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/{[A-Z]*,bin}
 
 %if %{without batteries}
 # packaged separately
@@ -934,6 +957,12 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/evaluation
 %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/lib
 %{gem_dir}/specifications/did_you_mean-%{did_you_mean_ver}.gemspec
+
+%files net-telnet
+%defattr(644,root,root,755)
+%dir %{gem_dir}/gems/net-telnet-%{net_telnet_ver}
+%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/lib
+%{gem_dir}/specifications/net-telnet-%{net_telnet_ver}.gemspec
 
 %files modules
 %defattr(644,root,root,755)
