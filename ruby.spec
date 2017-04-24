@@ -11,13 +11,6 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-# prevent some weird build error:
-# readlink: unrecognized option '--library=pthread'
-# caused by:
-# $ chrpath -l /home/users/glen/tmp/ruby-2.3.3-root-glen/usr/lib64/ruby/2.3/enc/encdb.so
-# /home/users/glen/tmp/ruby-2.3.3-root-glen/usr/lib64/ruby/2.3/enc/encdb.so: RPATH=--library=pthread
-%define debug 1
-
 %define		rel		0.1
 %define		ruby_version	2.3
 %define		basever		2.3
@@ -591,6 +584,7 @@ cd ..
 	--enable-multiarch \
 	--enable-shared \
 	--disable-install-doc \
+	--disable-rpath \
 	--disable-rubygems \
 	--with-ruby-version='' \
 
