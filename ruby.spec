@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		0.1
+%define		rel		0.2
 %define		ruby_version	2.3
 %define		basever		2.3
 %define		patchlevel	4
@@ -544,6 +544,20 @@ BuildArch:	noarch
 IO/Console provides very simple and portable access to console. It
 doesn't provide higher layer features, such like curses and readline.
 
+%package psych
+Summary:	A libyaml wrapper for Ruby
+Version:	%{psych_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Libraries
+
+%description psych
+Psych is a YAML parser and emitter. Psych leverages libyaml for its
+YAML parsing and emitting capabilities. In addition to wrapping
+libyaml, Psych also knows how to serialize and de-serialize most Ruby
+objects to and from the YAML format.
+
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
@@ -1009,6 +1023,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so
 %{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
 
+%files psych
+%defattr(644,root,root,755)
+%{ruby_libdir}/psych.rb
+%attr(755,root,root) %{ruby_archdir}/psych.so
+%{gem_dir}/gems/psych-%{psych_ver}
+%{ruby_libdir}/psych
+%dir %{gem_libdir}/psych-%{psych_ver}
+%dir %{gem_libdir}/psych-%{psych_ver}/lib
+%attr(755,root,root) %{gem_libdir}/psych-%{psych_ver}/lib/psych.so
+%{gem_dir}/specifications/psych-%{psych_ver}.gemspec
+
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
@@ -1077,7 +1102,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/profile.rb
 %{ruby_libdir}/profiler.rb
 %{ruby_libdir}/pstore.rb
-%{ruby_libdir}/psych.rb
 %{ruby_libdir}/rdoc.rb
 %{ruby_libdir}/resolv-replace.rb
 %{ruby_libdir}/resolv.rb
@@ -1131,7 +1155,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/objspace.so
 %attr(755,root,root) %{ruby_archdir}/openssl.so
 %attr(755,root,root) %{ruby_archdir}/pathname.so
-%attr(755,root,root) %{ruby_archdir}/psych.so
 %attr(755,root,root) %{ruby_archdir}/pty.so
 %attr(755,root,root) %{ruby_archdir}/readline.so
 %attr(755,root,root) %{ruby_archdir}/ripper.so
@@ -1162,13 +1185,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{_libdir}/gems
 %dir %{_libdir}/gems/%{oname}
-
-%{gem_dir}/specifications/psych-%{psych_ver}.gemspec
-%{gem_dir}/gems/psych-%{psych_ver}
-%{ruby_libdir}/psych
-%dir %{gem_libdir}/psych-%{psych_ver}
-%dir %{gem_libdir}/psych-%{psych_ver}/lib
-%attr(755,root,root) %{gem_libdir}/psych-%{psych_ver}/lib/psych.so
 
 %dir %{gem_dir}
 %dir %{gem_dir}/gems
