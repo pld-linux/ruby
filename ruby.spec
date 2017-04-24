@@ -11,14 +11,14 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		0.2
+%define		rel		0.3
 %define		ruby_version	2.3
 %define		basever		2.3
 %define		patchlevel	3
 %define		pkg_version	%{basever}.%{patchlevel}
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_2_5
+%define		doc_version	2_3_4
 
 %define		bigdecimal_ver	1.2.8
 %define		io_console_ver	0.4.5
@@ -53,12 +53,10 @@ Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://ftp.ruby-lang.org/pub/ruby/2.2/%{oname}-%{pkg_version}.tar.xz
 # Source0-md5:	0cba3d1b677d2695236ace62ca6d2255
-Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
-# Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	ac3d547e5ea9ef5a89be161cd967a5e8
+# Source2-md5:	480c3f6f8d9311e86c1aa395f7d7bba6
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	12f6b7a5e923fbae0f768d3cf760e88e
+# Source3-md5:	9805d5d4537b73d2af1860e0759421f1
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
@@ -547,7 +545,7 @@ IO/Console provides very simple and portable access to console. It
 doesn't provide higher layer features, such like curses and readline.
 
 %prep
-%setup -q -n %{oname}-%{pkg_version} -a1 -a2 -a3 %{?with_bootstrap:-a100}
+%setup -q -n %{oname}-%{pkg_version} -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
 #%patch1 -p1
 %patch2 -p1
@@ -1193,13 +1191,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/erb%{ruby_suffix}.1*
 %{_mandir}/man1/ri%{ruby_suffix}.1*
 
+%if %{with doc}
 %files doc
 %defattr(644,root,root,755)
-%doc ruby-doc-bundle/*
-%{?with_doc:%doc ruby_%{doc_version}_stdlib}
-%{?with_doc:%doc ruby_%{doc_version}_core}
+%doc ruby_%{doc_version}_stdlib
+%doc ruby_%{doc_version}_core
 
-%if %{with doc}
 %files doc-ri
 %defattr(644,root,root,755)
 %{ruby_ridir}/*
