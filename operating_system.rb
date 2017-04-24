@@ -14,11 +14,27 @@ module Gem
     private :previous_but_one_dir_to
 
     ##
+    # Detects --install-dir option specified on command line.
+
+    def opt_install_dir?
+      @opt_install_dir ||= ARGV.include?('--install-dir') || ARGV.include?('-i')
+    end
+    private :opt_install_dir?
+
+    ##
+    # Detects --build-root option specified on command line.
+
+    def opt_build_root?
+      @opt_build_root ||= ARGV.include?('--build-root')
+    end
+    private :opt_build_root?
+
+    ##
     # Tries to detect, if arguments and environment variables suggest that
     # 'gem install' is executed from rpmbuild.
 
     def rpmbuild?
-      (ARGV.include?('--install-dir') || ARGV.include?('-i')) && ENV['RPM_PACKAGE_NAME']
+      @rpmbuild ||= ENV['RPM_PACKAGE_NAME'] && (opt_install_dir? || opt_build_root?)
     end
     private :rpmbuild?
 
@@ -80,7 +96,9 @@ module Gem
     # RubyGems default overrides.
 
     def default_dir
-      if Process.uid == 0
+      if opt_build_root?
+        Gem.default_dirs[:system][:gem_dir]
+      elsif Process.uid == 0
         Gem.default_dirs[:local][:gem_dir]
       else
         Gem.user_dir
@@ -93,7 +111,9 @@ module Gem
     end
 
     def default_bindir
-      if Process.uid == 0
+      if opt_build_root?
+        Gem.default_dirs[:system][:bin_dir]
+      elsif Process.uid == 0
         Gem.default_dirs[:local][:bin_dir]
       else
         File.join [Dir.home, 'bin']

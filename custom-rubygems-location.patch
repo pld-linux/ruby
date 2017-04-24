@@ -15,9 +15,9 @@ diff --git a/configure.in b/configure.in
 index 03a4152..0e371e2 100644
 --- a/configure.in
 +++ b/configure.in
-@@ -4061,6 +4061,10 @@ AC_ARG_WITH(vendorarchdir,
+@@ -4264,6 +4264,10 @@ AC_ARG_WITH(vendorarchdir,
              [vendorarchdir=$withval],
-             [vendorarchdir=${multiarch+'${rubysitearchprefix}/vendor_ruby/${ruby_version}'}${multiarch-'${vendorlibdir}/${sitearch}'}])
+             [vendorarchdir=${multiarch+'${rubysitearchprefix}/vendor_ruby'${ruby_version_dir}}${multiarch-'${vendorlibdir}/${sitearch}'}])
  
 +AC_ARG_WITH(rubygemsdir,
 +           AS_HELP_STRING([--with-rubygemsdir=DIR], [custom rubygems directory]),
@@ -26,14 +26,14 @@ index 03a4152..0e371e2 100644
  if test "${LOAD_RELATIVE+set}"; then
      AC_DEFINE_UNQUOTED(LOAD_RELATIVE, $LOAD_RELATIVE)
      RUBY_EXEC_PREFIX=''
-@@ -4084,6 +4088,7 @@ AC_SUBST(sitearchdir)dnl
+@@ -4288,6 +4292,7 @@ AC_SUBST(sitearchdir)dnl
  AC_SUBST(vendordir)dnl
  AC_SUBST(vendorlibdir)dnl
  AC_SUBST(vendorarchdir)dnl
 +AC_SUBST(rubygemsdir)dnl
  
+ AC_SUBST(CONFIGURE, "`echo $0 | sed 's|.*/||'`")dnl
  AC_SUBST(configure_args, "`echo "${ac_configure_args}" | sed 's/\\$/$$/g'`")dnl
- 
 diff --git a/loadpath.c b/loadpath.c
 index 623dc9d..74c5d9e 100644
 --- a/loadpath.c
@@ -53,7 +53,7 @@ diff --git a/template/verconf.h.tmpl b/template/verconf.h.tmpl
 index 79c003e..34f2382 100644
 --- a/template/verconf.h.tmpl
 +++ b/template/verconf.h.tmpl
-@@ -34,6 +34,9 @@
+@@ -36,6 +36,9 @@
  % if C["RUBY_SEARCH_PATH"]
  #define RUBY_SEARCH_PATH		"${RUBY_SEARCH_PATH}"
  % end
@@ -67,7 +67,7 @@ diff --git a/tool/rbinstall.rb b/tool/rbinstall.rb
 index b47b6e1..0b99408 100755
 --- a/tool/rbinstall.rb
 +++ b/tool/rbinstall.rb
-@@ -317,6 +317,7 @@ sitelibdir = CONFIG["sitelibdir"]
+@@ -328,6 +328,7 @@ def CONFIG.[](name, mandatory = false)
  sitearchlibdir = CONFIG["sitearchdir"]
  vendorlibdir = CONFIG["vendorlibdir"]
  vendorarchlibdir = CONFIG["vendorarchdir"]
@@ -75,7 +75,7 @@ index b47b6e1..0b99408 100755
  mandir = CONFIG["mandir", true]
  docdir = CONFIG["docdir", true]
  configure_args = Shellwords.shellwords(CONFIG["configure_args"])
-@@ -505,7 +506,15 @@ end
+@@ -506,7 +507,15 @@ def CONFIG.[](name, mandatory = false)
  install?(:local, :comm, :lib) do
    prepare "library scripts", rubylibdir
    noinst = %w[README* *.txt *.rdoc *.gemspec]
