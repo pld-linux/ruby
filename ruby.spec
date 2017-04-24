@@ -933,9 +933,6 @@ rm -rf $RPM_BUILD_ROOT
 %files rake
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rake%{ruby_suffix}
-#%{_mandir}/man1/rake%{ruby_suffix}.1*
-#%{ruby_libdir}/rake
-#%{ruby_libdir}/rake.rb
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %{gem_dir}/gems/rake-%{rake_ver}/lib
 %{gem_dir}/gems/rake-%{rake_ver}/rakelib
@@ -1016,9 +1013,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
 %{ruby_libdir}/cgi
-#%{ruby_libdir}/date
 %{ruby_libdir}/digest
-#%{ruby_libdir}/dl
 %{ruby_libdir}/drb
 %{ruby_libdir}/fiddle
 %{ruby_libdir}/io
@@ -1046,13 +1041,11 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/benchmark.rb
 %{ruby_libdir}/cgi.rb
 %{ruby_libdir}/cmath.rb
-#%{ruby_libdir}/complex.rb
 %{ruby_libdir}/csv.rb
 %{ruby_libdir}/date.rb
 %{ruby_libdir}/debug.rb
 %{ruby_libdir}/delegate.rb
 %{ruby_libdir}/digest.rb
-#%{ruby_libdir}/dl.rb
 %{ruby_libdir}/drb.rb
 %{ruby_libdir}/e2mmap.rb
 %{ruby_libdir}/erb.rb
@@ -1062,7 +1055,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/find.rb
 %{ruby_libdir}/forwardable.rb
 %{ruby_libdir}/getoptlong.rb
-#%{ruby_libdir}/gserver.rb
 %{ruby_libdir}/ipaddr.rb
 %{ruby_libdir}/json.rb
 %{ruby_libdir}/kconv.rb
@@ -1086,7 +1078,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/profiler.rb
 %{ruby_libdir}/pstore.rb
 %{ruby_libdir}/psych.rb
-#%{ruby_libdir}/rational.rb
 %{ruby_libdir}/rdoc.rb
 %{ruby_libdir}/resolv-replace.rb
 %{ruby_libdir}/resolv.rb
@@ -1120,11 +1111,9 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{ruby_libdir}/rubygems.rb
 %exclude %{ruby_libdir}/ubygems.rb
 %exclude %{ruby_libdir}/rbconfig/datadir.rb
-#%exclude %{ruby_libdir}/rbconfig/obsolete.rb
 %endif
 %exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
-#%exclude %{ruby_libdir}/rake.rb
 
 %{ruby_archdir}/rbconfig.rb
 %attr(755,root,root) %{ruby_archdir}/bigdecimal.so
@@ -1133,7 +1122,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/date_core.so
 %attr(755,root,root) %{ruby_archdir}/dbm.so
 %attr(755,root,root) %{ruby_archdir}/digest.so
-#%attr(755,root,root) %{ruby_archdir}/dl.so
 %attr(755,root,root) %{ruby_archdir}/etc.so
 %attr(755,root,root) %{ruby_archdir}/fcntl.so
 %attr(755,root,root) %{ruby_archdir}/fiber.so
@@ -1159,8 +1147,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/cgi/escape.so
 %dir %{ruby_archdir}/digest
 %attr(755,root,root) %{ruby_archdir}/digest/*.so
-#%dir %{ruby_archdir}/dl
-#%attr(755,root,root) %{ruby_archdir}/dl/callback.so
 %dir %{ruby_archdir}/enc
 %attr(755,root,root) %{ruby_archdir}/enc/*.so
 %dir %{ruby_archdir}/enc/trans
