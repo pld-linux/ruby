@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		0.1
+%define		rel		0.2
 %define		ruby_version	2.3
 %define		basever		2.3
 %define		patchlevel	3
@@ -178,8 +178,6 @@ Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Suggests:	ruby-rubygems
-Provides:	ruby-bigdecimal = %{bigdecimal_ver}
-Provides:	ruby-io-console = %{io_console_ver}
 # ruby-modules deprecated, rpm5 generates ruby(abi) itself
 Provides:	ruby-modules(ver) = %{ruby_version}
 # FIXME later
@@ -509,6 +507,44 @@ sysread() to read data directly from the host, instead of via the
 waitfor() mechanism. Note that if you do use sysread() directly when
 in telnet mode, you should probably pass the output through
 preprocess() to extract telnet command sequences.
+
+%package bigdecimal
+Summary:	BigDecimal provides arbitrary-precision floating point decimal arithmetic
+Version:	%{bigdecimal_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	GPL+ or Artistic
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description bigdecimal
+Ruby provides built-in support for arbitrary precision integer
+arithmetic. For example:
+
+42**13 -> 1265437718438866624512
+
+BigDecimal provides similar support for very large or very accurate
+floating point numbers. Decimal arithmetic is also useful for general
+calculation, because it provides the correct answers people
+expect–whereas normal binary floating point arithmetic often
+introduces subtle errors because of the conversion between base 10 and
+base 2.
+
+%package io-console
+Summary:	IO/Console is a simple console utilizing library
+Version:	%{io_console_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description io-console
+IO/Console provides very simple and portable access to console. It
+doesn't provide higher layer features, such like curses and readline.
 
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a1 -a2 -a3 %{?with_bootstrap:-a100}
@@ -960,6 +996,24 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/net-telnet-%{net_telnet_ver}/lib
 %{gem_dir}/specifications/net-telnet-%{net_telnet_ver}.gemspec
 
+%files bigdecimal
+%defattr(644,root,root,755)
+%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}
+%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
+%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+%attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
+%{ruby_libdir}/bigdecimal
+%{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
+
+%files io-console
+%defattr(644,root,root,755)
+%{gem_dir}/gems/io-console-%{io_console_ver}
+%dir %{gem_libdir}/io-console-%{io_console_ver}
+%dir %{gem_libdir}/io-console-%{io_console_ver}/lib
+%dir %{gem_libdir}/io-console-%{io_console_ver}/lib/io
+%attr(755,root,root) %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so
+%{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
+
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
@@ -1122,24 +1176,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_archdir}/rbconfig
 %attr(755,root,root) %{ruby_archdir}/rbconfig/sizeof.so
 
-# bigdecimal
-%{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
-%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}
-%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
-%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
-%attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
-%{ruby_libdir}/bigdecimal
-
 %dir %{_libdir}/gems
 %dir %{_libdir}/gems/%{oname}
-
-# io-console
-%{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
-%{gem_dir}/gems/io-console-%{io_console_ver}
-%dir %{gem_libdir}/io-console-%{io_console_ver}
-%dir %{gem_libdir}/io-console-%{io_console_ver}/lib
-%dir %{gem_libdir}/io-console-%{io_console_ver}/lib/io
-%attr(755,root,root) %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so
 
 %{gem_dir}/specifications/psych-%{psych_ver}.gemspec
 %{gem_dir}/gems/psych-%{psych_ver}
