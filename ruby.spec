@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		0.3
+%define		rel		0.4
 %define		ruby_version	2.3
 %define		basever		2.3
 %define		patchlevel	4
@@ -331,8 +331,10 @@ Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	Ruby or MIT
 Group:		Development/Libraries
+Requires:	%{name}-bigdecimal = %{bigdecimal_ver}-%{pkg_version}.%{rel}
 Requires:	%{name}-io-console = %{io_console_ver}-%{pkg_version}.%{rel}
 Requires:	%{name}-modules = 1:%{pkg_version}-%{rel}
+Requires:	%{name}-psych = %{psych_ver}-%{pkg_version}.%{rel}
 Requires:	%{name}-rdoc >= %{rdoc_ver}
 Suggests:	%{name}-devel
 Provides:	rubygems = %{rubygems_ver}
