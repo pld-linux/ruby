@@ -13,27 +13,10 @@
 
 %define		rel		1
 %define		ruby_version	2.3
-%define		basever		2.3
 %define		patchlevel	4
-%define		pkg_version	%{basever}.%{patchlevel}
-
+%define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_3_4
-
-%define		bigdecimal_ver	1.2.8
-%define		io_console_ver	0.4.5
-%define		irb_ver		0.9.6
-%define		json_ver	1.8.3
-%define		minitest_ver	5.8.5
-%define		psych_ver	2.1.0
-%define		rake_ver	10.4.2
-%define		rdoc_ver	4.2.1
-%define		rubygems_ver	2.5.2
-%define		test_unit_ver	3.1.5
-%define		power_assert_ver 0.2.6
-%define		did_you_mean_ver 1.0.0
-%define		net_telnet_ver	0.1.1
-
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -111,6 +94,20 @@ Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define	bigdecimal_ver		1.2.8
+%define	io_console_ver		0.4.5
+%define	irb_ver			0.9.6
+%define	json_ver		1.8.3
+%define	minitest_ver		5.8.5
+%define	psych_ver		2.1.0
+%define	rake_ver		10.4.2
+%define	rdoc_ver		4.2.1
+%define	rubygems_ver		2.5.2
+%define	test_unit_ver		3.1.5
+%define	power_assert_ver	0.2.6
+%define	did_you_mean_ver	1.0.0
+%define	net_telnet_ver		0.1.1
+
 %define	ruby_ridir		%{_datadir}/ri/system
 %define	gem_dir			%{_datadir}/gems
 %define	gem_libdir		%{_libdir}/gems/%{oname}
@@ -135,10 +132,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # bleh, some nasty (gcc or ruby) bug still not fixed
 # (SEGV or "unexpected break" on miniruby run during build)
-%define		specflags_ia64	-O0
+%define	specflags_ia64	-O0
 
 # ruby needs frame pointers for correct exception handling
-%define		specflags_ia32	-fno-omit-frame-pointer
+%define	specflags_ia32	-fno-omit-frame-pointer
 
 %description
 Ruby is the interpreted scripting language for quick and easy
