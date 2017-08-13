@@ -11,25 +11,28 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		2
-%define		ruby_version	2.1
-%define		basever		2.1
-%define		patchlevel	10
+%define		rel		1
+%define		ruby_version	2.3
+%define		basever		2.3
+%define		patchlevel	4
 %define		pkg_version	%{basever}.%{patchlevel}
 
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_1_0
+%define		doc_version	2_3_4
 
-%define		bigdecimal_ver	1.2.4
-%define		io_console_ver	0.4.3
+%define		bigdecimal_ver	1.2.8
+%define		io_console_ver	0.4.5
 %define		irb_ver		0.9.6
-%define		json_ver	1.8.1
-%define		minitest_ver	4.7.5
-%define		psych_ver	2.0.5
-%define		rake_ver	10.1.0
-%define		rdoc_ver	4.1.0
-%define		rubygems_ver	2.2.5
-%define		test_unit_ver	%{pkg_version}.0
+%define		json_ver	1.8.3
+%define		minitest_ver	5.8.5
+%define		psych_ver	2.1.0
+%define		rake_ver	10.4.2
+%define		rdoc_ver	4.2.1
+%define		rubygems_ver	2.5.2
+%define		test_unit_ver	3.1.5
+%define		power_assert_ver 0.2.6
+%define		did_you_mean_ver 1.0.0
+%define		net_telnet_ver	0.1.1
 
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -41,29 +44,31 @@ Name:		ruby%{ruby_suffix}
 Version:	%{pkg_version}
 Release:	%{rel}
 Epoch:		1
-# Public Domain for example for: include/ruby/st.h, strftime.c, ...
-License:	(Ruby or BSD) and Public Domain
+# Public Domain for example for: include/ruby/st.h, strftime.c, missing/*, ...
+# MIT and CCO: ccan/*
+# zlib: ext/digest/md5/md5.*, ext/nkf/nkf-utf8/nkf.c
+# UCD: some of enc/trans/**/*.src
+License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
-Source0:	https://ftp.ruby-lang.org/pub/ruby/2.1/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	2d1eee7fcf152df41ed22665b02f1c3d
-Source1:	http://www.ruby-doc.org/download/%{oname}-doc-bundle.tar.gz
-# Source1-md5:	ad1af0043be98ba1a4f6d0185df63876
+Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
+# Source0-md5:	ee011c51c0395ec46f072da9beb6b870
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	bf479c714ba189f9df633600b40aeef5
+# Source2-md5:	480c3f6f8d9311e86c1aa395f7d7bba6
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	3515d672874a1e48d4a8fd32c50639e7
+# Source3-md5:	9805d5d4537b73d2af1860e0759421f1
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
 Patch0:		%{oname}-lib64.patch
-Patch1:		%{oname}-ffs.patch
+#Patch1:		%{oname}-ffs.patch
 Patch2:		fix-bison-invocation.patch
 Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
-Patch5:		duplicated-paths.patch
+Patch5:		ruby-version.patch
+Patch6:		duplicated-paths.patch
 # obsolete?
 Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
@@ -94,11 +99,10 @@ BuildRequires:	ruby
 BuildRequires:	ruby-modules
 %endif
 %if %{with tk}
-BuildRequires:	tk-devel >= 8.4
 BuildRequires:	tk-devel < 8.7
+BuildRequires:	tk-devel >= 8.4
 %endif
 Requires(post,postun):	/sbin/ldconfig
-Provides:	ruby(ver) = %{ruby_version}
 Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread <= 0.6.3
@@ -172,14 +176,8 @@ Summary(pl.UTF-8):	Standardowe moduły i narzędzia dla języka Ruby
 Group:		Development/Languages
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Suggests:	ruby-rubygems
-Provides:	ruby-bigdecimal = %{bigdecimal_ver}
-Provides:	ruby-io-console = %{io_console_ver}
 # ruby-modules deprecated, rpm5 generates ruby(abi) itself
 Provides:	ruby-modules(ver) = %{ruby_version}
-%if %{with batteries}
-Provides:	ruby-minitest = %{minitest_ver}
-Obsoletes:	ruby-minitest <= 1.5.0
-%endif
 # FIXME later
 Provides:	ruby(abi) = %{ruby_version}
 %requires_ge_to	openssl	openssl-devel
@@ -304,7 +302,8 @@ Summary(pl.UTF-8):	Narzędzie do generowania dokumentacji HTML i linii poleceń 
 Version:	%{rdoc_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
-License:	GPL v2 and Ruby and MIT
+# SIL: lib/rdoc/generator/template/darkfish/css/fonts.css
+License:	GPLv2 and Ruby and MIT and SIL
 Group:		Development/Libraries
 Requires:	%{name}-irb >= %{irb_ver}
 Requires:	%{name}-json >= %{json_ver}
@@ -332,7 +331,10 @@ Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	Ruby or MIT
 Group:		Development/Libraries
+Requires:	%{name}-bigdecimal = %{bigdecimal_ver}-%{pkg_version}.%{rel}
+Requires:	%{name}-io-console = %{io_console_ver}-%{pkg_version}.%{rel}
 Requires:	%{name}-modules = 1:%{pkg_version}-%{rel}
+Requires:	%{name}-psych = %{psych_ver}-%{pkg_version}.%{rel}
 Requires:	%{name}-rdoc >= %{rdoc_ver}
 Suggests:	%{name}-devel
 Provides:	rubygems = %{rubygems_ver}
@@ -396,7 +398,8 @@ Summary(pl.UTF-8):	Biblioteka JSON dla języka Ruby
 Version:	%{json_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
-License:	MIT
+# UCD: ext/json/generator/generator.c
+License:	(Ruby or GPLv2) and UCD
 Group:		Development/Languages
 Obsoletes:	ruby-json-rubyforge
 Conflicts:	ruby-modules < 1:1.9.3.429-3
@@ -407,20 +410,176 @@ This is a JSON implementation as a Ruby extension in C.
 %description json -l pl.UTF-8
 Biblioteka JSON dla języka Ruby.
 
+%package minitest
+Summary:	Minitest provides a complete suite of testing facilities
+Version:	%{minitest_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description minitest
+minitest/unit is a small and incredibly fast unit testing framework.
+
+minitest/spec is a functionally complete spec engine.
+
+minitest/benchmark is an awesome way to assert the performance of your
+algorithms in a repeatable manner.
+
+minitest/mock by Steven Baker, is a beautifully tiny mock object
+framework.
+
+minitest/pride shows pride in testing and adds coloring to your test
+output.
+
+%package power_assert
+# The Summary/Description fields are rather poor.
+# https://github.com/k-tsj/power_assert/issues/3
+Summary:	Power Assert for Ruby
+Version:	%{power_assert_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	Ruby or BSD
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description power_assert
+Power Assert shows each value of variables and method calls in the
+expression. It is useful for testing, providing which value wasn't
+correct when the condition is not satisfied.
+
+%package test-unit
+# The Summary/Description fields are rather poor.
+# https://github.com/test-unit/test-unit/issues/73
+Summary:	Improved version of Test::Unit bundled in Ruby 1.8.x
+Version:	%{test_unit_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+Group:		Development/Libraries
+# lib/test/unit/diff.rb is a double license of the Ruby license and PSF license.
+# lib/test-unit.rb is a dual license of the Ruby license and LGPLv2.1 or later.
+License:	(Ruby or BSD) and (Ruby or BSD or Python) and (Ruby or BSD or LGPLv2+)
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description test-unit
+Ruby 1.9.x bundles minitest not Test::Unit. Test::Unit bundled in Ruby
+1.8.x had not been improved but unbundled Test::Unit (test-unit) is
+improved actively.
+
+%package did_you_mean
+Summary:	"Did you mean?" experience in Ruby
+Version:	%{did_you_mean_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description did_you_mean
+"did you mean?" experience in Ruby: the error message will tell you
+the right one when you misspelled something.
+
+%package net-telnet
+Summary:	Provides telnet client functionality
+Version:	%{net_telnet_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description net-telnet
+Provides telnet client functionality.
+
+This class also has, through delegation, all the methods of a socket
+object (by default, a TCPSocket, but can be set by the Proxy option to
+new()). This provides methods such as close() to end the session and
+sysread() to read data directly from the host, instead of via the
+waitfor() mechanism. Note that if you do use sysread() directly when
+in telnet mode, you should probably pass the output through
+preprocess() to extract telnet command sequences.
+
+%package bigdecimal
+Summary:	BigDecimal provides arbitrary-precision floating point decimal arithmetic
+Version:	%{bigdecimal_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	GPL+ or Artistic
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description bigdecimal
+Ruby provides built-in support for arbitrary precision integer
+arithmetic. For example:
+
+42**13 -> 1265437718438866624512
+
+BigDecimal provides similar support for very large or very accurate
+floating point numbers. Decimal arithmetic is also useful for general
+calculation, because it provides the correct answers people
+expect–whereas normal binary floating point arithmetic often
+introduces subtle errors because of the conversion between base 10 and
+base 2.
+
+%package io-console
+Summary:	IO/Console is a simple console utilizing library
+Version:	%{io_console_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+Group:		Development/Libraries
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description io-console
+IO/Console provides very simple and portable access to console. It
+doesn't provide higher layer features, such like curses and readline.
+
+%package psych
+Summary:	A libyaml wrapper for Ruby
+Version:	%{psych_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Libraries
+
+%description psych
+Psych is a YAML parser and emitter. Psych leverages libyaml for its
+YAML parsing and emitting capabilities. In addition to wrapping
+libyaml, Psych also knows how to serialize and de-serialize most Ruby
+objects to and from the YAML format.
+
 %prep
-%setup -q -n %{oname}-%{pkg_version} -a1 -a2 -a3 %{?with_bootstrap:-a100}
+%setup -q -n %{oname}-%{pkg_version} -a2 -a3 %{?with_bootstrap:-a100}
 %patch0 -p1
-%patch1 -p1
+#%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 #%patch8 -p1
 %patch9 -p1
 %patch12 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
+
+# Remove bundled libraries to be sure they are not used.
+%{__rm} -r ext/psych/yaml
+%{__rm} -r ext/fiddle/libffi*
 
 # Install custom operating_system.rb.
 install -d lib/rubygems/defaults
@@ -474,9 +633,9 @@ cd ..
 	--with-sitearchhdrdir='$(sitehdrdir)/$(arch)' \
 	--with-vendorarchhdrdir='$(vendorhdrdir)/$(arch)' \
 	--enable-multiarch \
-	--enable-pthread \
 	--enable-shared \
 	--disable-install-doc \
+	--disable-rpath \
 	--disable-rubygems \
 	--with-ruby-version='' \
 
@@ -551,6 +710,8 @@ for cert in \
 	DigiCertHighAssuranceEVRootCA.pem \
 	EntrustnetSecureServerCertificationAuthority.pem \
 	GeoTrustGlobalCA.pem \
+	AddTrustExternalCARoot.pem \
+	AddTrustExternalCARoot-2048.pem \
 ; do
 	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/$cert
 done
@@ -576,11 +737,13 @@ install -d $RPM_BUILD_ROOT%{gem_dir}
 # as there may came files from other packages as well. actually, unlikely as
 # the links to got system dir and only ruby may package there (other distro
 # packages should go to vendor dirs)
+%if 0
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/rake* $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/lib
 ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake $RPM_BUILD_ROOT%{ruby_libdir}
 ln -s %{gem_dir}/gems/rake-%{rake_ver}/lib/rake.rb $RPM_BUILD_ROOT%{ruby_libdir}
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rake-%{rake_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+%endif
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/rdoc* $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
@@ -615,16 +778,10 @@ install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/parser.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/generator.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
 
-install -d $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
-%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/minitest $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/lib
 ln -s %{gem_dir}/gems/minitest-%{minitest_ver}/lib/minitest $RPM_BUILD_ROOT%{ruby_libdir}
-%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/minitest-%{minitest_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
-install -d $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 install -d $RPM_BUILD_ROOT%{ruby_libdir}/test
-mv $RPM_BUILD_ROOT%{ruby_libdir}/test/unit $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 ln -s %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib/unit $RPM_BUILD_ROOT%{ruby_libdir}/test
-mv $RPM_BUILD_ROOT%{gem_dir}/specifications/default/test-unit-%{test_unit_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib
@@ -657,6 +814,16 @@ sed -i '/^end$/ i\
 sed -i '/^end$/ i\
   s.require_paths = ["lib"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
 
+# Push the .gemspecs through the RubyGems to let them write the stub headers.
+# This speeds up loading of libraries and avoids warnings in Spring:
+# https://github.com/rubygems/rubygems/pull/694
+for s in rake-%{rake_ver}.gemspec rdoc-%{rdoc_ver}.gemspec json-%{json_ver}.gemspec; do
+	s="$RPM_BUILD_ROOT%{gem_dir}/specifications/$s"
+	%{__make} runruby TESTRUN_SCRIPT="-rubygems \
+	-e \"spec = Gem::Specification.load('$s')\" \
+	-e \"File.write '$s', spec.to_ruby\""
+done
+
 ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%{ruby_suffix}
 
 %{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
@@ -664,10 +831,17 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/bin/rake \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri \
-	$RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/bin/testrb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper,rss}/*.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
+
+# gem non library files
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/test
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,doc,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/{[A-Z]*,bin}
 
 %if %{without batteries}
 # packaged separately
@@ -676,7 +850,7 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-*
 %{__rm} $RPM_BUILD_ROOT%{ruby_libdir}/{rake,rubygems,json}.rb
 %{__rm} $RPM_BUILD_ROOT%{_bindir}/{gem,rake}
-%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
+#%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/rake*
 %{__rm} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/{json,minitest,rake}-*.gemspec
 %{?with_doc:%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/ri/%{ruby_version}/system/JSON}
 %endif
@@ -695,7 +869,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS LEGAL README README.EXT ChangeLog
+%doc NEWS LEGAL BSDL README.md README.EXT ChangeLog
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
@@ -776,11 +950,9 @@ rm -rf $RPM_BUILD_ROOT
 %files rake
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rake%{ruby_suffix}
-%{_mandir}/man1/rake%{ruby_suffix}.1*
-%{ruby_libdir}/rake
-%{ruby_libdir}/rake.rb
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %{gem_dir}/gems/rake-%{rake_ver}/lib
+%{gem_dir}/gems/rake-%{rake_ver}/rakelib
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
@@ -803,13 +975,73 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/specifications/json-%{json_ver}.gemspec
 %endif
 
+%files power_assert
+%defattr(644,root,root,755)
+%dir %{gem_dir}/gems/power_assert-%{power_assert_ver}
+%{gem_dir}/gems/power_assert-%{power_assert_ver}/lib
+%{gem_dir}/specifications/power_assert-%{power_assert_ver}.gemspec
+
+%files minitest
+%defattr(644,root,root,755)
+%{ruby_libdir}/minitest
+%{gem_dir}/gems/minitest-%{minitest_ver}
+%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
+
+%files test-unit
+%defattr(644,root,root,755)
+%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}
+%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
+%{gem_dir}/specifications/test-unit-%{test_unit_ver}.gemspec
+%{_mandir}/man1/testrb%{ruby_suffix}.1*
+
+%files did_you_mean
+%defattr(644,root,root,755)
+%dir %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}
+%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/benchmark
+%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/evaluation
+%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/lib
+%{gem_dir}/specifications/did_you_mean-%{did_you_mean_ver}.gemspec
+
+%files net-telnet
+%defattr(644,root,root,755)
+%dir %{gem_dir}/gems/net-telnet-%{net_telnet_ver}
+%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/lib
+%{gem_dir}/specifications/net-telnet-%{net_telnet_ver}.gemspec
+
+%files bigdecimal
+%defattr(644,root,root,755)
+%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}
+%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
+%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+%attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
+%{ruby_libdir}/bigdecimal
+%{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
+
+%files io-console
+%defattr(644,root,root,755)
+%{gem_dir}/gems/io-console-%{io_console_ver}
+%dir %{gem_libdir}/io-console-%{io_console_ver}
+%dir %{gem_libdir}/io-console-%{io_console_ver}/lib
+%dir %{gem_libdir}/io-console-%{io_console_ver}/lib/io
+%attr(755,root,root) %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so
+%{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
+
+%files psych
+%defattr(644,root,root,755)
+%{ruby_libdir}/psych.rb
+%attr(755,root,root) %{ruby_archdir}/psych.so
+%{gem_dir}/gems/psych-%{psych_ver}
+%{ruby_libdir}/psych
+%dir %{gem_libdir}/psych-%{psych_ver}
+%dir %{gem_libdir}/psych-%{psych_ver}/lib
+%attr(755,root,root) %{gem_libdir}/psych-%{psych_ver}/lib/psych.so
+%{gem_dir}/specifications/psych-%{psych_ver}.gemspec
+
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
 %{ruby_libdir}/cgi
-%{ruby_libdir}/date
 %{ruby_libdir}/digest
-%{ruby_libdir}/dl
 %{ruby_libdir}/drb
 %{ruby_libdir}/fiddle
 %{ruby_libdir}/io
@@ -837,13 +1069,11 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/benchmark.rb
 %{ruby_libdir}/cgi.rb
 %{ruby_libdir}/cmath.rb
-%{ruby_libdir}/complex.rb
 %{ruby_libdir}/csv.rb
 %{ruby_libdir}/date.rb
 %{ruby_libdir}/debug.rb
 %{ruby_libdir}/delegate.rb
 %{ruby_libdir}/digest.rb
-%{ruby_libdir}/dl.rb
 %{ruby_libdir}/drb.rb
 %{ruby_libdir}/e2mmap.rb
 %{ruby_libdir}/erb.rb
@@ -853,7 +1083,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/find.rb
 %{ruby_libdir}/forwardable.rb
 %{ruby_libdir}/getoptlong.rb
-%{ruby_libdir}/gserver.rb
 %{ruby_libdir}/ipaddr.rb
 %{ruby_libdir}/json.rb
 %{ruby_libdir}/kconv.rb
@@ -866,6 +1095,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/open-uri.rb
 %{ruby_libdir}/open3.rb
 %{ruby_libdir}/openssl.rb
+%{ruby_libdir}/optionparser.rb
 %{ruby_libdir}/optparse.rb
 %{ruby_libdir}/ostruct.rb
 %{ruby_libdir}/pathname.rb
@@ -875,8 +1105,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/profile.rb
 %{ruby_libdir}/profiler.rb
 %{ruby_libdir}/pstore.rb
-%{ruby_libdir}/psych.rb
-%{ruby_libdir}/rational.rb
 %{ruby_libdir}/rdoc.rb
 %{ruby_libdir}/resolv-replace.rb
 %{ruby_libdir}/resolv.rb
@@ -898,6 +1126,8 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/tracer.rb
 %{ruby_libdir}/tsort.rb
 %{ruby_libdir}/un.rb
+%{ruby_libdir}/unicode_normalize
+%{ruby_libdir}/unicode_normalize.rb
 %{ruby_libdir}/uri.rb
 %{ruby_libdir}/weakref.rb
 %{ruby_libdir}/webrick.rb
@@ -908,11 +1138,9 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{ruby_libdir}/rubygems.rb
 %exclude %{ruby_libdir}/ubygems.rb
 %exclude %{ruby_libdir}/rbconfig/datadir.rb
-%exclude %{ruby_libdir}/rbconfig/obsolete.rb
 %endif
 %exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
-%exclude %{ruby_libdir}/rake.rb
 
 %{ruby_archdir}/rbconfig.rb
 %attr(755,root,root) %{ruby_archdir}/bigdecimal.so
@@ -921,7 +1149,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/date_core.so
 %attr(755,root,root) %{ruby_archdir}/dbm.so
 %attr(755,root,root) %{ruby_archdir}/digest.so
-%attr(755,root,root) %{ruby_archdir}/dl.so
 %attr(755,root,root) %{ruby_archdir}/etc.so
 %attr(755,root,root) %{ruby_archdir}/fcntl.so
 %attr(755,root,root) %{ruby_archdir}/fiber.so
@@ -931,7 +1158,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/objspace.so
 %attr(755,root,root) %{ruby_archdir}/openssl.so
 %attr(755,root,root) %{ruby_archdir}/pathname.so
-%attr(755,root,root) %{ruby_archdir}/psych.so
 %attr(755,root,root) %{ruby_archdir}/pty.so
 %attr(755,root,root) %{ruby_archdir}/readline.so
 %attr(755,root,root) %{ruby_archdir}/ripper.so
@@ -943,10 +1169,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/syslog.so
 %attr(755,root,root) %{ruby_archdir}/zlib.so
 
+%dir %{ruby_archdir}/cgi
+%attr(755,root,root) %{ruby_archdir}/cgi/escape.so
 %dir %{ruby_archdir}/digest
 %attr(755,root,root) %{ruby_archdir}/digest/*.so
-%dir %{ruby_archdir}/dl
-%attr(755,root,root) %{ruby_archdir}/dl/callback.so
 %dir %{ruby_archdir}/enc
 %attr(755,root,root) %{ruby_archdir}/enc/*.so
 %dir %{ruby_archdir}/enc/trans
@@ -960,47 +1186,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{ruby_archdir}/rbconfig
 %attr(755,root,root) %{ruby_archdir}/rbconfig/sizeof.so
 
-# bigdecimal
-%{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
-%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}
-%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
-%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
-%attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
-%{ruby_libdir}/bigdecimal
-
 %dir %{_libdir}/gems
 %dir %{_libdir}/gems/%{oname}
-
-# io-console
-%{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
-%{gem_dir}/gems/io-console-%{io_console_ver}
-%dir %{gem_libdir}/io-console-%{io_console_ver}
-%dir %{gem_libdir}/io-console-%{io_console_ver}/lib
-%dir %{gem_libdir}/io-console-%{io_console_ver}/lib/io
-%attr(755,root,root) %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so
-
-%if %{with batteries}
-# minitest
-%{ruby_libdir}/minitest
-%{gem_dir}/gems/minitest-%{minitest_ver}
-%{gem_dir}/specifications/minitest-%{minitest_ver}.gemspec
-%endif
-
-%{gem_dir}/specifications/psych-%{psych_ver}.gemspec
-%{gem_dir}/gems/psych-%{psych_ver}
-%{ruby_libdir}/psych
-%dir %{gem_libdir}/psych-%{psych_ver}
-%dir %{gem_libdir}/psych-%{psych_ver}/lib
-%attr(755,root,root) %{gem_libdir}/psych-%{psych_ver}/lib/psych.so
-
-# test-unit
-%{gem_dir}/specifications/test-unit-%{test_unit_ver}.gemspec
-%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}
-%{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
-%dir %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/test-unit-%{test_unit_ver}/bin/testrb
-%attr(755,root,root) %{_bindir}/testrb%{ruby_suffix}
-%{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %dir %{gem_dir}
 %dir %{gem_dir}/gems
@@ -1009,13 +1196,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/erb%{ruby_suffix}.1*
 %{_mandir}/man1/ri%{ruby_suffix}.1*
 
+%if %{with doc}
 %files doc
 %defattr(644,root,root,755)
-%doc ruby-doc-bundle/*
-%{?with_doc:%doc ruby_%{doc_version}_stdlib}
-%{?with_doc:%doc ruby_%{doc_version}_core}
+%doc ruby_%{doc_version}_stdlib
+%doc ruby_%{doc_version}_core
 
-%if %{with doc}
 %files doc-ri
 %defattr(644,root,root,755)
 %{ruby_ridir}/*

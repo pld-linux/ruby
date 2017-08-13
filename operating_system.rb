@@ -6,17 +6,35 @@ module Gem
     # E.g. for '/usr/share/ruby', 'ruby', it returns '/usr'
 
     def previous_but_one_dir_to(path, dir)
+      return unless path
+
       split_path = path.split(File::SEPARATOR)
       File.join(split_path.take_while { |one_dir| one_dir !~ /^#{dir}$/ }[0..-2])
     end
     private :previous_but_one_dir_to
 
     ##
+    # Detects --install-dir option specified on command line.
+
+    def opt_install_dir?
+      @opt_install_dir ||= ARGV.include?('--install-dir') || ARGV.include?('-i')
+    end
+    private :opt_install_dir?
+
+    ##
+    # Detects --build-root option specified on command line.
+
+    def opt_build_root?
+      @opt_build_root ||= ARGV.include?('--build-root')
+    end
+    private :opt_build_root?
+
+    ##
     # Tries to detect, if arguments and environment variables suggest that
     # 'gem install' is executed from rpmbuild.
 
     def rpmbuild?
-      (ARGV.include?('--install-dir') || ARGV.include?('-i')) && ENV['RPM_PACKAGE_NAME']
+      @rpmbuild ||= ENV['RPM_PACKAGE_NAME'] && (opt_install_dir? || opt_build_root?)
     end
     private :rpmbuild?
 
@@ -27,8 +45,8 @@ module Gem
 
     def default_locations
       @default_locations ||= {
-        :system => previous_but_one_dir_to(ConfigMap[:vendordir], ConfigMap[:RUBY_INSTALL_NAME]),
-        :local => previous_but_one_dir_to(ConfigMap[:sitedir], ConfigMap[:RUBY_INSTALL_NAME])
+        :system => previous_but_one_dir_to(RbConfig::CONFIG['vendordir'], RbConfig::CONFIG['RUBY_INSTALL_NAME']),
+        :local => previous_but_one_dir_to(RbConfig::CONFIG['sitedir'], RbConfig::CONFIG['RUBY_INSTALL_NAME'])
       }
     end
 
@@ -39,18 +57,30 @@ module Gem
     def default_dirs
       @libdir ||= case RUBY_PLATFORM
       when 'java'
-        ConfigMap[:datadir]
+        RbConfig::CONFIG['datadir']
       else
-        ConfigMap[:libdir]
+        RbConfig::CONFIG['libdir']
       end
 
-      @default_dirs ||= Hash[default_locations.collect do |destination, path|
-        [destination, {
-          :bin_dir => File.join(path, ConfigMap[:bindir].split(File::SEPARATOR).last),
-          :gem_dir => File.join(path, ConfigMap[:datadir].split(File::SEPARATOR).last, 'gems'),
-          :ext_dir => File.join(path, @libdir.split(File::SEPARATOR).last, 'gems')
-        }]
-      end]
+      @default_dirs ||= default_locations.inject(Hash.new) do |hash, location|
+        destination, path = location
+
+        hash[destination] = if path
+          {
+            :bin_dir => File.join(path, RbConfig::CONFIG['bindir'].split(File::SEPARATOR).last),
+            :gem_dir => File.join(path, RbConfig::CONFIG['datadir'].split(File::SEPARATOR).last, 'gems'),
+            :ext_dir => File.join(path, @libdir.split(File::SEPARATOR).last, 'gems')
+          }
+        else
+          {
+            :bin_dir => '',
+            :gem_dir => '',
+            :ext_dir => ''
+          }
+        end
+
+        hash
+      end
     end
 
     ##
@@ -66,7 +96,9 @@ module Gem
     # RubyGems default overrides.
 
     def default_dir
-      if Process.uid == 0
+      if opt_build_root?
+        Gem.default_dirs[:system][:gem_dir]
+      elsif Process.uid == 0
         Gem.default_dirs[:local][:gem_dir]
       else
         Gem.user_dir
@@ -79,7 +111,9 @@ module Gem
     end
 
     def default_bindir
-      if Process.uid == 0
+      if opt_build_root?
+        Gem.default_dirs[:system][:bin_dir]
+      elsif Process.uid == 0
         Gem.default_dirs[:local][:bin_dir]
       else
         File.join [Dir.home, 'bin']
