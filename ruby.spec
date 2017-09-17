@@ -13,7 +13,7 @@
 
 %define		rel		1
 %define		ruby_version	2.3
-%define		patchlevel	4
+%define		patchlevel	5
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_3_4
@@ -35,7 +35,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	ee011c51c0395ec46f072da9beb6b870
+# Source0-md5:	7bc4c199647f9eceb66c9611f11d6da0
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	480c3f6f8d9311e86c1aa395f7d7bba6
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
@@ -97,12 +97,12 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	bigdecimal_ver		1.2.8
 %define	io_console_ver		0.4.5
 %define	irb_ver			0.9.6
-%define	json_ver		1.8.3
+%define	json_ver		1.8.3.1
 %define	minitest_ver		5.8.5
-%define	psych_ver		2.1.0
+%define	psych_ver		2.1.0.1
 %define	rake_ver		10.4.2
 %define	rdoc_ver		4.2.1
-%define	rubygems_ver		2.5.2
+%define	rubygems_ver		2.5.2.1
 %define	test_unit_ver		3.1.5
 %define	power_assert_ver	0.2.6
 %define	did_you_mean_ver	1.0.0
