@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		1
+%define		rel		2
 %define		ruby_version	2.3
 %define		patchlevel	5
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -513,9 +513,6 @@ Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	GPL+ or Artistic
 Group:		Development/Libraries
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
 
 %description bigdecimal
 Ruby provides built-in support for arbitrary precision integer
@@ -536,9 +533,6 @@ Version:	%{io_console_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
 Group:		Development/Libraries
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
 
 %description io-console
 IO/Console provides very simple and portable access to console. It
