@@ -60,7 +60,7 @@ index db37cd6..6e73fae 100644
 -else
 -    RUBY_LIB_VERSION="${ruby_version}"
 -fi
-+RUBY_LIB_VERSION_STYLE='3	/* full */'
++RUBY_LIB_VERSION_STYLE='2	/* minor */'
 +{
 +echo "#define RUBY_LIB_VERSION_STYLE $RUBY_LIB_VERSION_STYLE"
 +echo '#define STRINGIZE(x) x'
