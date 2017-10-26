@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		3
+%define		rel		4
 %define		ruby_version	2.3
 %define		patchlevel	5
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -208,6 +208,7 @@ Group:		Development/Languages
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
 Requires:	gcc
 Requires:	glibc-devel
+Requires:	gmp-devel
 Requires:	pkgconfig
 
 %description devel
