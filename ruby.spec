@@ -11,9 +11,9 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		4
+%define		rel		1
 %define		ruby_version	2.3
-%define		patchlevel	5
+%define		patchlevel	7
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_3_4
@@ -35,11 +35,11 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	7bc4c199647f9eceb66c9611f11d6da0
+# Source0-md5:	4ba012bf1bf4aae94c5123acea298640
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	480c3f6f8d9311e86c1aa395f7d7bba6
+# Source2-md5:	5e932766433f430bdcfa112cc96a2e66
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	9805d5d4537b73d2af1860e0759421f1
+# Source3-md5:	6fc93c55d91f9135d2b6bf6a0f7febd6
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
