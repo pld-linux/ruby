@@ -102,7 +102,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	psych_ver		2.1.0.1
 %define	rake_ver		10.4.2
 %define	rdoc_ver		4.2.1
-%define	rubygems_ver		2.5.2.1
+%define	rubygems_ver		2.5.2.3
 %define	test_unit_ver		3.1.5
 %define	power_assert_ver	0.2.6
 %define	did_you_mean_ver	1.0.0
