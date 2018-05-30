@@ -2,21 +2,21 @@
 #	- include ext/ in docs
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
+#	- unpackaged /usr/share/gems/specifications/default/openssl-2.0.7.gemspec ?
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
-%bcond_with	tk		# Tk bindings
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
 %define		rel		1
-%define		ruby_version	2.3
-%define		patchlevel	7
+%define		ruby_version	2.4
+%define		patchlevel	4
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_3_4
+%define		doc_version	2_4_3
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -35,17 +35,16 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	4ba012bf1bf4aae94c5123acea298640
+# Source0-md5:	4f30cefb7d50c6fa4d801f47ed9d82ca
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	5e932766433f430bdcfa112cc96a2e66
+# Source2-md5:	d21fb29009644bd174dbba0dad53f1f5
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	6fc93c55d91f9135d2b6bf6a0f7febd6
+# Source3-md5:	3aef8f1b7fb3d140ac9ba8f3061c832e
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
-Patch0:		%{oname}-lib64.patch
 #Patch1:		%{oname}-ffs.patch
 Patch2:		fix-bison-invocation.patch
 Patch3:		mkmf-verbose.patch
@@ -81,10 +80,6 @@ BuildRequires:	rpm-rubyprov
 BuildRequires:	ruby
 BuildRequires:	ruby-modules
 %endif
-%if %{with tk}
-BuildRequires:	tk-devel < 8.7
-BuildRequires:	tk-devel >= 8.4
-%endif
 Requires(post,postun):	/sbin/ldconfig
 Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
@@ -94,19 +89,20 @@ Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	bigdecimal_ver		1.2.8
-%define	io_console_ver		0.4.5
+%define	bigdecimal_ver		1.3.2
+%define	io_console_ver		0.4.6
 %define	irb_ver			0.9.6
-%define	json_ver		1.8.3.1
-%define	minitest_ver		5.8.5
-%define	psych_ver		2.1.0.1
-%define	rake_ver		10.4.2
-%define	rdoc_ver		4.2.1
-%define	rubygems_ver		2.5.2.3
-%define	test_unit_ver		3.1.5
-%define	power_assert_ver	0.2.6
-%define	did_you_mean_ver	1.0.0
+%define	json_ver		2.0.4
+%define	minitest_ver		5.10.1
+%define	psych_ver		2.2.2
+%define	rake_ver		12.0.0
+%define	rdoc_ver		5.0.0
+%define	rubygems_ver		2.6.14.1
+%define	test_unit_ver		3.2.3
+%define	power_assert_ver	0.4.1
+%define	did_you_mean_ver	1.1.0
 %define	net_telnet_ver		0.1.1
+%define	xmlrpc_ver		0.2.1
 
 %define	ruby_ridir		%{_datadir}/ri/system
 %define	gem_dir			%{_datadir}/gems
@@ -189,18 +185,6 @@ Standardowe moduły i narzędzia Ruby:
 - erb - mały eRuby
 - testrb - automatyczny runner dla Ruby Test::Unit
 
-%package tk
-Summary:	Ruby/Tk bindings
-Summary(pl.UTF-8):	Wiązania Ruby/Tk
-Group:		Development/Languages
-Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
-
-%description tk
-This package contains Ruby/Tk bindings.
-
-%description tk -l pl.UTF-8
-Ten pakiet zawiera wiązania Ruby/Tk.
-
 %package devel
 Summary:	Ruby development libraries
 Summary(pl.UTF-8):	Biblioteki programistyczne interpretera języka Ruby
@@ -216,18 +200,6 @@ Ruby development libraries.
 
 %description devel -l pl.UTF-8
 Biblioteki programistyczne interpretera języka Ruby.
-
-%package static
-Summary:	Ruby static libraries
-Summary(pl.UTF-8):	Biblioteki statyczne Ruby
-Group:		Development/Languages
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
-
-%description static
-Ruby static libraries.
-
-%description static -l pl.UTF-8
-Biblioteki statyczne Ruby.
 
 %package doc
 Summary:	Ruby HTML documentation
@@ -553,9 +525,28 @@ YAML parsing and emitting capabilities. In addition to wrapping
 libyaml, Psych also knows how to serialize and de-serialize most Ruby
 objects to and from the YAML format.
 
+%package xmlrpc
+Summary:	A xmlrpc wrapper for Ruby
+Version:	%{xmlrpc_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Libraries
+
+%description xmlrpc
+XMLRPC is a lightweight protocol that enables remote procedure calls
+over HTTP.  It is defined at http://www.xmlrpc.com.
+
+XMLRPC allows you to create simple distributed computing solutions
+that span computer languages.  Its distinctive feature is its
+simplicity compared to other approaches like SOAP and CORBA.
+
+The Ruby standard library package 'xmlrpc' enables you to create a
+server that implements remote procedures and a client that calls them.
+Very little code is required to achieve either of these.
+
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a2 -a3 %{?with_bootstrap:-a100}
-%patch0 -p1
 #%patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -582,9 +573,6 @@ find '(' -name '*~' -o -name '*.orig' ')' -print0 | xargs -0 -r -l512 rm -f
 find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
 	-o -name 'ruby.1' -o -name '*.html' -o -name '*.tcl' ')' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
-
-# no configure option to disable, so just rm
-%{!?with_tk:rm -rf ext/tk}
 
 %build
 rubygems_ver=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rubygems.rb | xargs)
@@ -698,14 +686,11 @@ sed -i -e 's/Version: \${ruby_version}/Version: %{ruby_version}/' $RPM_BUILD_ROO
 
 # Kill bundled certificates, as they should be part of ca-certificates.
 for cert in \
-	Class3PublicPrimaryCertificationAuthority.pem \
-	DigiCertHighAssuranceEVRootCA.pem \
-	EntrustnetSecureServerCertificationAuthority.pem \
-	GeoTrustGlobalCA.pem \
 	AddTrustExternalCARoot.pem \
-	AddTrustExternalCARoot-2048.pem \
+	DigiCertHighAssuranceEVRootCA.pem \
+	GlobalSignRootCA.pem \
 ; do
-	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/$cert
+	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/*/$cert
 done
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}
@@ -816,13 +801,12 @@ for s in rake-%{rake_ver}.gemspec rdoc-%{rdoc_ver}.gemspec json-%{json_ver}.gems
 	-e \"File.write '$s', spec.to_ruby\""
 done
 
-ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%{ruby_suffix}
+ln -sf %{gem_dir}/gems/rake-%{rake_ver}/exe/rake $RPM_BUILD_ROOT%{_bindir}/rake%{ruby_suffix}
 
 %{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
 	$RPM_BUILD_ROOT%{ruby_libdir}/abbrev.rb \
-	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/bin/rake \
-	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc \
-	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri \
+	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/bin/console \
+	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/exe/rake \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper,rss}/*.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
@@ -832,7 +816,7 @@ ln -sf %{gem_dir}/gems/rake-%{rake_ver}/bin/rake $RPM_BUILD_ROOT%{_bindir}/rake%
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample,test}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,test}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,doc,test}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/{[A-Z]*,bin}
 
 %if %{without batteries}
@@ -891,25 +875,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/%{oname}-%{ruby_version}.pc
 %{ruby_libdir}/mkmf.rb
 
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libruby-static.a
-
-%if %{with tk}
-%files tk
-%defattr(644,root,root,755)
-%doc ext/tk/{ChangeLog.tkextlib,MANUAL_tcltklib.eng,README.fork}
-%lang(ja) %doc ext/tk/MANUAL_tcltklib.ja
-%{ruby_libdir}/multi-tk.rb
-%{ruby_libdir}/remote-tk.rb
-%{ruby_libdir}/tcltk.rb
-%{ruby_libdir}/tk*.rb
-%{ruby_libdir}/tk
-%{ruby_libdir}/tkextlib
-%attr(755,root,root) %{ruby_archdir}/tcltklib.so
-%attr(755,root,root) %{ruby_archdir}/tkutil.so
-%endif
-
 %files irb
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/irb%{ruby_suffix}
@@ -925,10 +890,10 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/rdoc
 %dir %{gem_dir}/gems/rdoc-%{rdoc_ver}
 %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
-%dir %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/rdoc
 %{gem_dir}/specifications/rdoc-%{rdoc_ver}.gemspec
-%attr(755,root,root) %{gem_dir}/gems/rdoc-%{rdoc_ver}/bin/ri
+%dir %{gem_dir}/gems/rdoc-5.0.0/exe
+%{gem_dir}/gems/rdoc-5.0.0/exe/rdoc
+%{gem_dir}/gems/rdoc-5.0.0/exe/ri
 
 %if %{with batteries}
 %files rubygems
@@ -944,10 +909,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rake%{ruby_suffix}
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %{gem_dir}/gems/rake-%{rake_ver}/lib
-%{gem_dir}/gems/rake-%{rake_ver}/rakelib
 %dir %{gem_dir}/gems/rake-%{rake_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/rake
+%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/console
+%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/setup
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
+%{gem_dir}/gems/rake-%{rake_ver}/appveyor.yml
+%dir %{gem_dir}/gems/rake-%{rake_ver}/exe
+%{gem_dir}/gems/rake-%{rake_ver}/exe/rake
 
 %files json
 %defattr(644,root,root,755)
@@ -972,6 +940,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems/power_assert-%{power_assert_ver}
 %{gem_dir}/gems/power_assert-%{power_assert_ver}/lib
 %{gem_dir}/specifications/power_assert-%{power_assert_ver}.gemspec
+%dir %{gem_dir}/gems/power_assert-0.4.1/benchmarks
+%{gem_dir}/gems/power_assert-0.4.1/benchmarks/bm_yhpg.rb
+%{gem_dir}/gems/power_assert-0.4.1/benchmarks/helper.rb
 
 %files minitest
 %defattr(644,root,root,755)
@@ -1029,6 +1000,26 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gem_libdir}/psych-%{psych_ver}/lib/psych.so
 %{gem_dir}/specifications/psych-%{psych_ver}.gemspec
 
+%files xmlrpc
+%defattr(644,root,root,755)
+%{gem_dir}/gems/xmlrpc-0.2.1/Gemfile
+%{gem_dir}/gems/xmlrpc-0.2.1/LICENSE.txt
+%{gem_dir}/gems/xmlrpc-0.2.1/README.md
+%{gem_dir}/gems/xmlrpc-0.2.1/Rakefile
+%{gem_dir}/gems/xmlrpc-0.2.1/bin/console
+%{gem_dir}/gems/xmlrpc-0.2.1/bin/setup
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/base64.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/client.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/config.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/create.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/datetime.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/marshal.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/parser.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/server.rb
+%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/utils.rb
+%{gem_dir}/specifications/xmlrpc-0.2.1.gemspec
+
 %files modules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/erb%{ruby_suffix}
@@ -1052,7 +1043,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/test
 %{ruby_libdir}/uri
 %{ruby_libdir}/webrick
-%{ruby_libdir}/xmlrpc
 %{ruby_libdir}/yaml
 
 %{ruby_libdir}/English.rb
@@ -1074,6 +1064,8 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/fileutils.rb
 %{ruby_libdir}/find.rb
 %{ruby_libdir}/forwardable.rb
+%dir %{ruby_libdir}/forwardable
+%{ruby_libdir}/forwardable/impl.rb
 %{ruby_libdir}/getoptlong.rb
 %{ruby_libdir}/ipaddr.rb
 %{ruby_libdir}/json.rb
@@ -1123,7 +1115,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/uri.rb
 %{ruby_libdir}/weakref.rb
 %{ruby_libdir}/webrick.rb
-%{ruby_libdir}/xmlrpc.rb
 %{ruby_libdir}/yaml.rb
 
 %if %{with batteries}
@@ -1153,7 +1144,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/pty.so
 %attr(755,root,root) %{ruby_archdir}/readline.so
 %attr(755,root,root) %{ruby_archdir}/ripper.so
-%attr(755,root,root) %{ruby_archdir}/thread.so
 %attr(755,root,root) %{ruby_archdir}/sdbm.so
 %attr(755,root,root) %{ruby_archdir}/socket.so
 %attr(755,root,root) %{ruby_archdir}/stringio.so

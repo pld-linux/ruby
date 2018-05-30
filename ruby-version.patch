@@ -30,7 +30,7 @@ index db37cd6..6e73fae 100644
  rubyarchprefix=${multiarch+'${archlibdir}/${RUBY_BASE_NAME}'}${multiarch-'${rubylibprefix}/${arch}'}
  AC_ARG_WITH(rubyarchprefix,
  	    AS_HELP_STRING([--with-rubyarchprefix=DIR],
-@@ -4202,58 +4199,64 @@ AC_ARG_WITH(ridir,
+@@ -4202,56 +4199,62 @@ AC_ARG_WITH(ridir,
  AC_SUBST(ridir)
  AC_SUBST(RI_BASE_NAME)
  
@@ -48,11 +48,9 @@ index db37cd6..6e73fae 100644
 -    echo "#define RUBY_LIB_VERSION_STYLE $RUBY_LIB_VERSION_STYLE"
 -    echo '#define STRINGIZE(x) x'
 -    test -f revision.h -o -f "${srcdir}/revision.h" || echo '#define RUBY_REVISION 0'
--    echo '#include "verconf.h"'
 -    echo '#include "version.h"'
 -    echo 'ruby_version=RUBY_LIB_VERSION'
 -    } > conftest.c
--    test -f verconf.h || > verconf.h
 -    ruby_version="`$CPP -I. -I"${srcdir}" -I"${srcdir}/include" conftest.c | sed '/^ruby_version=/!d;s/ //g'`"
 -    eval $ruby_version
 -elif test -z "${ruby_version}"; then
@@ -65,11 +63,9 @@ index db37cd6..6e73fae 100644
 +echo "#define RUBY_LIB_VERSION_STYLE $RUBY_LIB_VERSION_STYLE"
 +echo '#define STRINGIZE(x) x'
 +test -f revision.h -o -f "${srcdir}/revision.h" || echo '#define RUBY_REVISION 0'
-+echo '#include "verconf.h"'
 +echo '#include "version.h"'
 +echo 'ruby_version=RUBY_LIB_VERSION'
 +} > conftest.c
-+test -f verconf.h || > verconf.h
 +ruby_version="`$CPP -I. -I"${srcdir}" -I"${srcdir}/include" conftest.c | sed '/^ruby_version=/!d;s/ //g'`"
 +eval $ruby_version
 +
