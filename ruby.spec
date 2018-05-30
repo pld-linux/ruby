@@ -40,6 +40,16 @@ Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.
 # Source2-md5:	d21fb29009644bd174dbba0dad53f1f5
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
 # Source3-md5:	3aef8f1b7fb3d140ac9ba8f3061c832e
+Source50:	http://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
+# Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
+Source51:	http://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
+# Source51-md5:	263381d7b4b5e2d52a91e1bbbd4722d4
+Source52:	http://www.unicode.org/Public/9.0.0/ucd/NormalizationTest.txt
+# Source52-md5:	aacb8a8acfc449d09136fe39f3f97cf1
+Source53:	http://www.unicode.org/Public/9.0.0/ucd/SpecialCasing.txt
+# Source53-md5:	fea30f45a2f81ffa474fd984d297e2ea
+Source54:	http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt
+# Source54-md5:	dde25b1cf9bbb4ba1140ac12e4128b0b
 Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
 # Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
