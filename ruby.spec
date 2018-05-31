@@ -567,6 +567,9 @@ Very little code is required to achieve either of these.
 %patch9 -p1
 %patch12 -p1
 
+install -d enc/unicode/data/9.0.0
+cp -p %{SOURCE50} %{SOURCE51} %{SOURCE52} %{SOURCE53} %{SOURCE54} enc/unicode/data/9.0.0/
+
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
 
