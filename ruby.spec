@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		2
+%define		rel		3
 %define		ruby_version	2.4
 %define		patchlevel	4
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -1015,23 +1015,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files xmlrpc
 %defattr(644,root,root,755)
-%{gem_dir}/gems/xmlrpc-0.2.1/Gemfile
-%{gem_dir}/gems/xmlrpc-0.2.1/LICENSE.txt
-%{gem_dir}/gems/xmlrpc-0.2.1/README.md
-%{gem_dir}/gems/xmlrpc-0.2.1/Rakefile
-%{gem_dir}/gems/xmlrpc-0.2.1/bin/console
-%{gem_dir}/gems/xmlrpc-0.2.1/bin/setup
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/base64.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/client.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/config.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/create.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/datetime.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/marshal.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/parser.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/server.rb
-%{gem_dir}/gems/xmlrpc-0.2.1/lib/xmlrpc/utils.rb
-%{gem_dir}/specifications/xmlrpc-0.2.1.gemspec
+%{gem_dir}/gems/xmlrpc-%{xmlrpc_ver}
+%{gem_dir}/specifications/xmlrpc-%{xmlrpc_ver}.gemspec
 
 %files modules
 %defattr(644,root,root,755)
