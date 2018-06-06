@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		4
+%define		rel		5
 %define		ruby_version	2.4
 %define		patchlevel	4
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -813,8 +813,6 @@ for s in rake-%{rake_ver}.gemspec rdoc-%{rdoc_ver}.gemspec json-%{json_ver}.gems
 	-e \"spec = Gem::Specification.load('$s')\" \
 	-e \"File.write '$s', spec.to_ruby\""
 done
-
-ln -sf %{gem_dir}/gems/rake-%{rake_ver}/exe/rake $RPM_BUILD_ROOT%{_bindir}/rake%{ruby_suffix}
 
 %{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
 	$RPM_BUILD_ROOT%{ruby_libdir}/abbrev.rb \
