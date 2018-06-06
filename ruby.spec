@@ -11,7 +11,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		3
+%define		rel		4
 %define		ruby_version	2.4
 %define		patchlevel	4
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -928,7 +928,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
 %{gem_dir}/gems/rake-%{rake_ver}/appveyor.yml
 %dir %{gem_dir}/gems/rake-%{rake_ver}/exe
-%{gem_dir}/gems/rake-%{rake_ver}/exe/rake
+%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/exe/rake
 
 %files json
 %defattr(644,root,root,755)
