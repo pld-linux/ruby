@@ -1,8 +1,8 @@
 # TODO:
+#	- provide standalone ruby-tk package (to replace retired -tk subpackage)
 #	- include ext/ in docs
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
-#	- unpackaged /usr/share/gems/specifications/default/openssl-2.0.7.gemspec ?
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -100,18 +100,19 @@ Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	bigdecimal_ver		1.3.2
+%define	did_you_mean_ver	1.1.0
 %define	io_console_ver		0.4.6
 %define	irb_ver			0.9.6
 %define	json_ver		2.0.4
 %define	minitest_ver		5.10.1
+%define	net_telnet_ver		0.1.1
+%define	openssl_ver		2.0.7
+%define	power_assert_ver	0.4.1
 %define	psych_ver		2.2.2
 %define	rake_ver		12.0.0
 %define	rdoc_ver		5.0.0
 %define	rubygems_ver		2.6.14.1
 %define	test_unit_ver		3.2.3
-%define	power_assert_ver	0.4.1
-%define	did_you_mean_ver	1.1.0
-%define	net_telnet_ver		0.1.1
 %define	xmlrpc_ver		0.2.1
 
 %define	ruby_ridir		%{_datadir}/ri/system
@@ -204,6 +205,7 @@ Requires:	gcc
 Requires:	glibc-devel
 Requires:	gmp-devel
 Requires:	pkgconfig
+Obsoletes:	ruby-static < 1:2.4
 
 %description devel
 Ruby development libraries.
@@ -261,6 +263,7 @@ Przykłady programów w języku Ruby.
 
 %package irb
 Summary:	The Interactive Ruby
+Summary(pl.UTF-8):	Interaktywny Ruby
 Version:	%{irb_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -275,6 +278,10 @@ BuildArch:	noarch
 %description irb
 The irb is acronym for Interactive Ruby. It evaluates ruby expression
 from the terminal.
+
+%description irb -l pl.UTF-8
+Nazwa irb to skrót od Interactive Ruby (interaktywny Ruby). Wyznacza
+wartości wyrażeń języka ruby podane z terminala.
 
 %package rdoc
 Summary:	A tool to generate HTML and command-line documentation for Ruby projects
@@ -379,7 +386,7 @@ Version:	%{json_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
 # UCD: ext/json/generator/generator.c
-License:	(Ruby or GPLv2) and UCD
+License:	(Ruby or GPL v2) and UCD
 Group:		Development/Languages
 Obsoletes:	ruby-json-rubyforge
 Conflicts:	ruby-modules < 1:1.9.3.429-3
@@ -391,7 +398,8 @@ This is a JSON implementation as a Ruby extension in C.
 Biblioteka JSON dla języka Ruby.
 
 %package minitest
-Summary:	Minitest provides a complete suite of testing facilities
+Summary:	Minitest - a complete suite of testing facilities
+Summary(pl.UTF-8):	Minitest - kompletny szkielet do testowania
 Version:	%{minitest_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -415,10 +423,23 @@ framework.
 minitest/pride shows pride in testing and adds coloring to your test
 output.
 
+%description minitest -l pl.UTF-8
+minitest/unit to mały i bardzo szybki szkielet testów jednostkowych.
+
+minitest/spec to funkcjonalnie kompletny silnik specyfikacji.
+
+minitest/benchmark to wspaniały sposób zapewnienia wydajności
+algorytmów w powtarzalny sposób.
+
+minitest/mock autorstwa Stevena Bakera to mały szkielet obiektów
+atrap.
+
+minitest/pride ukazuje dumę z testowania i dodaje kolorowanie do
+wyjścia testów.
+
 %package power_assert
-# The Summary/Description fields are rather poor.
-# https://github.com/k-tsj/power_assert/issues/3
 Summary:	Power Assert for Ruby
+Summary(pl.UTF-8):	Power Assert dla języka Ruby
 Version:	%{power_assert_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -433,28 +454,43 @@ Power Assert shows each value of variables and method calls in the
 expression. It is useful for testing, providing which value wasn't
 correct when the condition is not satisfied.
 
+%description power_assert -l pl.UTF-8
+Power Assert pokazuje każdą wartość zmiennych i wywołań metod w
+wyrażeniu. Jest przydatny do testowania, ukazując, która wartość nie
+była poprawna, kiedy warunek nie był spełniony.
+
 %package test-unit
-# The Summary/Description fields are rather poor.
-# https://github.com/test-unit/test-unit/issues/73
-Summary:	Improved version of Test::Unit bundled in Ruby 1.8.x
+Summary:	An xUnit family unit testing framework for Ruby
+Summary(pl.UTF-8):	Szkielet testów z rodziny xUnit dla języka Ruby
 Version:	%{test_unit_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
 Group:		Development/Libraries
 # lib/test/unit/diff.rb is a double license of the Ruby license and PSF license.
 # lib/test-unit.rb is a dual license of the Ruby license and LGPLv2.1 or later.
-License:	(Ruby or BSD) and (Ruby or BSD or Python) and (Ruby or BSD or LGPLv2+)
+License:	(Ruby or BSD) and (Ruby or BSD or Python) and (Ruby or BSD or LGPL v2+)
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
 %endif
 
 %description test-unit
-Ruby 1.9.x bundles minitest not Test::Unit. Test::Unit bundled in Ruby
-1.8.x had not been improved but unbundled Test::Unit (test-unit) is
-improved actively.
+test-unit (Test::Unit) is unit testing framework for Ruby, based on
+xUnit principles. These were originally designed by Kent Beck, creator
+of extreme programming software development methodology, for
+Smalltalk's SUnit. It allows writing tests, checking results and
+automated testing in Ruby.
+
+%description test-unit -l pl.UTF-8
+test-unit (Test::Unit) to szkielet testów jednostkowych dla języka
+Ruby oparty na zasadach xUnit. Te były pierwotnie zaprojektowane przez
+Kenta Becka, twórcy metodyki tworzenia oprogramowania zwanej
+programowaniem ekstremalnym, dla szkieletu SUnit dla Smalltalka.
+Szkielet pozwala na pisanie testów, sprawdzanie wyników i automatyczne
+testowanie w Rubym.
 
 %package did_you_mean
 Summary:	"Did you mean?" experience in Ruby
+Summary(pl.UTF-8):	Zachowanie "czy miałeś na myśli?" w języku Ruby
 Version:	%{did_you_mean_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -465,11 +501,16 @@ BuildArch:	noarch
 %endif
 
 %description did_you_mean
-"did you mean?" experience in Ruby: the error message will tell you
+"Did you mean?" experience in Ruby: the error message will tell you
 the right one when you misspelled something.
+
+%description did_you_mean -l pl.UTF-8
+Zachowanie "czy miałeś na myśli" w języku ruby: komunikat błędu
+podpowie właściwą pisownię w przypadku literówki.
 
 %package net-telnet
 Summary:	Provides telnet client functionality
+Summary(pl.UTF-8):	Funkcjonalność klienta usługi telnet
 Version:	%{net_telnet_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -485,12 +526,20 @@ This class also has, through delegation, all the methods of a socket
 object (by default, a TCPSocket, but can be set by the Proxy option to
 new()). This provides methods such as close() to end the session and
 sysread() to read data directly from the host, instead of via the
-waitfor() mechanism. Note that if you do use sysread() directly when
-in telnet mode, you should probably pass the output through
-preprocess() to extract telnet command sequences.
+waitfor() mechanism.
+
+%description net-telnet -l pl.UTF-8
+Ten pakiet dostarcza funkcjonalność klienta usługi telnet.
+
+Ta klasa ma, poprzez delegację, wszystkie metody obiektu gniazda
+(domyślnie TCPSocket, ale może być ustawiona przez opcję Proxy dla
+new()). Udostępnia metody takie jak: close() do zakończenia sesji czy
+sysread() do odczytu danych bezpośrednio z hosta zamiast poprzez
+mechanizm waitfor().
 
 %package bigdecimal
-Summary:	BigDecimal provides arbitrary-precision floating point decimal arithmetic
+Summary:	BigDecimal - arbitrary-precision floating point decimal arithmetic
+Summary(pl.UTF-8):	BigDecimal - dziesiętna arytmetyka zmiennoprzecinkowa o dowolnej dokładności
 Version:	%{bigdecimal_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -505,13 +554,26 @@ arithmetic. For example:
 
 BigDecimal provides similar support for very large or very accurate
 floating point numbers. Decimal arithmetic is also useful for general
-calculation, because it provides the correct answers people
-expect–whereas normal binary floating point arithmetic often
-introduces subtle errors because of the conversion between base 10 and
-base 2.
+calculation, because it provides the correct answers people expect -
+whereas normal binary floating point arithmetic often introduces
+subtle errors because of the conversion between base 10 and base 2.
+
+%description bigdecimal -l pl.UTF-8
+Ruby zapewnia wbudowaną obsługę arytmetyki całkowitej dowolnej
+dokładności, np.:
+
+42**13 -> 1265437718438866624512
+
+BigDecimal zapewnia podobną obsługę bardzo dużych lub bardzo
+dokładnych liczb zmiennoprzecinkowych. Arytmetyka dziesiętna jest
+przydatna także do ogólnych obliczeń, ponieważ zapewnia poprawne
+odpowiedzi oczekiwane przez ludzi - podczas gdy normalna binarna
+arytmetyka zmiennoprzecinkowa wprowadza minimalne błędy spowodowane
+zmianą podstawy między 10 a 2.
 
 %package io-console
-Summary:	IO/Console is a simple console utilizing library
+Summary:	IO/Console - a simple console utilizing library
+Summary(pl.UTF-8):	IO/Console - prosta biblioteka wykorzystująca konsolę
 Version:	%{io_console_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -521,8 +583,13 @@ Group:		Development/Libraries
 IO/Console provides very simple and portable access to console. It
 doesn't provide higher layer features, such like curses and readline.
 
+%description io-console -l pl.UTF-8
+IO/Console zapewnia bardzo prosty i przenośny dostęp do konsoli. Nie
+udostępnia funkcji wyższego poziomu, takich jak curses czy readline.
+
 %package psych
 Summary:	A libyaml wrapper for Ruby
+Summary(pl.UTF-8):	Obudowanie libyaml dla języka Ruby
 Version:	%{psych_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -535,8 +602,15 @@ YAML parsing and emitting capabilities. In addition to wrapping
 libyaml, Psych also knows how to serialize and de-serialize most Ruby
 objects to and from the YAML format.
 
+%description psych -l pl.UTF-8
+Psych to parser i emiter YAML. Wykorzystuje libyaml do analizy i
+emitowania YAML-a. Poza obudowaniem libyaml, wie także jak
+serializować i deserializować większość obiektów języka Ruby do/z
+formatu YAML.
+
 %package xmlrpc
 Summary:	A xmlrpc wrapper for Ruby
+Summary(pl.UTF-8):	Obudowanie xmlrpc dla języka Ruby
 Version:	%{xmlrpc_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -545,15 +619,27 @@ Group:		Development/Libraries
 
 %description xmlrpc
 XMLRPC is a lightweight protocol that enables remote procedure calls
-over HTTP.  It is defined at http://www.xmlrpc.com.
+over HTTP. It is defined at <http://www.xmlrpc.com/>.
 
 XMLRPC allows you to create simple distributed computing solutions
-that span computer languages.  Its distinctive feature is its
+that span computer languages. Its distinctive feature is its
 simplicity compared to other approaches like SOAP and CORBA.
 
 The Ruby standard library package 'xmlrpc' enables you to create a
 server that implements remote procedures and a client that calls them.
 Very little code is required to achieve either of these.
+
+%description xmlrpc -l pl.UTF-8
+XMLRPC to lekki protokół pozwalający na wywołania zdalnych procedur
+poprzez HTTP. Jest zdefiniowany na <http://www.xmlrpc.com/>.
+
+XMLRPC pozwala na tworzenie prostych, rozproszonych systemów
+komputerowych dla wielu języków. Wyróżniającą cechą jest prostota w
+porównaniu do innych rozwiązań, takich jak SOAP czy CORBA.
+
+Pakiet biblioteki standardowej języka Ruby 'xmlrpc' pozwala na
+stworzenie serwera implementującego procedury zdalne oraz klienta
+wywołującego je. Aby to osiągnąć wystarczy bardzo mało kodu.
 
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a2 -a3 %{?with_bootstrap:-a100}
@@ -1171,6 +1257,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems
 %dir %{gem_dir}/specifications
 %dir %{gem_dir}/specifications/default
+%{gem_dir}/specifications/default/openssl-%{openssl_ver}.gemspec
+
 %{_mandir}/man1/erb%{ruby_suffix}.1*
 %{_mandir}/man1/ri%{ruby_suffix}.1*
 
@@ -1182,7 +1270,238 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc-ri
 %defattr(644,root,root,755)
-%{ruby_ridir}/*
+%{ruby_ridir}/ACL
+%{ruby_ridir}/ARGF
+%{ruby_ridir}/Abbrev
+%{ruby_ridir}/Addrinfo
+%{ruby_ridir}/ArgumentError
+%{ruby_ridir}/Array
+%{ruby_ridir}/Base64
+%{ruby_ridir}/BasicObject
+%{ruby_ridir}/BasicSocket
+%{ruby_ridir}/Benchmark
+%{ruby_ridir}/BigDecimal
+%{ruby_ridir}/BigMath
+%{ruby_ridir}/Binding
+%{ruby_ridir}/CGI
+%{ruby_ridir}/CMath
+%{ruby_ridir}/CSV
+%{ruby_ridir}/Class
+%{ruby_ridir}/ClosedQueueError
+%{ruby_ridir}/Comparable
+%{ruby_ridir}/Complex
+%{ruby_ridir}/ConditionVariable
+%{ruby_ridir}/Continuation
+%{ruby_ridir}/Coverage
+%{ruby_ridir}/DBM
+%{ruby_ridir}/DBMError
+%{ruby_ridir}/DEBUGGER__
+%{ruby_ridir}/DRb
+%{ruby_ridir}/Data
+%{ruby_ridir}/Date
+%{ruby_ridir}/DateTime
+%{ruby_ridir}/Delegator
+%{ruby_ridir}/Digest
+%{ruby_ridir}/Dir
+%{ruby_ridir}/ENV
+%{ruby_ridir}/EOFError
+%{ruby_ridir}/ERB
+%{ruby_ridir}/EXCEPTION_TYPE
+%{ruby_ridir}/Encoding
+%{ruby_ridir}/EncodingError
+%{ruby_ridir}/English
+%{ruby_ridir}/Enumerable
+%{ruby_ridir}/Enumerator
+%{ruby_ridir}/Errno
+%{ruby_ridir}/Etc
+%{ruby_ridir}/Exception
+%{ruby_ridir}/Exception2MessageMapper
+%{ruby_ridir}/FalseClass
+%{ruby_ridir}/Fcntl
+%{ruby_ridir}/Fiber
+%{ruby_ridir}/FiberError
+%{ruby_ridir}/Fiddle
+%{ruby_ridir}/File
+%{ruby_ridir}/FileTest
+%{ruby_ridir}/FileUtils
+%{ruby_ridir}/Find
+%{ruby_ridir}/Float
+%{ruby_ridir}/FloatDomainError
+%{ruby_ridir}/Forwardable
+%{ruby_ridir}/GC
+%{ruby_ridir}/GDBM
+%{ruby_ridir}/GDBMError
+%{ruby_ridir}/GDBMFatalError
+%{ruby_ridir}/Gem
+%{ruby_ridir}/GetoptLong
+%{ruby_ridir}/HTTPMovedTemporarily
+%{ruby_ridir}/HTTPMultipleChoice
+%{ruby_ridir}/HTTPRequestURITooLarge
+%{ruby_ridir}/Hash
+%{ruby_ridir}/IO
+%{ruby_ridir}/IOError
+%{ruby_ridir}/IPAddr
+%{ruby_ridir}/IPSocket
+%{ruby_ridir}/IRB
+%{ruby_ridir}/IndexError
+%{ruby_ridir}/Integer
+%{ruby_ridir}/Interrupt
+%{ruby_ridir}/JSON
+%{ruby_ridir}/Jacobian
+%{ruby_ridir}/Kconv
+%{ruby_ridir}/Kernel
+%{ruby_ridir}/KeyError
+%{ruby_ridir}/LUSolve
+%{ruby_ridir}/LoadError
+%{ruby_ridir}/LocalJumpError
+%{ruby_ridir}/Logger
+%{ruby_ridir}/MakeMakefile
+%{ruby_ridir}/Marshal
+%{ruby_ridir}/MatchData
+%{ruby_ridir}/Math
+%{ruby_ridir}/Matrix
+%{ruby_ridir}/Method
+%{ruby_ridir}/Module
+%{ruby_ridir}/Monitor
+%{ruby_ridir}/MonitorMixin
+%{ruby_ridir}/Mutex_m
+%{ruby_ridir}/NKF
+%{ruby_ridir}/NameError
+%{ruby_ridir}/Net
+%{ruby_ridir}/Newton
+%{ruby_ridir}/NilClass
+%{ruby_ridir}/NoMemoryError
+%{ruby_ridir}/NoMethodError
+%{ruby_ridir}/NotImplementedError
+%{ruby_ridir}/Numeric
+%{ruby_ridir}/OLEProperty
+%{ruby_ridir}/Object
+%{ruby_ridir}/ObjectSpace
+%{ruby_ridir}/Observable
+%{ruby_ridir}/Open3
+%{ruby_ridir}/OpenSSL
+%{ruby_ridir}/OpenStruct
+%{ruby_ridir}/OpenURI
+%{ruby_ridir}/OptionParser
+%{ruby_ridir}/PP
+%{ruby_ridir}/PStore
+%{ruby_ridir}/PTY
+%{ruby_ridir}/Pathname
+%{ruby_ridir}/PrettyPrint
+%{ruby_ridir}/Prime
+%{ruby_ridir}/Proc
+%{ruby_ridir}/Process
+%{ruby_ridir}/Profiler__
+%{ruby_ridir}/Psych
+%{ruby_ridir}/Queue
+%{ruby_ridir}/RDoc
+%{ruby_ridir}/RDocTask
+%{ruby_ridir}/REXML
+%{ruby_ridir}/RSS
+%{ruby_ridir}/Racc
+%{ruby_ridir}/Rake
+%{ruby_ridir}/Random
+%{ruby_ridir}/Range
+%{ruby_ridir}/RangeError
+%{ruby_ridir}/Rational
+%{ruby_ridir}/RbConfig
+%{ruby_ridir}/Readline
+%{ruby_ridir}/Regexp
+%{ruby_ridir}/RegexpError
+%{ruby_ridir}/Resolv
+%{ruby_ridir}/Rinda
+%{ruby_ridir}/Ripper
+%{ruby_ridir}/RubyLex
+%{ruby_ridir}/RubyToken
+%{ruby_ridir}/RubyVM
+%{ruby_ridir}/RuntimeError
+%{ruby_ridir}/SDBM
+%{ruby_ridir}/SDBMError
+%{ruby_ridir}/SOCKSSocket
+%{ruby_ridir}/Scanf
+%{ruby_ridir}/ScriptError
+%{ruby_ridir}/SecureRandom
+%{ruby_ridir}/SecurityError
+%{ruby_ridir}/Set
+%{ruby_ridir}/Shell
+%{ruby_ridir}/Shellwords
+%{ruby_ridir}/Signal
+%{ruby_ridir}/SignalException
+%{ruby_ridir}/SimpleDelegator
+%{ruby_ridir}/SingleForwardable
+%{ruby_ridir}/Singleton
+%{ruby_ridir}/SizedQueue
+%{ruby_ridir}/Socket
+%{ruby_ridir}/SocketError
+%{ruby_ridir}/SortedSet
+%{ruby_ridir}/StandardError
+%{ruby_ridir}/StopIteration
+%{ruby_ridir}/String
+%{ruby_ridir}/StringIO
+%{ruby_ridir}/StringScanner
+%{ruby_ridir}/Struct
+%{ruby_ridir}/Symbol
+%{ruby_ridir}/Sync
+%{ruby_ridir}/Sync_m
+%{ruby_ridir}/Synchronizer
+%{ruby_ridir}/Synchronizer_m
+%{ruby_ridir}/SyntaxError
+%{ruby_ridir}/Syslog
+%{ruby_ridir}/SystemCallError
+%{ruby_ridir}/SystemExit
+%{ruby_ridir}/SystemStackError
+%{ruby_ridir}/TCPServer
+%{ruby_ridir}/TCPSocket
+%{ruby_ridir}/TSort
+%{ruby_ridir}/TempIO
+%{ruby_ridir}/Tempfile
+%{ruby_ridir}/Test
+%{ruby_ridir}/ThWait
+%{ruby_ridir}/Thread
+%{ruby_ridir}/ThreadError
+%{ruby_ridir}/ThreadGroup
+%{ruby_ridir}/ThreadsWait
+%{ruby_ridir}/Time
+%{ruby_ridir}/Timeout
+%{ruby_ridir}/TracePoint
+%{ruby_ridir}/Tracer
+%{ruby_ridir}/TrueClass
+%{ruby_ridir}/TypeError
+%{ruby_ridir}/UDPSocket
+%{ruby_ridir}/UNIXServer
+%{ruby_ridir}/UNIXSocket
+%{ruby_ridir}/URI
+%{ruby_ridir}/UnboundMethod
+%{ruby_ridir}/UncaughtThrowError
+%{ruby_ridir}/UnicodeNormalize
+%{ruby_ridir}/Vector
+%{ruby_ridir}/WEBrick
+%{ruby_ridir}/WIN32OLE
+%{ruby_ridir}/WIN32OLERuntimeError
+%{ruby_ridir}/WIN32OLE_EVENT
+%{ruby_ridir}/WIN32OLE_METHOD
+%{ruby_ridir}/WIN32OLE_PARAM
+%{ruby_ridir}/WIN32OLE_RECORD
+%{ruby_ridir}/WIN32OLE_TYPE
+%{ruby_ridir}/WIN32OLE_TYPELIB
+%{ruby_ridir}/WIN32OLE_VARIABLE
+%{ruby_ridir}/WIN32OLE_VARIANT
+%{ruby_ridir}/Warning
+%{ruby_ridir}/WeakRef
+%{ruby_ridir}/XML
+%{ruby_ridir}/XMLEncoding_ja
+%{ruby_ridir}/XMP
+%{ruby_ridir}/YAML
+%{ruby_ridir}/ZeroDivisionError
+%{ruby_ridir}/Zlib
+%{ruby_ridir}/fatal
+%{ruby_ridir}/lib
+%{ruby_ridir}/syntax
+%{ruby_ridir}/unknown
+%{ruby_ridir}/page-ChangeLog*.ri
+%{ruby_ridir}/page-NEWS*.ri
+%{ruby_ridir}/page-README_md.ri
+%{ruby_ridir}/page-*_rdoc.ri
 %endif
 
 %files examples
