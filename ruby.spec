@@ -465,10 +465,11 @@ Summary(pl.UTF-8):	Szkielet testów z rodziny xUnit dla języka Ruby
 Version:	%{test_unit_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
-Group:		Development/Libraries
 # lib/test/unit/diff.rb is a double license of the Ruby license and PSF license.
 # lib/test-unit.rb is a dual license of the Ruby license and LGPLv2.1 or later.
 License:	(Ruby or BSD) and (Ruby or BSD or Python) and (Ruby or BSD or LGPL v2+)
+Group:		Development/Libraries
+Requires:	ruby-power_assert = %{power_assert_ver}-%{pkg_version}.%{rel}
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
 %endif
@@ -857,7 +858,7 @@ ln -s %{gem_libdir}/json-%{json_ver}/lib/json/ext/generator.so $RPM_BUILD_ROOT%{
 ln -s %{gem_dir}/gems/minitest-%{minitest_ver}/lib/minitest $RPM_BUILD_ROOT%{ruby_libdir}
 
 install -d $RPM_BUILD_ROOT%{ruby_libdir}/test
-ln -s %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib/unit $RPM_BUILD_ROOT%{ruby_libdir}/test
+ln -s %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib/test/unit $RPM_BUILD_ROOT%{ruby_libdir}/test
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib
