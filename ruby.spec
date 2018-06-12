@@ -1,5 +1,4 @@
 # TODO:
-#	- provide standalone ruby-tk package (to replace retired -tk subpackage)
 #	- include ext/ in docs
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
@@ -11,7 +10,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		5
+%define		rel		6
 %define		ruby_version	2.4
 %define		patchlevel	4
 %define		pkg_version	%{ruby_version}.%{patchlevel}
