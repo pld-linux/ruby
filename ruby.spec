@@ -49,8 +49,6 @@ Source53:	http://www.unicode.org/Public/9.0.0/ucd/SpecialCasing.txt
 # Source53-md5:	fea30f45a2f81ffa474fd984d297e2ea
 Source54:	http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt
 # Source54-md5:	dde25b1cf9bbb4ba1140ac12e4128b0b
-Source100:	ftp://ftp.ruby-lang.org/pub/ruby/1.8/%{oname}-1.8.7-p330.tar.gz
-# Source100-md5:	50a49edb787211598d08e756e733e42e
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
@@ -77,6 +75,9 @@ BuildRequires:	openssl-devel >= 0.9.6
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
+# which version is minimum now? 1.8.7 is not enough, fails with:
+# ./tool/generic_erb.rb:31: syntax error, unexpected ':', expecting ')'
+BuildRequires:	ruby >= 1:1.9
 BuildRequires:	sed >= 4.0
 BuildRequires:	systemtap-sdt-devel
 BuildRequires:	tar >= 1:1.22
@@ -86,7 +87,6 @@ BuildRequires:	zlib-devel
 %if %{without bootstrap}
 # bootstrap needs ruby binary, erb module
 BuildRequires:	rpm-rubyprov
-BuildRequires:	ruby
 BuildRequires:	ruby-modules
 %endif
 Requires(post,postun):	/sbin/ldconfig
@@ -642,7 +642,7 @@ stworzenie serwera implementującego procedury zdalne oraz klienta
 wywołującego je. Aby to osiągnąć wystarczy bardzo mało kodu.
 
 %prep
-%setup -q -n %{oname}-%{pkg_version} -a2 -a3 %{?with_bootstrap:-a100}
+%setup -q -n %{oname}-%{pkg_version} -a2 -a3
 #%patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -673,6 +673,11 @@ find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
 	-o -name 'ruby.1' -o -name '*.html' -o -name '*.tcl' ')' \
 	| xargs %{__sed} -i 's,/usr/local/bin/,%{_bindir}/,'
 
+%if %{with bootstrap}
+# avoid regeneration, needs iostring module
+touch enc/unicode/9.0.0/*.h
+%endif
+
 %build
 rubygems_ver=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rubygems.rb | xargs)
 if [ $rubygems_ver != %{rubygems_ver} ]; then
@@ -687,17 +692,9 @@ fi
 
 cp -f /usr/share/automake/config.sub .
 
-# build ruby-1.8.7 first
-%if %{with bootstrap}
-cd %{oname}-1.8.7-p330
-%configure
-%{__make}
-cd ..
-%endif
-
 %{__autoconf}
 %configure \
-	%{?with_bootstrap:--with-baseruby=%{oname}-1.8.7-p330/miniruby} \
+	%{?with_bootstrap:--with-baseruby="%{_bindir}/ruby -I$(pwd)/lib"} \
 	--program-suffix=%{ruby_suffix} \
 	--with-archlibdir=%{_libdir} \
 	--with-rubygemsdir=%{rubygems_dir} \
@@ -719,8 +716,8 @@ cd ..
 	--with-ruby-version='' \
 
 %{__make} -j1 main \
-	COPY="cp -p" Q= \
-	%{?with_bootstrap:BASERUBY="%{oname}-1.8.7-p330/miniruby -I./ruby-1.8.7-p330/lib"}
+	COPY="cp -p" \
+	V=1
 
 %if %{with doc}
 %{__make} -j1 rdoc
