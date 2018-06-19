@@ -10,7 +10,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		7
+%define		rel		8
 %define		ruby_version	2.4
 %define		patchlevel	4
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -77,6 +77,7 @@ BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
 # which version is minimum now? 1.8.7 is not enough, fails with:
 # ./tool/generic_erb.rb:31: syntax error, unexpected ':', expecting ')'
+# ...O.popen("tput smso", "r", err: IO::NULL, &:read) rescue nil)
 BuildRequires:	ruby >= 1:1.9
 BuildRequires:	sed >= 4.0
 BuildRequires:	systemtap-sdt-devel
