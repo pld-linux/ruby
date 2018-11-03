@@ -10,7 +10,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		11
+%define		rel		12
 %define		ruby_version	2.4
 %define		patchlevel	4
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -52,7 +52,7 @@ Source54:	http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
-#Patch1:		%{oname}-ffs.patch
+Patch1:		rubygems.patch
 Patch2:		fix-bison-invocation.patch
 Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
@@ -644,7 +644,7 @@ wywołującego je. Aby to osiągnąć wystarczy bardzo mało kodu.
 
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a2 -a3
-#%patch1 -p1
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
