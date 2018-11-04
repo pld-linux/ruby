@@ -10,9 +10,9 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		12
+%define		rel		1
 %define		ruby_version	2.4
-%define		patchlevel	4
+%define		patchlevel	5
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_4_3
@@ -34,7 +34,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	4f30cefb7d50c6fa4d801f47ed9d82ca
+# Source0-md5:	47dec91cf6809785ed02b371c2c5a282
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	d21fb29009644bd174dbba0dad53f1f5
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
