@@ -10,9 +10,9 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		2
+%define		rel		1
 %define		ruby_version	2.4
-%define		patchlevel	6
+%define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_4_3
@@ -34,7 +34,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	e906495b65f9f31de4ceb0d4bbbea8b1
+# Source0-md5:	028e26495bce92000aaf98da4f81ecc2
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	d21fb29009644bd174dbba0dad53f1f5
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
@@ -110,7 +110,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	power_assert_ver	0.4.1
 %define	psych_ver		2.2.2
 %define	rake_ver		12.0.0
-%define	rdoc_ver		5.0.0
+%define	rdoc_ver		5.0.1
 %define	rubygems_ver		2.6.14.4
 %define	test_unit_ver		3.2.3
 %define	xmlrpc_ver		0.2.1
@@ -987,9 +987,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems/rdoc-%{rdoc_ver}
 %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
 %{gem_dir}/specifications/rdoc-%{rdoc_ver}.gemspec
-%dir %{gem_dir}/gems/rdoc-5.0.0/exe
-%{gem_dir}/gems/rdoc-5.0.0/exe/rdoc
-%{gem_dir}/gems/rdoc-5.0.0/exe/ri
+%dir %{gem_dir}/gems/rdoc-%{rdoc_ver}/exe
+%{gem_dir}/gems/rdoc-%{rdoc_ver}/exe/rdoc
+%{gem_dir}/gems/rdoc-%{rdoc_ver}/exe/ri
 
 %if %{with batteries}
 %files rubygems
