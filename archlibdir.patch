@@ -4,15 +4,15 @@ Date: Tue, 1 Oct 2013 12:22:40 +0200
 Subject: [PATCH] Allow to configure libruby.so placement.
 
 ---
- configure.in | 5 +++++
+ configure.ac | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/configure.in b/configure.in
-index 37d9a62..553d4d0 100644
---- a/configure.in
-+++ b/configure.in
-@@ -3632,6 +3632,11 @@ if test ${multiarch+set}; then
- fi
+diff --git a/configure.ac b/configure.ac
+index 11fc237552..b77e88fc37 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -3085,6 +3085,11 @@ AS_IF([test ${multiarch+set}], [
+ ])
  
  archlibdir='${libdir}/${arch}'
 +AC_ARG_WITH(archlibdir,

@@ -8,23 +8,3 @@
      when /^arch$/; if val.empty? then val = arch else arch = val end
      when /^sitearch$/; val = '$(arch)' if val.empty?
      end
---- ruby-2.2.7/common.mk~	2017-04-19 20:22:53.000000000 +0300
-+++ ruby-2.2.7/common.mk	2017-04-19 20:23:24.847180464 +0300
-@@ -66,7 +66,7 @@
- MINIOBJS      = $(ARCHMINIOBJS) miniinit.$(OBJEXT) dmyext.$(OBJEXT) miniprelude.$(OBJEXT)
- ENC_MK        = enc.mk
- MAKE_ENC      = -f $(ENC_MK) V="$(V)" UNICODE_HDR_DIR="$(UNICODE_HDR_DIR)" \
--		RUBY="$(MINIRUBY)" MINIRUBY="$(MINIRUBY)" $(MFLAGS)
-+		RUBY="$(MINIRUBY)" MINIRUBY="$(MINIRUBY)" $(MFLAGS) CC="$(CC)"
- 
- COMMONOBJS    = array.$(OBJEXT) \
- 		bignum.$(OBJEXT) \
-@@ -186,7 +186,7 @@
- configure-ext: $(EXTS_MK)
- 
- build-ext: $(EXTS_MK)
--	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) libdir="$(libdir)" LIBRUBY_EXTS=$(LIBRUBY_EXTS) \
-+	$(Q)$(MAKE) -f $(EXTS_MK) $(MFLAGS) libdir="$(libdir)" LIBRUBY_EXTS=$(LIBRUBY_EXTS) CC="$(CC)" \
- 	    EXTENCS="$(ENCOBJS)" UPDATE_LIBRARIES=no $(EXTSTATIC)
- 
- prog: program wprogram

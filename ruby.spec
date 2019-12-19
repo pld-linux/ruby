@@ -2,6 +2,7 @@
 #	- include ext/ in docs
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
+#	- gemify irb (?)
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -11,11 +12,11 @@
 %bcond_with	tests		# build without tests
 
 %define		rel		1
-%define		ruby_version	2.4
-%define		patchlevel	9
+%define		ruby_version	2.6
+%define		patchlevel	5
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_4_3
+%define		doc_version	2_6_5
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -34,11 +35,11 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	028e26495bce92000aaf98da4f81ecc2
+# Source0-md5:	b8a4e2bdbb76485c3d6690e57be67750
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	d21fb29009644bd174dbba0dad53f1f5
+# Source2-md5:	bd93bce0a482dada63ac238f2e4596cf
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	3aef8f1b7fb3d140ac9ba8f3061c832e
+# Source3-md5:	86322c0f335e8ecc9008f740807362dd
 Source50:	http://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
 Source51:	http://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
@@ -99,21 +100,25 @@ Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	bigdecimal_ver		1.3.2
-%define	did_you_mean_ver	1.1.0
-%define	io_console_ver		0.4.6
-%define	irb_ver			0.9.6
-%define	json_ver		2.0.4
-%define	minitest_ver		5.10.1
-%define	net_telnet_ver		0.1.1
-%define	openssl_ver		2.0.9
-%define	power_assert_ver	0.4.1
-%define	psych_ver		2.2.2
-%define	rake_ver		12.0.0
-%define	rdoc_ver		5.0.1
-%define	rubygems_ver		2.6.14.4
-%define	test_unit_ver		3.2.3
-%define	xmlrpc_ver		0.2.1
+# hack: skip rubygem(ipaddr)
+%define	_noautoreq	ipaddr
+
+%define	bigdecimal_ver		1.4.1
+%define	bundler_ver		1.17.2
+%define	did_you_mean_ver	1.3.0
+%define	io_console_ver		0.4.7
+%define	irb_ver			1.0.0
+%define	json_ver		2.1.0
+%define	minitest_ver		5.11.3
+%define	net_telnet_ver		0.2.0
+%define	openssl_ver		2.1.2
+%define	power_assert_ver	1.1.3
+%define	psych_ver		3.1.0
+%define	rake_ver		12.3.2
+%define	rdoc_ver		6.1.2
+%define	rubygems_ver		3.0.3
+%define	test_unit_ver		3.2.9
+%define	xmlrpc_ver		0.3.0
 
 %define	ruby_ridir		%{_datadir}/ri/system
 %define	gem_dir			%{_datadir}/gems
@@ -336,6 +341,22 @@ libraries.
 %description rubygems -l pl.UTF-8
 RubyGems to standardowe narzędzie języka Ruby do publikowania i
 zarządzania zewnętrznymi bibliotekami.
+
+%package bundler
+Summary:    Library and utilities to manage a Ruby application's gem dependencies
+Version:	%{bundler_ver}
+Release:	%{pkg_version}.%{rel}
+Epoch:		0
+License:	MIT
+Group:		Development/Languages
+Provides:	bundler = %{bundler_ver}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description bundler
+Bundler manages an application's dependencies through its entire life, across
+many machines, systematically and repeatably.
 
 %package rake
 Summary:	Rake is a Make-like program implemented in Ruby
@@ -680,7 +701,7 @@ touch enc/unicode/9.0.0/*.h
 %endif
 
 %build
-rubygems_ver=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rubygems.rb | xargs)
+rubygems_ver=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rubygems.rb | sed 's/\.freeze//g' | xargs)
 if [ $rubygems_ver != %{rubygems_ver} ]; then
 	echo "Set %%define rubygems_ver to $rubygems_ver and re-run."
 	exit 1
@@ -826,12 +847,15 @@ ln -s %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib/rdoc.rb $RPM_BUILD_ROOT%{ruby_libdir}
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rdoc-%{rdoc_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
-install -d $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+install -d $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal/util.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal/
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bigdecimal-%{bigdecimal_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 ln -s %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal
 ln -s %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so
+install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal
+ln -s %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal/util.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal/util.so
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
@@ -866,6 +890,16 @@ ln -s %{gem_dir}/gems/psych-%{psych_ver}/lib/psych $RPM_BUILD_ROOT%{ruby_libdir}
 ln -s %{gem_dir}/gems/psych-%{psych_ver}/lib/psych.rb $RPM_BUILD_ROOT%{ruby_libdir}/psych.rb
 ln -s %{gem_libdir}/psych-%{psych_ver}/lib/psych.so $RPM_BUILD_ROOT%{ruby_archdir}/psych.so
 
+install -d $RPM_BUILD_ROOT%{gem_dir}/gems/bundler-%{bundler_ver}/lib
+install -d $RPM_BUILD_ROOT%{gem_libdir}/bundler-%{bundler_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/bundler* $RPM_BUILD_ROOT%{gem_dir}/gems/bundler-%{bundler_ver}/lib
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bundler-%{bundler_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
+ln -s %{gem_dir}/gems/bundler-%{bundler_ver}/lib/bundler $RPM_BUILD_ROOT%{ruby_libdir}/bundler
+ln -s %{gem_dir}/gems/bundler-%{bundler_ver}/lib/bundler.rb $RPM_BUILD_ROOT%{ruby_libdir}/bundler.rb
+
+# replace default irb with its not gemified version
+%{__mv} $RPM_BUILD_ROOT%{gem_dir}/gems/irb-%{irb_ver}/exe/irb $RPM_BUILD_ROOT%{_bindir}/irb%{ruby_suffix}
+
 # Adjust the gemspec files so that the gems will load properly
 sed -i '/^end$/ i\
   s.require_paths = ["lib"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/rake-%{rake_ver}.gemspec
@@ -893,16 +927,18 @@ sed -i '/^end$/ i\
 # https://github.com/rubygems/rubygems/pull/694
 for s in rake-%{rake_ver}.gemspec rdoc-%{rdoc_ver}.gemspec json-%{json_ver}.gemspec; do
 	s="$RPM_BUILD_ROOT%{gem_dir}/specifications/$s"
-	%{__make} runruby TESTRUN_SCRIPT="-rubygems \
+	%{__make} runruby TESTRUN_SCRIPT="-rrubygems \
 	-e \"spec = Gem::Specification.load('$s')\" \
 	-e \"File.write '$s', spec.to_ruby\""
 done
 
 %{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
+ 	$RPM_BUILD_ROOT%{_bindir}/irb \
 	$RPM_BUILD_ROOT%{ruby_libdir}/abbrev.rb \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/bin/console \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/exe/rake \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/exe/{rdoc,ri} \
+	$RPM_BUILD_ROOT%{gem_dir}/gems/bundler-%{bundler_ver}/exe/{bundle,bundler} \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper,rss}/*.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
@@ -910,10 +946,10 @@ done
 # gem non library files
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/test
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample,test}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,test}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,doc,test}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,.*}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,doc,test,.*,tmp,benchmark}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc,.*}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/{[A-Z]*,bin,.*}
 
 %if %{without batteries}
 # packaged separately
@@ -930,7 +966,6 @@ done
 %if %{with doc}
 # too much .ri
 %{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/cache.ri
-%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/created.rid
 %endif
 
 %clean
@@ -997,8 +1032,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gem%{ruby_suffix}
 %{rubygems_dir}/rubygems
 %{rubygems_dir}/rubygems.rb
-%{rubygems_dir}/ubygems.rb
-%{rubygems_dir}/rbconfig
+
+%files bundler
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/bundler%{ruby_suffix}
+%attr(755,root,root) %{_bindir}/bundle%{ruby_suffix}
+%{gem_dir}/gems/bundler-%{bundler_ver}
+%{gem_dir}/specifications/bundler-%{bundler_ver}.gemspec
+%{_mandir}/man1/bundle*.1*
+%{_mandir}/man5/gemfile.5*
 
 %files rake
 %defattr(644,root,root,755)
@@ -1009,7 +1051,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/console
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/setup
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
-%{gem_dir}/gems/rake-%{rake_ver}/appveyor.yml
 %dir %{gem_dir}/gems/rake-%{rake_ver}/exe
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/exe/rake
 
@@ -1036,9 +1077,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems/power_assert-%{power_assert_ver}
 %{gem_dir}/gems/power_assert-%{power_assert_ver}/lib
 %{gem_dir}/specifications/power_assert-%{power_assert_ver}.gemspec
-%dir %{gem_dir}/gems/power_assert-0.4.1/benchmarks
-%{gem_dir}/gems/power_assert-0.4.1/benchmarks/bm_yhpg.rb
-%{gem_dir}/gems/power_assert-0.4.1/benchmarks/helper.rb
 
 %files minitest
 %defattr(644,root,root,755)
@@ -1056,8 +1094,6 @@ rm -rf $RPM_BUILD_ROOT
 %files did_you_mean
 %defattr(644,root,root,755)
 %dir %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}
-%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/benchmark
-%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/evaluation
 %{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/lib
 %{gem_dir}/specifications/did_you_mean-%{did_you_mean_ver}.gemspec
 
@@ -1073,6 +1109,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
 %dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
 %attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
+%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal
+%attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal/util.so
+%{ruby_libdir}/bigdecimal.rb
 %{ruby_libdir}/bigdecimal
 %{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
 
@@ -1114,7 +1153,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/openssl
 %{ruby_libdir}/optparse
 %{ruby_libdir}/racc
-%{ruby_libdir}/rbconfig
 %{ruby_libdir}/rexml
 %{ruby_libdir}/rinda
 %{ruby_libdir}/ripper
@@ -1130,19 +1168,25 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/abbrev.rb
 %{ruby_libdir}/base64.rb
 %{ruby_libdir}/benchmark.rb
+%{ruby_libdir}/bundler
+%{ruby_libdir}/bundler.rb
 %{ruby_libdir}/cgi.rb
 %{ruby_libdir}/cmath.rb
 %{ruby_libdir}/csv.rb
+%{ruby_libdir}/csv
+%{ruby_libdir}/coverage.rb
 %{ruby_libdir}/date.rb
 %{ruby_libdir}/debug.rb
 %{ruby_libdir}/delegate.rb
 %{ruby_libdir}/digest.rb
 %{ruby_libdir}/drb.rb
 %{ruby_libdir}/e2mmap.rb
+%{ruby_libdir}/e2mmap
 %{ruby_libdir}/erb.rb
 %{ruby_libdir}/expect.rb
 %{ruby_libdir}/fiddle.rb
 %{ruby_libdir}/fileutils.rb
+%{ruby_libdir}/fileutils
 %{ruby_libdir}/find.rb
 %{ruby_libdir}/forwardable.rb
 %dir %{ruby_libdir}/forwardable
@@ -1152,7 +1196,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/json.rb
 %{ruby_libdir}/kconv.rb
 %{ruby_libdir}/logger.rb
-%{ruby_libdir}/mathn.rb
 %{ruby_libdir}/matrix.rb
 %{ruby_libdir}/monitor.rb
 %{ruby_libdir}/mutex_m.rb
@@ -1185,14 +1228,15 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/sync.rb
 %{ruby_libdir}/tempfile.rb
 %{ruby_libdir}/thwait.rb
+%{ruby_libdir}/thwait
 %{ruby_libdir}/time.rb
 %{ruby_libdir}/timeout.rb
 %{ruby_libdir}/tmpdir.rb
 %{ruby_libdir}/tracer.rb
+%{ruby_libdir}/tracer
 %{ruby_libdir}/tsort.rb
 %{ruby_libdir}/un.rb
 %{ruby_libdir}/unicode_normalize
-%{ruby_libdir}/unicode_normalize.rb
 %{ruby_libdir}/uri.rb
 %{ruby_libdir}/weakref.rb
 %{ruby_libdir}/webrick.rb
@@ -1200,14 +1244,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with batteries}
 %exclude %{ruby_libdir}/rubygems.rb
-%exclude %{ruby_libdir}/ubygems.rb
-%exclude %{ruby_libdir}/rbconfig/datadir.rb
 %endif
 %exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
 
 %{ruby_archdir}/rbconfig.rb
 %attr(755,root,root) %{ruby_archdir}/bigdecimal.so
+%dir %{ruby_archdir}/bigdecimal
+%attr(755,root,root) %{ruby_archdir}/bigdecimal/util.so
 %attr(755,root,root) %{ruby_archdir}/continuation.so
 %attr(755,root,root) %{ruby_archdir}/coverage.so
 %attr(755,root,root) %{ruby_archdir}/date_core.so
@@ -1242,8 +1286,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/enc/trans/*.so
 %dir %{ruby_archdir}/io
 %attr(755,root,root) %{ruby_archdir}/io/*.so
-%dir %{ruby_archdir}/mathn
-%attr(755,root,root) %{ruby_archdir}/mathn/*.so
 %dir %{ruby_archdir}/racc
 %attr(755,root,root) %{ruby_archdir}/racc/*.so
 %dir %{ruby_archdir}/rbconfig
@@ -1282,6 +1324,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/BigDecimal
 %{ruby_ridir}/BigMath
 %{ruby_ridir}/Binding
+%{ruby_ridir}/Bundler
 %{ruby_ridir}/CGI
 %{ruby_ridir}/CMath
 %{ruby_ridir}/CSV
@@ -1327,15 +1370,22 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/Float
 %{ruby_ridir}/FloatDomainError
 %{ruby_ridir}/Forwardable
+%{ruby_ridir}/FrozenError
 %{ruby_ridir}/GC
 %{ruby_ridir}/GDBM
 %{ruby_ridir}/GDBMError
 %{ruby_ridir}/GDBMFatalError
 %{ruby_ridir}/Gem
 %{ruby_ridir}/GetoptLong
+%{ruby_ridir}/HTTPClientException
+%{ruby_ridir}/HTTPGatewayTimeOut
 %{ruby_ridir}/HTTPMovedTemporarily
 %{ruby_ridir}/HTTPMultipleChoice
+%{ruby_ridir}/HTTPRequestEntityTooLarge
+%{ruby_ridir}/HTTPRequestTimeOut
 %{ruby_ridir}/HTTPRequestURITooLarge
+%{ruby_ridir}/HTTPRequestURITooLong
+%{ruby_ridir}/HTTPRequestedRangeNotSatisfiable
 %{ruby_ridir}/Hash
 %{ruby_ridir}/IO
 %{ruby_ridir}/IOError
@@ -1363,6 +1413,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/Module
 %{ruby_ridir}/Monitor
 %{ruby_ridir}/MonitorMixin
+%{ruby_ridir}/Mutex
 %{ruby_ridir}/Mutex_m
 %{ruby_ridir}/NKF
 %{ruby_ridir}/NameError
@@ -1454,7 +1505,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/TSort
 %{ruby_ridir}/TempIO
 %{ruby_ridir}/Tempfile
-%{ruby_ridir}/Test
 %{ruby_ridir}/ThWait
 %{ruby_ridir}/Thread
 %{ruby_ridir}/ThreadError
@@ -1477,6 +1527,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/WEBrick
 %{ruby_ridir}/WIN32OLE
 %{ruby_ridir}/WIN32OLERuntimeError
+%{ruby_ridir}/WIN32OLEQueryInterfaceError
 %{ruby_ridir}/WIN32OLE_EVENT
 %{ruby_ridir}/WIN32OLE_METHOD
 %{ruby_ridir}/WIN32OLE_PARAM
@@ -1496,8 +1547,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/fatal
 %{ruby_ridir}/lib
 %{ruby_ridir}/syntax
-%{ruby_ridir}/unknown
-%{ruby_ridir}/page-ChangeLog*.ri
 %{ruby_ridir}/page-NEWS*.ri
 %{ruby_ridir}/page-README_md.ri
 %{ruby_ridir}/page-*_rdoc.ri
