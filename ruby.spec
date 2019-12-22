@@ -343,7 +343,8 @@ RubyGems to standardowe narzędzie języka Ruby do publikowania i
 zarządzania zewnętrznymi bibliotekami.
 
 %package bundler
-Summary:    Library and utilities to manage a Ruby application's gem dependencies
+Summary:	Library and utilities to manage a Ruby application's gem dependencies
+Summary(pl.UTF-8):	Biblioteka i narzędzia do zarządzania zależnościami gem aplikacji w języku Ruby
 Version:	%{bundler_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
@@ -355,8 +356,12 @@ BuildArch:	noarch
 %endif
 
 %description bundler
-Bundler manages an application's dependencies through its entire life, across
-many machines, systematically and repeatably.
+Bundler manages an application's dependencies through its entire life,
+across many machines, systematically and repeatably.
+
+%description bundler -l pl.UTF-8
+Bundler zarządza zależnościami aplikacji przez cały czas jej życia,
+między wiloma maszynami - systematycznie i powtarzalnie.
 
 %package rake
 Summary:	Rake is a Make-like program implemented in Ruby
