@@ -58,7 +58,7 @@ index 8ea969412f..a00f2b6776 100644
 -], [
 -    RUBY_LIB_VERSION="${ruby_version}"
 -])
-+RUBY_LIB_VERSION_STYLE='3	/* full */'
++RUBY_LIB_VERSION_STYLE='2	/* minor */'
 +{
 +echo "#define RUBY_LIB_VERSION_STYLE $RUBY_LIB_VERSION_STYLE"
 +echo '#define STRINGIZE(x) x'
