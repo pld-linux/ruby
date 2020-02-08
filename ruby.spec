@@ -102,6 +102,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # hack: skip rubygem(ipaddr)
 %define	_noautoreq	ipaddr
 
+# separate modules
 %define	bigdecimal_ver		1.4.1
 %define	bundler_ver		1.17.2
 %define	did_you_mean_ver	1.3.0
@@ -110,7 +111,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	json_ver		2.1.0
 %define	minitest_ver		5.11.3
 %define	net_telnet_ver		0.2.0
-%define	openssl_ver		2.1.2
 %define	power_assert_ver	1.1.3
 %define	psych_ver		3.1.0
 %define	rake_ver		12.3.2
@@ -118,6 +118,39 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	rubygems_ver		3.0.3
 %define	test_unit_ver		3.2.9
 %define	xmlrpc_ver		0.3.0
+# default modules, separated
+%define	irb_ver			1.0.0
+# default modules packaged in main modules
+%define	cmath_ver		1.0.0
+%define	csv_ver			3.0.9
+%define	date_ver		2.0.0
+%define	dbm_ver			1.0.0
+%define	e2mmap_ver		0.1.0
+%define	etc_ver			1.0.1
+%define	fcntl_ver		1.0.0
+%define	fiddle_ver		1.0.0
+%define	fileutils_ver		1.1.0
+%define	forwardable_ver		1.2.0
+%define	gdbm_ver		2.0.0
+%define	ipaddr_ver		1.2.2
+%define	logger_ver		1.3.0
+%define	matrix_ver		0.1.0
+%define	mutex_m_ver		0.1.0
+%define	ostruct_ver		0.1.0
+%define	openssl_ver		2.1.2
+%define	prime_ver		0.1.0
+%define	rexml_ver		3.1.9
+%define	rss_ver			0.2.7
+%define	scanf_ver		1.0.0
+%define	sdbm_ver		1.0.0
+%define	shell_ver		0.7
+%define	stringio_ver		0.0.2
+%define	strscan_ver		1.0.0
+%define	sync_ver		0.5.0
+%define	thwait_ver		0.1.0
+%define	tracer_ver		0.1.0
+%define	webrick_ver		1.4.2
+%define	zlib_ver		1.0.0
 
 %define	ruby_ridir		%{_datadir}/ri/system
 %define	gem_dir			%{_datadir}/gems
@@ -938,7 +971,6 @@ done
 %{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
  	$RPM_BUILD_ROOT%{_bindir}/irb \
 	$RPM_BUILD_ROOT%{ruby_libdir}/abbrev.rb \
-	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/bin/console \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/exe/rake \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/exe/{rdoc,ri} \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/bundler-%{bundler_ver}/exe/{bundle,bundler} \
@@ -947,12 +979,13 @@ done
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
 
 # gem non library files
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/test
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,benchmark,doc,test,tmp,did_you_mean.gemspec,.*}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,test,.autotest}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/{[A-Z]*,bin,net-telnet.gemspec,.*}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,bin,power_assert.gemspec,.*}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,bin,doc,rake.gemspec,.*}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample,test}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,.*}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/did_you_mean-%{did_you_mean_ver}/{[A-Z]*,doc,test,.*,tmp,benchmark}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc,.*}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/{[A-Z]*,bin,.*}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/xmlrpc-%{xmlrpc_ver}/{[A-Z]*,bin,xmlrpc.gemspec,.*}
 
 %if %{without batteries}
 # packaged separately
@@ -969,6 +1002,7 @@ done
 %if %{with doc}
 # too much .ri
 %{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/cache.ri
+%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/win32/page-*.ri
 %endif
 
 %clean
@@ -1014,6 +1048,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/irb%{ruby_suffix}
 %{ruby_libdir}/irb.rb
 %{ruby_libdir}/irb
+%{gem_dir}/specifications/default/irb-%{irb_ver}.gemspec
 %{_mandir}/man1/irb%{ruby_suffix}.1*
 
 %files rdoc
@@ -1050,9 +1085,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rake%{ruby_suffix}
 %dir %{gem_dir}/gems/rake-%{rake_ver}
 %{gem_dir}/gems/rake-%{rake_ver}/lib
-%dir %{gem_dir}/gems/rake-%{rake_ver}/bin
-%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/console
-%attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/bin/setup
 %{gem_dir}/specifications/rake-%{rake_ver}.gemspec
 %dir %{gem_dir}/gems/rake-%{rake_ver}/exe
 %attr(755,root,root) %{gem_dir}/gems/rake-%{rake_ver}/exe/rake
@@ -1301,7 +1333,36 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems
 %dir %{gem_dir}/specifications
 %dir %{gem_dir}/specifications/default
+%{gem_dir}/specifications/default/cmath-%{cmath_ver}.gemspec
+%{gem_dir}/specifications/default/csv-%{csv_ver}.gemspec
+%{gem_dir}/specifications/default/date-%{date_ver}.gemspec
+%{gem_dir}/specifications/default/dbm-%{dbm_ver}.gemspec
+%{gem_dir}/specifications/default/e2mmap-%{e2mmap_ver}.gemspec
+%{gem_dir}/specifications/default/etc-%{etc_ver}.gemspec
+%{gem_dir}/specifications/default/fcntl-%{fcntl_ver}.gemspec
+%{gem_dir}/specifications/default/fiddle-%{fiddle_ver}.gemspec
+%{gem_dir}/specifications/default/fileutils-%{fileutils_ver}.gemspec
+%{gem_dir}/specifications/default/forwardable-%{forwardable_ver}.gemspec
+%{gem_dir}/specifications/default/gdbm-%{gdbm_ver}.gemspec
+%{gem_dir}/specifications/default/ipaddr-%{ipaddr_ver}.gemspec
+%{gem_dir}/specifications/default/logger-%{logger_ver}.gemspec
+%{gem_dir}/specifications/default/matrix-%{matrix_ver}.gemspec
+%{gem_dir}/specifications/default/mutex_m-%{mutex_m_ver}.gemspec
+%{gem_dir}/specifications/default/ostruct-%{ostruct_ver}.gemspec
 %{gem_dir}/specifications/default/openssl-%{openssl_ver}.gemspec
+%{gem_dir}/specifications/default/prime-%{prime_ver}.gemspec
+%{gem_dir}/specifications/default/rexml-%{rexml_ver}.gemspec
+%{gem_dir}/specifications/default/rss-%{rss_ver}.gemspec
+%{gem_dir}/specifications/default/scanf-%{scanf_ver}.gemspec
+%{gem_dir}/specifications/default/sdbm-%{sdbm_ver}.gemspec
+%{gem_dir}/specifications/default/shell-%{shell_ver}.gemspec
+%{gem_dir}/specifications/default/stringio-%{stringio_ver}.gemspec
+%{gem_dir}/specifications/default/strscan-%{strscan_ver}.gemspec
+%{gem_dir}/specifications/default/sync-%{sync_ver}.gemspec
+%{gem_dir}/specifications/default/thwait-%{thwait_ver}.gemspec
+%{gem_dir}/specifications/default/tracer-%{tracer_ver}.gemspec
+%{gem_dir}/specifications/default/webrick-%{webrick_ver}.gemspec
+%{gem_dir}/specifications/default/zlib-%{zlib_ver}.gemspec
 
 %{_mandir}/man1/erb%{ruby_suffix}.1*
 %{_mandir}/man1/ri%{ruby_suffix}.1*
@@ -1550,8 +1611,13 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/fatal
 %{ruby_ridir}/lib
 %{ruby_ridir}/syntax
+%{ruby_ridir}/page-CONTRIBUTING_md.ri
+%{ruby_ridir}/page-COPYING.ri
+%lang(ja) %{ruby_ridir}/page-COPYING_ja.ri
+%{ruby_ridir}/page-LEGAL.ri
 %{ruby_ridir}/page-NEWS*.ri
 %{ruby_ridir}/page-README_md.ri
+%lang(ja) %{ruby_ridir}/page-README_ja_md.ri
 %{ruby_ridir}/page-*_rdoc.ri
 %endif
 
