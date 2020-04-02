@@ -13,7 +13,7 @@
 
 %define		rel		1
 %define		ruby_version	2.6
-%define		patchlevel	5
+%define		patchlevel	6
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_6_5
@@ -35,11 +35,11 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	b8a4e2bdbb76485c3d6690e57be67750
+# Source0-md5:	1aa8bd34dcaf5c4b58d563546de16919
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	bd93bce0a482dada63ac238f2e4596cf
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	86322c0f335e8ecc9008f740807362dd
+# Source3-md5:	b6c1aa7baecd141071e2bc8e7bd39a2a
 Source50:	http://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
 Source51:	http://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
@@ -113,7 +113,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	net_telnet_ver		0.2.0
 %define	power_assert_ver	1.1.3
 %define	psych_ver		3.1.0
-%define	rake_ver		12.3.2
+%define	rake_ver		12.3.3
 %define	rdoc_ver		6.1.2
 %define	rubygems_ver		3.0.3
 %define	test_unit_ver		3.2.9
@@ -983,7 +983,7 @@ done
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,test,.autotest}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-telnet-%{net_telnet_ver}/{[A-Z]*,bin,net-telnet.gemspec,.*}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,bin,power_assert.gemspec,.*}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,bin,doc,rake.gemspec,.*}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,bin,doc,rake.gemspec,azure-pipelines.yml}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample,test}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/xmlrpc-%{xmlrpc_ver}/{[A-Z]*,bin,xmlrpc.gemspec,.*}
 

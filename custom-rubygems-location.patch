@@ -67,14 +67,14 @@ diff --git a/tool/rbinstall.rb b/tool/rbinstall.rb
 index b47b6e1..0b99408 100755
 --- a/tool/rbinstall.rb
 +++ b/tool/rbinstall.rb
-@@ -334,6 +334,7 @@ def CONFIG.[](name, mandatory = false)
- sitearchlibdir = CONFIG["sitearchdir"]
- vendorlibdir = CONFIG["vendorlibdir"]
- vendorarchlibdir = CONFIG["vendorarchdir"]
+@@ -330,6 +330,7 @@
+ archhdrdir = CONFIG["rubyarchhdrdir"] || (rubyhdrdir + "/" + CONFIG['arch'])
+ rubylibdir = CONFIG["rubylibdir", true]
+ archlibdir = CONFIG["rubyarchdir", true]
 +rubygemsdir = CONFIG["rubygemsdir"]
- mandir = CONFIG["mandir", true]
- docdir = CONFIG["docdir", true]
- enable_shared = CONFIG["ENABLE_SHARED"] == 'yes'
+ if CONFIG["sitedir"]
+   sitelibdir = CONFIG["sitelibdir"]
+   sitearchlibdir = CONFIG["sitearchdir"]
 @@ -560,7 +561,16 @@ def stub
  install?(:local, :comm, :lib) do
    prepare "library scripts", rubylibdir
