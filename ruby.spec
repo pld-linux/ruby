@@ -16,7 +16,7 @@
 %define		patchlevel	6
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_6_5
+%define		doc_version	2_6_6
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -37,9 +37,9 @@ Group:		Development/Languages
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
 # Source0-md5:	1aa8bd34dcaf5c4b58d563546de16919
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	bd93bce0a482dada63ac238f2e4596cf
+# Source2-md5:	0b93f02fc4c1b24b1c9d5ec165f66ced
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	b6c1aa7baecd141071e2bc8e7bd39a2a
+# Source3-md5:	3ab26881456819d3c6226852c1a2bfd5
 Source50:	http://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
 Source51:	http://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
