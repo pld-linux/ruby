@@ -254,9 +254,7 @@ Biblioteki programistyczne interpretera języka Ruby.
 Summary:	Ruby HTML documentation
 Summary(pl.UTF-8):	Dokumentacja HTML do Ruby
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description doc
 Ruby HTML documentation: FAQ, guide, core and standard library.
@@ -270,9 +268,7 @@ Summary:	Ruby ri documentation
 Summary(pl.UTF-8):	Dokumentacja Ruby w formacie ri
 Group:		Documentation
 Requires:	%{name}-modules = %{epoch}:%{version}-%{release}
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description doc-ri
 Ruby ri documentation.
@@ -284,9 +280,7 @@ Dokumentacja Ruby w formacie ri.
 Summary:	Ruby examples
 Summary(pl.UTF-8):	Przykłady dla języka Ruby
 Group:		Development/Languages
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description examples
 Ruby examples.
@@ -308,9 +302,7 @@ Group:		Development/Languages
 Requires:	%{name}-modules = 1:%{pkg_version}-%{rel}
 Provides:	irb = %{version}-%{release}
 Provides:	ruby(irb) = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description irb
 The irb is acronym for Interactive Ruby. It evaluates ruby expression
@@ -333,9 +325,7 @@ Requires:	%{name}-irb >= %{irb_ver}
 Requires:	%{name}-json >= %{json_ver}
 Requires:	%{name}-modules = 1:%{pkg_version}-%{rel}
 Obsoletes:	rdoc <= 0.9.0
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description rdoc
 RDoc produces HTML and command-line documentation for Ruby projects.
@@ -362,9 +352,7 @@ Requires:	%{name}-psych = %{psych_ver}-%{pkg_version}.%{rel}
 Requires:	%{name}-rdoc >= %{rdoc_ver}
 Suggests:	%{name}-devel
 Provides:	rubygems = %{rubygems_ver}
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description rubygems
 RubyGems is the Ruby standard for publishing and managing third party
@@ -383,9 +371,7 @@ Epoch:		0
 License:	MIT
 Group:		Development/Languages
 Provides:	bundler = %{bundler_ver}
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description bundler
 Bundler manages an application's dependencies through its entire life,
@@ -405,9 +391,7 @@ License:	MIT
 Group:		Development/Languages
 Provides:	rake = %{rake_ver}
 Conflicts:	ruby-modules < 1:1.9.3.429-2
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description rake
 Rake is a simple Ruby build program with capabilities similar to make.
@@ -463,9 +447,7 @@ Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	MIT
 Group:		Development/Libraries
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description minitest
 minitest/unit is a small and incredibly fast unit testing framework.
@@ -503,9 +485,7 @@ Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	Ruby or BSD
 Group:		Development/Libraries
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description power_assert
 Power Assert shows each value of variables and method calls in the
@@ -528,9 +508,7 @@ Epoch:		0
 License:	(Ruby or BSD) and (Ruby or BSD or Python) and (Ruby or BSD or LGPL v2+)
 Group:		Development/Libraries
 Requires:	ruby-power_assert = %{power_assert_ver}-%{pkg_version}.%{rel}
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description test-unit
 test-unit (Test::Unit) is unit testing framework for Ruby, based on
@@ -555,9 +533,7 @@ Release:	%{pkg_version}.%{rel}
 Epoch:		0
 License:	MIT
 Group:		Development/Libraries
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description did_you_mean
 "Did you mean?" experience in Ruby: the error message will tell you
@@ -574,9 +550,7 @@ Version:	%{net_telnet_ver}
 Release:	%{pkg_version}.%{rel}
 Epoch:		0
 Group:		Development/Libraries
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description net-telnet
 Provides telnet client functionality.
