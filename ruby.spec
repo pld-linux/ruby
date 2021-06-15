@@ -8,6 +8,7 @@
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
+%bcond_without	dtrace		# disable tracing with dtrace
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
@@ -75,12 +76,13 @@ BuildRequires:	openssl-devel >= 0.9.6
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
+BuildRequires:	rpmbuild(macros) >= 1.527
 # which version is minimum now? 1.8.7 is not enough, fails with:
 # ./tool/generic_erb.rb:31: syntax error, unexpected ':', expecting ')'
 # ...O.popen("tput smso", "r", err: IO::NULL, &:read) rescue nil)
 BuildRequires:	ruby >= 1:1.9
 BuildRequires:	sed >= 4.0
-BuildRequires:	systemtap-sdt-devel
+%{?with_dtrace:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 BuildRequires:	yaml-devel
@@ -745,6 +747,7 @@ cp -f /usr/share/automake/config.sub .
 	--disable-install-doc \
 	--disable-rpath \
 	--disable-rubygems \
+	%{__enable_disable dtrace} \
 	--with-ruby-version='' \
 
 %{__make} -j1 main \
