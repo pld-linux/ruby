@@ -37,19 +37,19 @@ Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
 # Source0-md5:	278da940975cb2bf5d9631e3a9d19032
-Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
+Source2:	https://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	1e70282bfffc377d0efe5bcbca4b8127
-Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
+Source3:	https://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
 # Source3-md5:	004471ae881d8a7851c11c4c83c14ca3
-Source50:	http://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
+Source50:	https://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
-Source51:	http://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
+Source51:	https://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
 # Source51-md5:	263381d7b4b5e2d52a91e1bbbd4722d4
-Source52:	http://www.unicode.org/Public/9.0.0/ucd/NormalizationTest.txt
+Source52:	https://www.unicode.org/Public/9.0.0/ucd/NormalizationTest.txt
 # Source52-md5:	aacb8a8acfc449d09136fe39f3f97cf1
-Source53:	http://www.unicode.org/Public/9.0.0/ucd/SpecialCasing.txt
+Source53:	https://www.unicode.org/Public/9.0.0/ucd/SpecialCasing.txt
 # Source53-md5:	fea30f45a2f81ffa474fd984d297e2ea
-Source54:	http://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt
+Source54:	https://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt
 # Source54-md5:	dde25b1cf9bbb4ba1140ac12e4128b0b
 Source4:	rdoc.1
 Source5:	testrb.1
