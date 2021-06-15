@@ -7,4 +7,4 @@
 +    when /^(CC|CXX)$/; val.sub!(/ccache /, '')
      when /^arch$/; if val.empty? then val = arch else arch = val end
      when /^sitearch$/; val = '$(arch)' if val.empty?
-     end
+     when /^DESTDIR$/; next

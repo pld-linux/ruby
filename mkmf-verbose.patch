@@ -19,7 +19,7 @@ index 682eb46..e6b1445 100644
 +V = 1
  Q1 = $(V:1=)
  Q = $(Q1:0=@)
- ECHO1 = $(V:1=@#{CONFIG['NULLCMD']})
+ ECHO1 = $(V:1=@ #{CONFIG['NULLCMD']})
 -- 
 1.8.3.1
 
