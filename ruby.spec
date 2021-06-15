@@ -12,12 +12,12 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		3
+%define		rel		1
 %define		ruby_version	2.6
-%define		patchlevel	6
+%define		patchlevel	7
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_6_6
+%define		doc_version	2_6_7
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -36,11 +36,11 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	1aa8bd34dcaf5c4b58d563546de16919
+# Source0-md5:	278da940975cb2bf5d9631e3a9d19032
 Source2:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	0b93f02fc4c1b24b1c9d5ec165f66ced
+# Source2-md5:	1e70282bfffc377d0efe5bcbca4b8127
 Source3:	http://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	3ab26881456819d3c6226852c1a2bfd5
+# Source3-md5:	004471ae881d8a7851c11c4c83c14ca3
 Source50:	http://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
 Source51:	http://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
@@ -119,7 +119,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	psych_ver		3.1.0
 %define	rake_ver		12.3.3
 %define	rdoc_ver		6.1.2
-%define	rubygems_ver		3.0.3
+%define	rubygems_ver		3.0.3.1
 %define	test_unit_ver		3.2.9
 %define	xmlrpc_ver		0.3.0
 # default modules, separated
@@ -143,7 +143,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	ostruct_ver		0.1.0
 %define	openssl_ver		2.1.2
 %define	prime_ver		0.1.0
-%define	rexml_ver		3.1.9
+%define	rexml_ver		3.1.9.1
 %define	rss_ver			0.2.7
 %define	scanf_ver		1.0.0
 %define	sdbm_ver		1.0.0
@@ -153,7 +153,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	sync_ver		0.5.0
 %define	thwait_ver		0.1.0
 %define	tracer_ver		0.1.0
-%define	webrick_ver		1.4.2
+%define	webrick_ver		1.4.4
 %define	zlib_ver		1.0.0
 
 %define	ruby_ridir		%{_datadir}/ri/system
@@ -821,8 +821,6 @@ sed -i -e 's/Version: \${ruby_version}/Version: %{ruby_version}/' $RPM_BUILD_ROO
 
 # Kill bundled certificates, as they should be part of ca-certificates.
 for cert in \
-	AddTrustExternalCARoot.pem \
-	DigiCertHighAssuranceEVRootCA.pem \
 	GlobalSignRootCA.pem \
 ; do
 	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/*/$cert
