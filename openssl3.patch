@@ -1,0 +1,12 @@
+--- ruby-2.6.8/ext/openssl/ossl_pkey_rsa.c.orig	2021-07-07 12:38:58.000000000 +0200
++++ ruby-2.6.8/ext/openssl/ossl_pkey_rsa.c	2021-10-13 12:03:34.317085257 +0200
+@@ -939,7 +939,9 @@
+     rb_define_method(cRSA, "params", ossl_rsa_get_params, 0);
+ 
+     DefRSAConst(PKCS1_PADDING);
++#if OPENSSL_VERSION_MAJOR < 3
+     DefRSAConst(SSLV23_PADDING);
++#endif
+     DefRSAConst(NO_PADDING);
+     DefRSAConst(PKCS1_OAEP_PADDING);
+ 

@@ -12,7 +12,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		1
+%define		rel		2
 %define		ruby_version	2.6
 %define		patchlevel	8
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -61,6 +61,7 @@ Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
 Patch5:		ruby-version.patch
 Patch6:		duplicated-paths.patch
+Patch7:		openssl3.patch
 # obsolete?
 Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
@@ -687,6 +688,7 @@ wywołującego je. Aby to osiągnąć wystarczy bardzo mało kodu.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 #%patch8 -p1
 %patch9 -p1
 %patch12 -p1
