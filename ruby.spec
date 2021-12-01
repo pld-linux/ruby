@@ -12,12 +12,12 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		2
+%define		rel		1
 %define		ruby_version	2.6
-%define		patchlevel	8
+%define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_6_7
+%define		doc_version	2_6_9
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -36,11 +36,11 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	4dc6e5e1988364898b082416a0c477c7
+# Source0-md5:	38411a485cc198cbe4035b4b16ff0550
 Source2:	https://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	1e70282bfffc377d0efe5bcbca4b8127
+# Source2-md5:	b294ffc5327b1a3696fb9fa48eee18e9
 Source3:	https://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	004471ae881d8a7851c11c4c83c14ca3
+# Source3-md5:	53251c65f70f6e4e37ca0451b6268cac
 Source50:	https://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
 Source51:	https://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
@@ -128,7 +128,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # default modules packaged in main modules
 %define	cmath_ver		1.0.0
 %define	csv_ver			3.0.9
-%define	date_ver		2.0.0
+%define	date_ver		2.0.2
 %define	dbm_ver			1.0.0
 %define	e2mmap_ver		0.1.0
 %define	etc_ver			1.0.1
