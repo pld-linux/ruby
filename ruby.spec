@@ -14,7 +14,7 @@
 
 %define		rel		1
 %define		ruby_version	2.6
-%define		patchlevel	9
+%define		patchlevel	10
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	2_6_9
@@ -36,9 +36,9 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	38411a485cc198cbe4035b4b16ff0550
+# Source0-md5:	de4cf1c977d6dd05b9842015a9a21efd
 Source2:	https://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	b294ffc5327b1a3696fb9fa48eee18e9
+# Source2-md5:	f726a5bd96f90969fb15b1e785375af5
 Source3:	https://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
 # Source3-md5:	53251c65f70f6e4e37ca0451b6268cac
 Source50:	https://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
@@ -128,7 +128,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # default modules packaged in main modules
 %define	cmath_ver		1.0.0
 %define	csv_ver			3.0.9
-%define	date_ver		2.0.2
+%define	date_ver		2.0.3
 %define	dbm_ver			1.0.0
 %define	e2mmap_ver		0.1.0
 %define	etc_ver			1.0.1
