@@ -12,7 +12,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		1
+%define		rel		2
 %define		ruby_version	2.6
 %define		patchlevel	10
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -748,6 +748,7 @@ cp -f /usr/share/automake/config.sub .
 	--with-rubyarchhdrdir=%{_includedir}/%{oname}-%{ruby_version} \
 	--with-sitearchhdrdir='$(sitehdrdir)/$(arch)' \
 	--with-vendorarchhdrdir='$(vendorhdrdir)/$(arch)' \
+	--without-compress-debug-sections \
 	--enable-multiarch \
 	--enable-shared \
 	--disable-install-doc \
