@@ -435,7 +435,7 @@ Epoch:		0
 # UCD: ext/json/generator/generator.c
 License:	(Ruby or GPL v2) and UCD
 Group:		Development/Languages
-Obsoletes:	ruby-json-rubyforge
+Obsoletes:	ruby-json-rubyforge < 1
 Conflicts:	ruby-modules < 1:1.9.3.429-3
 
 %description json
