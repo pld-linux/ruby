@@ -194,35 +194,25 @@ Subject: [PATCH 3/4] Add ruby_version_dir_name support for RubyGems.
  test/rubygems/test_gem.rb |  5 +++--
  2 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/lib/rubygems/defaults.rb b/lib/rubygems/defaults.rb
-index 55ca080..75eea2b 100644
---- a/lib/rubygems/defaults.rb
-+++ b/lib/rubygems/defaults.rb
-@@ -32,20 +32,20 @@ def self.default_dir
+--- ruby-2.7.6/lib/rubygems/defaults.rb.orig	2022-04-12 13:25:48.000000000 +0200
++++ ruby-2.7.6/lib/rubygems/defaults.rb	2022-09-08 19:29:57.011900694 +0200
+@@ -32,13 +32,13 @@ module Gem
               [
                 File.dirname(RbConfig::CONFIG['sitedir']),
                 'Gems',
 -               RbConfig::CONFIG['ruby_version']
 +               RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
               ]
-            elsif RbConfig::CONFIG['rubylibprefix']
+            else
               [
                 RbConfig::CONFIG['rubylibprefix'],
                 'gems',
 -               RbConfig::CONFIG['ruby_version']
 +               RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
               ]
-            else
-              [
-                RbConfig::CONFIG['libdir'],
-                ruby_engine,
-                'gems',
--               RbConfig::CONFIG['ruby_version']
-+               RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
-              ]
             end
  
-@@ -75,7 +75,8 @@ def self.default_rubygems_dirs
+@@ -75,7 +75,8 @@ module Gem
  
    def self.user_dir
      parts = [Gem.user_home, '.gem', ruby_engine]
@@ -232,7 +222,7 @@ index 55ca080..75eea2b 100644
      File.join parts
    end
  
-@@ -172,7 +173,7 @@ def self.vendor_dir # :nodoc:
+@@ -158,7 +159,7 @@ module Gem
      return nil unless RbConfig::CONFIG.key? 'vendordir'
  
      File.join RbConfig::CONFIG['vendordir'], 'gems',
@@ -241,11 +231,9 @@ index 55ca080..75eea2b 100644
    end
  
    ##
-diff --git a/test/rubygems/test_gem.rb b/test/rubygems/test_gem.rb
-index 0428bea..b6e090e 100644
---- a/test/rubygems/test_gem.rb
-+++ b/test/rubygems/test_gem.rb
-@@ -1288,7 +1288,8 @@ def test_self_use_paths
+--- ruby-2.7.6/test/rubygems/test_gem.rb.orig	2022-04-12 13:25:48.000000000 +0200
++++ ruby-2.7.6/test/rubygems/test_gem.rb	2022-09-08 19:32:06.067868205 +0200
+@@ -1378,7 +1378,8 @@ class TestGem < Gem::TestCase
  
    def test_self_user_dir
      parts = [@userhome, '.gem', Gem.ruby_engine]
@@ -255,15 +243,15 @@ index 0428bea..b6e090e 100644
  
      assert_equal File.join(parts), Gem.user_dir
    end
-@@ -1365,7 +1366,7 @@ def test_self_gzip
-   def test_self_vendor_dir
-     expected =
-       File.join RbConfig::CONFIG['vendordir'], 'gems',
--                RbConfig::CONFIG['ruby_version']
-+                RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
+@@ -1454,7 +1455,7 @@ class TestGem < Gem::TestCase
+     vendordir(File.join(@tempdir, 'vendor')) do
+       expected =
+         File.join RbConfig::CONFIG['vendordir'], 'gems',
+-                  RbConfig::CONFIG['ruby_version']
++                  RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
  
-     assert_equal expected, Gem.vendor_dir
-   end
+       assert_equal expected, Gem.vendor_dir
+     end
 -- 
 2.1.0
 

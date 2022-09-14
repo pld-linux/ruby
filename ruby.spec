@@ -1,4 +1,5 @@
 # TODO:
+# - FIX gems installation paths
 #	- include ext/ in docs
 #	- replace ri with fastri
 #	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
@@ -12,12 +13,13 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		2
-%define		ruby_version	2.6
-%define		patchlevel	10
+%define		rel		0.1
+%define		ruby_version	2.7
+%define		patchlevel	6
 %define		pkg_version	%{ruby_version}.%{patchlevel}
-%define		ruby_suffix %{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	2_6_9
+%define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
+%define		doc_version	2_7_6
+%define		unicode_ver	12.1.0
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -36,34 +38,32 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	de4cf1c977d6dd05b9842015a9a21efd
-Source2:	https://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	f726a5bd96f90969fb15b1e785375af5
-Source3:	https://www.ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	53251c65f70f6e4e37ca0451b6268cac
-Source50:	https://www.unicode.org/Public/9.0.0/ucd/CaseFolding.txt
+# Source0-md5:	a426258d48bccd0178525f9dd57e5543
+Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
+# Source2-md5:	8ea8e657d972d6cb72baa296c985b668
+Source3:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
+%if 0
+# Source3-md5:	6a1cb2191d10c7478dfc39a925ca235e
+Source50:	https://www.unicode.org/Public/%{unicode_ver}/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
-Source51:	https://www.unicode.org/Public/9.0.0/ucd/CompositionExclusions.txt
+Source51:	https://www.unicode.org/Public/%{unicode_ver}/ucd/CompositionExclusions.txt
 # Source51-md5:	263381d7b4b5e2d52a91e1bbbd4722d4
-Source52:	https://www.unicode.org/Public/9.0.0/ucd/NormalizationTest.txt
+Source52:	https://www.unicode.org/Public/%{unicode_ver}/ucd/NormalizationTest.txt
 # Source52-md5:	aacb8a8acfc449d09136fe39f3f97cf1
-Source53:	https://www.unicode.org/Public/9.0.0/ucd/SpecialCasing.txt
+Source53:	https://www.unicode.org/Public/%{unicode_ver}/ucd/SpecialCasing.txt
 # Source53-md5:	fea30f45a2f81ffa474fd984d297e2ea
-Source54:	https://www.unicode.org/Public/9.0.0/ucd/UnicodeData.txt
+Source54:	https://www.unicode.org/Public/%{unicode_ver}/ucd/UnicodeData.txt
 # Source54-md5:	dde25b1cf9bbb4ba1140ac12e4128b0b
+%endif
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
-Patch0:		autoconf2.70.patch
-Patch1:		bison3.59.patch
 Patch2:		fix-bison-invocation.patch
 Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
 Patch5:		ruby-version.patch
 Patch6:		duplicated-paths.patch
 Patch7:		openssl3.patch
-# obsolete?
-Patch8:		rubygems-2.0.0-binary-extensions.patch
 Patch9:		custom-rubygems-location.patch
 Patch12:	archlibdir.patch
 URL:		http://www.ruby-lang.org/
@@ -108,54 +108,72 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	_noautoreq	ipaddr
 
 # separate modules
-%define	bigdecimal_ver		1.4.1
-%define	bundler_ver		1.17.2
-%define	did_you_mean_ver	1.3.0
-%define	io_console_ver		0.4.7
+%define	bigdecimal_ver		2.0.0
+%define	bundler_ver		2.1.4
+%define	did_you_mean_ver	1.4.0
+%define	io_console_ver		0.5.6
 %define	irb_ver			1.0.0
-%define	json_ver		2.1.0
-%define	minitest_ver		5.11.3
+%define	json_ver		2.3.0
+%define	minitest_ver		5.13.0
 %define	net_telnet_ver		0.2.0
-%define	power_assert_ver	1.1.3
+%define	power_assert_ver	1.1.7
 %define	psych_ver		3.1.0
-%define	rake_ver		12.3.3
-%define	rdoc_ver		6.1.2.1
-%define	rubygems_ver		3.0.3.1
-%define	test_unit_ver		3.2.9
+%define	rake_ver		13.0.1
+%define	rdoc_ver		6.2.1.1
+%define	rubygems_ver		3.1.6
+%define	test_unit_ver		3.3.4
 %define	xmlrpc_ver		0.3.0
 # default modules, separated
-%define	irb_ver			1.0.0
+%define	irb_ver			1.2.6
 # default modules packaged in main modules
 %define	cmath_ver		1.0.0
-%define	csv_ver			3.0.9
-%define	date_ver		2.0.3
-%define	dbm_ver			1.0.0
+%define	csv_ver			3.1.2
+%define	date_ver		3.0.3
+%define	dbm_ver			1.1.0
 %define	e2mmap_ver		0.1.0
-%define	etc_ver			1.0.1
+%define	etc_ver			1.1.0
 %define	fcntl_ver		1.0.0
 %define	fiddle_ver		1.0.0
-%define	fileutils_ver		1.1.0
-%define	forwardable_ver		1.2.0
-%define	gdbm_ver		2.0.0
+%define	fileutils_ver		1.4.1
+%define	forwardable_ver		1.3.1
+%define	gdbm_ver		2.1.0
 %define	ipaddr_ver		1.2.2
-%define	logger_ver		1.3.0
-%define	matrix_ver		0.1.0
+%define	logger_ver		1.4.2
+%define	matrix_ver		0.2.0
 %define	mutex_m_ver		0.1.0
-%define	ostruct_ver		0.1.0
-%define	openssl_ver		2.1.2
-%define	prime_ver		0.1.0
-%define	rexml_ver		3.1.9.1
-%define	rss_ver			0.2.7
+%define	ostruct_ver		0.2.0
+%define	openssl_ver		2.1.3
+%define	prime_ver		0.1.1
+%define	rexml_ver		3.2.3.1
+%define	rss_ver			0.2.8
 %define	scanf_ver		1.0.0
 %define	sdbm_ver		1.0.0
 %define	shell_ver		0.7
-%define	stringio_ver		0.0.2
-%define	strscan_ver		1.0.0
+%define	stringio_ver		0.1.0
+%define	strscan_ver		1.0.3
 %define	sync_ver		0.5.0
 %define	thwait_ver		0.1.0
 %define	tracer_ver		0.1.0
-%define	webrick_ver		1.4.4
-%define	zlib_ver		1.0.0
+%define	webrick_ver		1.6.1
+%define	zlib_ver		1.1.0
+
+%define	benchmark_ver		0.1.0
+%define	cgi_ver			0.1.0.1
+%define	delegate_ver		0.1.0
+%define	getoptlong_ver		0.1.0
+%define	net_pop_ver		0.1.0
+%define	net_smtp_ver		0.1.0
+%define	observer_ver		0.1.0
+%define	open3_ver		0.1.0
+%define	pstore_ver		0.1.0
+%define	racc_ver		1.4.16
+%define	readline_ver		0.0.2
+%define	readline_ext_ver	0.1.0
+%define	reline_ver		0.1.5
+%define	singleton_ver		0.1.0
+%define	timeout_ver		0.1.0
+%define	uri_ver			0.1.0
+%define	yaml_ver		0.1.0
 
 %define	ruby_ridir		%{_datadir}/ri/system
 %define	gem_dir			%{_datadir}/gems
@@ -681,20 +699,19 @@ wywołującego je. Aby to osiągnąć wystarczy bardzo mało kodu.
 
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a2 -a3
-%patch0 -p1
-%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-#%patch8 -p1
 %patch9 -p1
 %patch12 -p1
 
-install -d enc/unicode/data/9.0.0
-cp -p %{SOURCE50} %{SOURCE51} %{SOURCE52} %{SOURCE53} %{SOURCE54} enc/unicode/data/9.0.0/
+%if 0
+install -d enc/unicode/data/%{unicode_ver}
+cp -p %{SOURCE50} %{SOURCE51} %{SOURCE52} %{SOURCE53} %{SOURCE54} enc/unicode/data/%{unicode_ver}
+%endif
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
@@ -715,7 +732,7 @@ find -type f '(' -name '*.rb' -o -name '*.cgi' -o -name '*.test' \
 
 %if %{with bootstrap}
 # avoid regeneration, needs iostring module
-touch enc/unicode/9.0.0/*.h
+touch enc/unicode/%{unicode_ver}/*.h
 %endif
 
 %build
@@ -868,7 +885,7 @@ install -d $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
-%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal/util.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal/
+#%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal/util.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal/
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bigdecimal-%{bigdecimal_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 ln -s %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal
 ln -s %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so
@@ -955,7 +972,6 @@ done
 	$RPM_BUILD_ROOT%{ruby_libdir}/abbrev.rb \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/exe/rake \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/exe/{rdoc,ri} \
-	$RPM_BUILD_ROOT%{gem_dir}/gems/bundler-%{bundler_ver}/exe/{bundle,bundler} \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper,rss}/*.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/webrick/*.cgi
