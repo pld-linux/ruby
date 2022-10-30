@@ -785,10 +785,6 @@ sed -i '/assert(OpenSSL::Cipher::Cipher.new(name).is_a?(OpenSSL::Cipher::Cipher)
 # https://bugs.ruby-lang.org/issues/10046
 sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ssl_session.rb
 
-#find .bundle -name extconf.rb -exec sed -i \
-#     -e '/create_makefile/i \$arch_hdrdir = "$(hdrdir)/../.ext/include/$(arch)"' \
-#     -e '/create_makefile/i \$DLDFLAGS << " -L#{$top_srcdir}"' {} \;
-
 %{__make} check TESTS="-v $DISABLE_TESTS"
 %endif
 
@@ -982,12 +978,8 @@ done
 %{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/win32/page-*.ri
 %endif
 
-#%if %{without doc}
-#%{__rm} -r $RPM_BUILD_ROOT%{ruby_ridir}
-#%endif
-
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
