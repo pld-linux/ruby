@@ -642,9 +642,9 @@ Really Simple Syndication (RSS) is a family of formats that describe
 person to subscribe and receive updates from a particular web service.
 This library provides tooling to read and create these feeds.
 
-%package gems
+%package bundled-gems
 Summary:	Bundled gems which are part of Ruby StdLib
-Requires:	ruby(rubygems) >= %{rubygems_ver}
+Requires:	ruby-rubygems >= %{rubygems_ver}
 # Runtime dependency of rubygem(debug).
 Recommends:	rubygem(irb) >= %{irb_ver}
 Provides:	rubygem(debug) = %{debug_ver}
@@ -655,7 +655,7 @@ Provides:	rubygem(net-pop) = %{net_pop_ver}
 Provides:	rubygem(net-smtp) = %{net_smtp_ver}
 Provides:	rubygem(prime) = %{prime_ver}
 
-%description gems
+%description bundled-gems
 Bundled gems which are part of Ruby StdLib. While being part of Ruby,
 these needs to be listed in Gemfile to be used by Bundler.
 
@@ -992,7 +992,7 @@ done
 %endif
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
@@ -1173,7 +1173,7 @@ done
 %{gem_dir}/gems/rss-%{rss_ver}/lib
 %{gem_dir}/specifications/rss-%{rss_ver}.gemspec
 
-%files gems
+%files bundled-gems
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rdbg
 %dir %{gem_libdir}/debug-%{debug_ver}
@@ -1208,7 +1208,6 @@ done
 %dir %{gem_dir}/gems/prime-%{prime_ver}
 %{gem_dir}/gems/prime-%{prime_ver}/lib
 %{gem_dir}/specifications/prime-%{prime_ver}.gemspec
-
 
 %files modules
 %defattr(644,root,root,755)
