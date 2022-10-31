@@ -12,7 +12,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		0.1
+%define		rel		0.2
 %define		ruby_version	3.1
 %define		patchlevel	2
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -518,7 +518,6 @@ Version:	%{rbs_ver}
 Release:	%{pkg_version}.%{rel}
 License:	MIT
 Group:		Development/Libraries
-BuildArch:	noarch
 
 %description rbs
 RBS is the language for type signatures for Ruby and standard library
@@ -668,6 +667,12 @@ these needs to be listed in Gemfile to be used by Bundler.
 %patch5 -p1
 %patch6 -p1
 %patch9 -p1
+
+# (from rawhide) Once the upstream tarball contains the files on the right place, this code
+# won't be necessary. This should happen at the same moment when the patch10
+# is not needed anymore.
+mkdir .bundle/specifications
+find .bundle/gems -name '*-[0-9]*.gemspec' -exec cp -t .bundle/specifications/ {} +
 %patch10 -p1
 %patch12 -p1
 
@@ -819,6 +824,7 @@ cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
 
 # detect this runtime, "make install" is affected by operating_system.rb what is installed in system!
 gem_dir=$(./miniruby -Ilib -I. -I.ext/common ./tool/runruby.rb -- --disable-gems -r$(basename *-linux*-fake.rb .rb) -r rubygems -e 'puts Gem.default_dir')
+
 # Move gems root into common directory, out of Ruby directory structure.
 install -d $RPM_BUILD_ROOT%{gem_dir}
 %{__mv} $RPM_BUILD_ROOT${gem_dir}/{gems,specifications} $RPM_BUILD_ROOT%{gem_dir}
@@ -846,17 +852,17 @@ ln -s %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib/rdoc.rb $RPM_BUILD_ROOT%{ruby_libdir}
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal
+touch $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/gem.build_complete
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
-#%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal/util.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal/
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bigdecimal-%{bigdecimal_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 ln -s %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal
 ln -s %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so
-install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal
-#ln -s %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal/util.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal/util.so
+#install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
+touch $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/gem.build_complete
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/io $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/io/console.so $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/io-console-%{io_console_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
@@ -865,6 +871,7 @@ ln -s %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so $RPM_BUILD_RO
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/json-%{json_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/json-%{json_ver}/lib
+touch $RPM_BUILD_ROOT%{gem_libdir}/json-%{json_ver}/gem.build_complete
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/json* $RPM_BUILD_ROOT%{gem_dir}/gems/json-%{json_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/json $RPM_BUILD_ROOT%{gem_libdir}/json-%{json_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/json-%{json_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
@@ -881,6 +888,7 @@ ln -s %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib/test/unit $RPM_BUILD_ROOT%{
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib
+touch $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/gem.build_complete
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/psych* $RPM_BUILD_ROOT%{gem_dir}/gems/psych-%{psych_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/psych.so $RPM_BUILD_ROOT%{gem_libdir}/psych-%{psych_ver}/lib/
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/psych-%{psych_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
@@ -894,6 +902,12 @@ install -d $RPM_BUILD_ROOT%{gem_libdir}/bundler-%{bundler_ver}/lib
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bundler-%{bundler_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
 ln -s %{gem_dir}/gems/bundler-%{bundler_ver}/lib/bundler $RPM_BUILD_ROOT%{ruby_libdir}/bundler
 ln -s %{gem_dir}/gems/bundler-%{bundler_ver}/lib/bundler.rb $RPM_BUILD_ROOT%{ruby_libdir}/bundler.rb
+
+# Move the binary extensions into proper place (if no gem has binary extension,
+# the extensions directory might be empty).
+find $RPM_BUILD_ROOT${gem_dir}/extensions/*-%{_target_os}/%{ruby_version}.*/* -maxdepth 0 \
+  -exec mv '{}' $RPM_BUILD_ROOT%{_libdir}/gems/%{name}/ \; \
+  || echo "No gem binary extensions to move."
 
 # replace default irb with its not gemified version
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/gems/irb-%{irb_ver}/exe/irb $RPM_BUILD_ROOT%{_bindir}/irb%{ruby_suffix}
@@ -944,21 +958,20 @@ done
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper}/*.rb
 
 # gem non library files
-# maybe use %exclude instead?
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/matrix-%{matrix_ver}/{[A-Z]*,*.gemspec}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,test,.autotest}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-ftp-%{net_ftp_ver}/{[A-Z]*,bin,*.gemspec,.*}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-pop-%{net_pop_ver}/{[A-Z]*,bin,*.gemspec,.*}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-imap-%{net_imap_ver}/{[A-Z]*,*.gemspec,.*}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-smtp-%{net_smtp_ver}/{[A-Z]*,*.gemspec}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/prime-%{prime_ver}/{[A-Z]*,bin,*.gemspec,.*}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/debug-%{debug_ver}/{[A-Z]*,bin,*.gemspec,.*,misc,ext}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/{[A-Z]*,power_assert.gemspec,.*}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc,rake.gemspec}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/matrix-%{matrix_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,test}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-ftp-%{net_ftp_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-pop-%{net_pop_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-imap-%{net_imap_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-smtp-%{net_smtp_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/prime-%{prime_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/debug-%{debug_ver}/{[A-Z]*,bin,misc,ext}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/racc-%{racc_ver}/bin $RPM_BUILD_ROOT%{_bindir}/racc # racc binary can be installed from ruby-racc package
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rexml-%{rexml_ver}/{[A-Z]*,doc}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rss-%{rss_ver}/{[A-Z]*,test,*.gemspec}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rss-%{rss_ver}/{[A-Z]*,test}
 
 %if %{without batteries}
 # packaged separately
@@ -979,7 +992,7 @@ done
 %endif
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
@@ -1068,6 +1081,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/json/ext/*.so
 
 %dir %{gem_libdir}/json-%{json_ver}
+%{gem_libdir}/json-%{json_ver}/gem.build_complete
 %dir %{gem_libdir}/json-%{json_ver}/lib
 %dir %{gem_libdir}/json-%{json_ver}/lib/json
 %dir %{gem_libdir}/json-%{json_ver}/lib/json/ext
@@ -1100,6 +1114,9 @@ rm -rf $RPM_BUILD_ROOT
 %files rbs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rbs
+%dir %{gem_libdir}/rbs-%{rbs_ver}
+%{gem_libdir}/rbs-%{rbs_ver}/gem.build_complete
+%attr(755,root,root) %{gem_libdir}/rbs-%{rbs_ver}/rbs_extension.so
 %{gem_dir}/gems/rbs-%{rbs_ver}
 %exclude %{gem_dir}/gems/rbs-%{rbs_ver}/.*
 %{gem_dir}/specifications/rbs-%{rbs_ver}.gemspec
@@ -1116,6 +1133,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}
 %dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
 %dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
+%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/gem.build_complete
 %attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
 %{ruby_libdir}/bigdecimal.rb
 %{ruby_libdir}/bigdecimal
@@ -1125,6 +1143,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{gem_dir}/gems/io-console-%{io_console_ver}
 %dir %{gem_libdir}/io-console-%{io_console_ver}
+%{gem_libdir}/io-console-%{io_console_ver}/gem.build_complete
 %dir %{gem_libdir}/io-console-%{io_console_ver}/lib
 %dir %{gem_libdir}/io-console-%{io_console_ver}/lib/io
 %attr(755,root,root) %{gem_libdir}/io-console-%{io_console_ver}/lib/io/console.so
@@ -1137,6 +1156,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/psych-%{psych_ver}
 %{ruby_libdir}/psych
 %dir %{gem_libdir}/psych-%{psych_ver}
+%{gem_libdir}/psych-%{psych_ver}/gem.build_complete
 %dir %{gem_libdir}/psych-%{psych_ver}/lib
 %attr(755,root,root) %{gem_libdir}/psych-%{psych_ver}/lib/psych.so
 %{gem_dir}/specifications/psych-%{psych_ver}.gemspec
@@ -1156,8 +1176,11 @@ rm -rf $RPM_BUILD_ROOT
 %files gems
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rdbg
+%dir %{gem_libdir}/debug-%{debug_ver}
+%{gem_libdir}/debug-%{debug_ver}/gem.build_complete
+%dir %{gem_libdir}/debug-%{debug_ver}/debug
+%attr(755,root,root) %{gem_libdir}/debug-%{debug_ver}/debug/debug.so
 %dir %{gem_dir}/gems/debug-%{debug_ver}
-%exclude %{gem_dir}/gems/debug-%{debug_ver}/.*
 %{gem_dir}/gems/debug-%{debug_ver}/exe
 %{gem_dir}/gems/debug-%{debug_ver}/lib
 %{gem_dir}/specifications/debug-%{debug_ver}.gemspec
@@ -1303,7 +1326,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{ruby_archdir}/rbconfig.rb
 %attr(755,root,root) %{ruby_archdir}/bigdecimal.so
-%dir %{ruby_archdir}/bigdecimal
 %attr(755,root,root) %{ruby_archdir}/continuation.so
 %attr(755,root,root) %{ruby_archdir}/coverage.so
 %attr(755,root,root) %{ruby_archdir}/date_core.so
