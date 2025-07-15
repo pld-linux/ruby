@@ -681,17 +681,17 @@ wywołującego je. Aby to osiągnąć wystarczy bardzo mało kodu.
 
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a2 -a3
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
 #%patch8 -p1
-%patch9 -p1
-%patch12 -p1
+%patch -P9 -p1
+%patch -P12 -p1
 
 install -d enc/unicode/data/9.0.0
 cp -p %{SOURCE50} %{SOURCE51} %{SOURCE52} %{SOURCE53} %{SOURCE54} enc/unicode/data/9.0.0/
