@@ -689,7 +689,7 @@ wywołującego je. Aby to osiągnąć wystarczy bardzo mało kodu.
 %patch -P5 -p1
 %patch -P6 -p1
 %patch -P7 -p1
-#%patch8 -p1
+#%%patch8 -p1
 %patch -P9 -p1
 %patch -P12 -p1
 
