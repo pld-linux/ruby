@@ -14,7 +14,7 @@
 
 %define		rel		1
 %define		ruby_version	3.2
-%define		patchlevel	6
+%define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	3_1_2
@@ -37,7 +37,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	4aba8fc5ba0e0793ab08f0cbf4c6fd44
+# Source0-md5:	b44d41ecd3198ada69a5af680967983d
 Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	d8b945c2da4f60d9ea2886e163f0203c
 Source3:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
@@ -137,14 +137,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define stringio_ver 3.0.4
 
 # Bundled gems.
-%define minitest_ver 5.16.3
+%define minitest_ver 5.25.1
 %define power_assert_ver 2.0.3
 %define rake_ver 13.0.6
 %define test_unit_ver 3.5.7
 %define rexml_ver 3.3.9
 %define rss_ver 0.3.1
 %define net_ftp_ver 0.2.1
-%define net_imap_ver 0.3.4.1
+%define net_imap_ver 0.3.9
 %define net_pop_ver 0.1.2
 %define net_smtp_ver 0.3.4
 %define matrix_ver 0.4.2
@@ -676,12 +676,12 @@ these needs to be listed in Gemfile to be used by Bundler.
 
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a2 -a3
-%patch2 -p1
+%patch 2 -p1
 #%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch9 -p1
+%patch 4 -p1
+%patch 5 -p1
+%patch 6 -p1
+%patch 9 -p1
 
 # (from rawhide) Once the upstream tarball contains the files on the right place, this code
 # won't be necessary. This should happen at the same moment when the patch10
@@ -689,7 +689,7 @@ these needs to be listed in Gemfile to be used by Bundler.
 ##mkdir .bundle/specifications
 #find .bundle/gems -name '*-[0-9]*.gemspec' -exec cp -t .bundle/specifications/ {} +
 #%patch10 -p1
-%patch12 -p1
+%patch 12 -p1
 
 %if 0
 install -d enc/unicode/data/%{unicode_version}
