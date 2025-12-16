@@ -41,7 +41,7 @@ Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_ver
 Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	d8b945c2da4f60d9ea2886e163f0203c
 Source3:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	e846af5c895c4277cb06f20a528c04b6
+# Source3-md5:	84f245aff74470bb90c69ecc8c8b7664
 %if 0
 Source50:	https://www.unicode.org/Public/%{unicode_version}/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
