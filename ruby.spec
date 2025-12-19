@@ -750,7 +750,9 @@ cp -f /usr/share/automake/config.sub .
 	--with-vendorarchhdrdir='$(vendorhdrdir)/$(arch)' \
 	--without-compress-debug-sections \
         --enable-mkmf-verbose \
+%ifarch %{x8664} aarch64
         --enable-yjit \
+%endif
 	--enable-multiarch \
 	--enable-shared \
 	--disable-install-doc \
