@@ -14,7 +14,7 @@
 
 %define		rel		1
 %define		ruby_version	3.2
-%define		patchlevel	9
+%define		patchlevel	10
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	3_1_2
@@ -37,7 +37,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	b44d41ecd3198ada69a5af680967983d
+# Source0-md5:	48eba639bdc9bfb589450f8a6f91fad1
 Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	d8b945c2da4f60d9ea2886e163f0203c
 Source3:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
@@ -141,7 +141,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define power_assert_ver 2.0.3
 %define rake_ver 13.0.6
 %define test_unit_ver 3.5.7
-%define rexml_ver 3.3.9
+%define rexml_ver 3.4.4
 %define rss_ver 0.3.1
 %define net_ftp_ver 0.2.1
 %define net_imap_ver 0.3.9
