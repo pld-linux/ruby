@@ -753,6 +753,9 @@ cp -f /usr/share/automake/config.sub .
 %ifarch %{x8664} aarch64
         --enable-yjit \
 %endif
+%ifarch x32
+	--disable-yjit \
+%endif
 	--enable-multiarch \
 	--enable-shared \
 	--disable-install-doc \
