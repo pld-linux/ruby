@@ -755,6 +755,7 @@ cp -f /usr/share/automake/config.sub .
 %endif
 %ifarch x32
 	--disable-yjit \
+	--with-coroutine=ucontext \
 %endif
 	--enable-multiarch \
 	--enable-shared \
