@@ -1,8 +1,5 @@
 # TODO:
 #	- include ext/ in docs
-#	- replace ri with fastri
-#	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
-#	- gemify irb (?)
 #
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
@@ -13,12 +10,12 @@
 %bcond_with	tests		# build without tests
 
 %define		rel		1
-%define		ruby_version	3.2
-%define		patchlevel	10
+%define		ruby_version	3.4
+%define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	3_1_2
-%define		unicode_version	12.1.0
+%define		doc_version	3_3_0
+%define		unicode_version	15.0.0
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -31,17 +28,15 @@ Release:	%{rel}
 Epoch:		1
 # Public Domain for example for: include/ruby/st.h, strftime.c, missing/*, ...
 # MIT and CCO: ccan/*
-# zlib: ext/digest/md5/md5.*, ext/nkf/nkf-utf8/nkf.c
+# zlib: ext/digest/md5/md5.*, nkf/nkf-utf8/nkf.c (bundled gem)
 # UCD: some of enc/trans/**/*.src
 License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	48eba639bdc9bfb589450f8a6f91fad1
-Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
-# Source2-md5:	d8b945c2da4f60d9ea2886e163f0203c
-Source3:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
-# Source3-md5:	84f245aff74470bb90c69ecc8c8b7664
+# Source0-md5:	b58158f56343125bc9a56841f4c2cb35
+Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_complete_rdocs.tgz
+# Source2-md5:	058ec53cf5e9d8805161f1b198616b6d
 %if 0
 Source50:	https://www.unicode.org/Public/%{unicode_version}/ucd/CaseFolding.txt
 # Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
@@ -57,34 +52,28 @@ Source54:	https://www.unicode.org/Public/%{unicode_version}/ucd/UnicodeData.txt
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
-Patch2:		fix-bison-invocation.patch
 #Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
 Patch5:		ruby-version.patch
 Patch6:		duplicated-paths.patch
 Patch9:		custom-rubygems-location.patch
-Patch10:	ruby-3.2.0-build-extension-libraries-in-bundled-gems.patch
 Patch12:	archlibdir.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake
-BuildRequires:	bison >= 1.875
-BuildRequires:	db-devel
 BuildRequires:  gcc-c++
-BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	gmp-devel
 BuildRequires:	libffi-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.6
 BuildRequires:	pkgconfig
-BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
 BuildRequires:	rpmbuild(macros) >= 1.527
 # which version is minimum now? 1.8.7 is not enough, fails with:
 # ./tool/generic_erb.rb:31: syntax error, unexpected ':', expecting ')'
 # ...O.popen("tput smso", "r", err: IO::NULL, &:read) rescue nil)
-BuildRequires:	ruby >= 1:1.9
+BuildRequires:	ruby >= 1:3.0
 BuildRequires:	rust
 BuildRequires:	sed >= 4.0
 %{?with_dtrace:BuildRequires:	systemtap-sdt-devel}
@@ -109,49 +98,61 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # hack: skip rubygem(ipaddr)
 %define	_noautoreq	ipaddr
 
-%define rubygems_ver 3.4.19
+%define rubygems_ver 3.6.9
 %define rubygems_molinillo_ver 0.8.0
-%define rubygems_optparse_ver 0.3.0
-%define rubygems_tsort_ver 0.1.0
+%define rubygems_optparse_ver 0.6.0
+%define rubygems_tsort_ver 0.2.0
 
 # Default gems.
-%define bundler_ver 2.4.19
-%define bundler_connection_pool_ver 2.3.0
-%define bundler_fileutils_ver 1.7.0
+%define bundler_ver 2.6.9
+%define bundler_connection_pool_ver 2.5.0
+%define bundler_fileutils_ver 1.7.3
 %define bundler_pub_grub_ver 0.5.0
-%define bundler_net_http_persistent_ver 4.0.1
-%define bundler_thor_ver 1.2.1
-%define bundler_tsort_ver 0.1.1
-%define bundler_uri_ver 0.12.1
+%define bundler_net_http_persistent_ver 4.0.4
+%define bundler_thor_ver 1.3.2
+%define bundler_tsort_ver 0.2.0
+%define bundler_uri_ver 1.0.4
 
-%define bigdecimal_ver 3.1.3
-%define did_you_mean_ver 1.6.3
-%define erb_ver 4.0.2
-%define io_console_ver 0.6.0
-%define irb_ver 1.6.2
-%define json_ver 2.6.3
-%define openssl_ver 3.1.0
-%define psych_ver 5.0.1
-%define racc_ver 1.6.2
-%define rdoc_ver 6.5.1.1
-%define stringio_ver 3.0.4
+%define did_you_mean_ver 2.0.0
+%define erb_ver 4.0.4
+%define io_console_ver 0.8.1
+%define irb_ver 1.14.3
+%define json_ver 2.9.1
+%define openssl_ver 3.3.1
+%define psych_ver 5.2.2
+%define rdoc_ver 6.14.0
+%define stringio_ver 3.1.2
 
 # Bundled gems.
-%define minitest_ver 5.25.1
-%define power_assert_ver 2.0.3
-%define rake_ver 13.0.6
-%define test_unit_ver 3.5.7
+%define bigdecimal_ver 3.1.8
+%define minitest_ver 5.25.4
+%define power_assert_ver 2.0.5
+%define rake_ver 13.2.1
+%define test_unit_ver 3.6.7
 %define rexml_ver 3.4.4
 %define rss_ver 0.3.1
-%define net_ftp_ver 0.2.1
-%define net_imap_ver 0.3.9
+%define net_ftp_ver 0.3.8
+%define net_imap_ver 0.5.8
 %define net_pop_ver 0.1.2
-%define net_smtp_ver 0.3.4
+%define net_smtp_ver 0.5.1
 %define matrix_ver 0.4.2
-%define prime_ver 0.1.2
-%define rbs_ver 2.8.2
-%define typeprof_ver 0.21.3
-%define debug_ver 1.7.1
+%define prime_ver 0.1.3
+%define rbs_ver 3.8.0
+%define typeprof_ver 0.30.1
+%define debug_ver 1.11.0
+%define racc_ver 1.8.1
+%define nkf_ver 0.2.0
+%define syslog_ver 0.2.0
+%define csv_ver 3.3.2
+%define abbrev_ver 0.1.2
+%define base64_ver 0.2.0
+%define drb_ver 2.2.1
+%define mutex_m_ver 0.3.0
+%define getoptlong_ver 0.2.1
+%define observer_ver 0.1.2
+%define resolv_replace_ver 0.1.1
+%define rinda_ver 0.2.0
+%define repl_type_completor_ver 0.1.9
 
 
 %define	ruby_ridir		%{_datadir}/ri/system
@@ -182,6 +183,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # ruby needs frame pointers for correct exception handling
 %define	specflags_ia32	-fno-omit-frame-pointer
+
+# Ruby code violates C strict aliasing rules in many places (Alpine, openSUSE both add this;
+# Alpine notes it's needed to avoid miscompilation, openSUSE applies it for iseq.c correctness)
+%define	specflags	-fno-strict-aliasing
 
 %description
 Ruby is the interpreted scripting language for quick and easy
@@ -662,33 +667,38 @@ Summary:	Bundled gems which are part of Ruby StdLib
 Requires:	ruby-rubygems >= %{rubygems_ver}
 # Runtime dependency of rubygem(debug).
 Recommends:	rubygem(irb) >= %{irb_ver}
+Provides:	rubygem(abbrev) = %{abbrev_ver}
+Provides:	rubygem(base64) = %{base64_ver}
+Provides:	rubygem(csv) = %{csv_ver}
 Provides:	rubygem(debug) = %{debug_ver}
+Provides:	rubygem(drb) = %{drb_ver}
+Provides:	rubygem(getoptlong) = %{getoptlong_ver}
 Provides:	rubygem(matrix) = %{matrix_ver}
+Provides:	rubygem(mutex_m) = %{mutex_m_ver}
 Provides:	rubygem(net-ftp) = %{net_ftp_ver}
 Provides:	rubygem(net-imap) = %{net_imap_ver}
 Provides:	rubygem(net-pop) = %{net_pop_ver}
 Provides:	rubygem(net-smtp) = %{net_smtp_ver}
+Provides:	rubygem(nkf) = %{nkf_ver}
+Provides:	rubygem(observer) = %{observer_ver}
 Provides:	rubygem(prime) = %{prime_ver}
+Provides:	rubygem(racc) = %{racc_ver}
+Provides:	rubygem(resolv-replace) = %{resolv_replace_ver}
+Provides:	rubygem(repl_type_completor) = %{repl_type_completor_ver}
+Provides:	rubygem(rinda) = %{rinda_ver}
+Provides:	rubygem(syslog) = %{syslog_ver}
 
 %description bundled-gems
 Bundled gems which are part of Ruby StdLib. While being part of Ruby,
 these needs to be listed in Gemfile to be used by Bundler.
 
 %prep
-%setup -q -n %{oname}-%{pkg_version} -a2 -a3
-%patch 2 -p1
+%setup -q -n %{oname}-%{pkg_version} -a2
 #%patch3 -p1
 %patch 4 -p1
 %patch 5 -p1
 %patch 6 -p1
 %patch 9 -p1
-
-# (from rawhide) Once the upstream tarball contains the files on the right place, this code
-# won't be necessary. This should happen at the same moment when the patch10
-# is not needed anymore.
-##mkdir .bundle/specifications
-#find .bundle/gems -name '*-[0-9]*.gemspec' -exec cp -t .bundle/specifications/ {} +
-#%patch10 -p1
 %patch 12 -p1
 
 %if 0
@@ -834,6 +844,7 @@ sed -i -e 's/Version: \${ruby_version}/Version: %{ruby_version}/' $RPM_BUILD_ROO
 # Kill bundled certificates, as they should be part of ca-certificates.
 for cert in \
 	GlobalSignRootCA.pem \
+	GlobalSignRootCA_R3.pem \
 ; do
 	%{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/*/$cert
 done
@@ -872,16 +883,6 @@ install -d $RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
 ln -s %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib/rdoc $RPM_BUILD_ROOT%{ruby_libdir}
 ln -s %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib/rdoc.rb $RPM_BUILD_ROOT%{ruby_libdir}
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/rdoc-%{rdoc_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
-
-install -d $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
-install -d $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal
-touch $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/gem.build_complete
-%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib
-%{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so $RPM_BUILD_ROOT%{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
-%{__mv} $RPM_BUILD_ROOT%{gem_dir}/specifications/default/bigdecimal-%{bigdecimal_ver}.gemspec $RPM_BUILD_ROOT%{gem_dir}/specifications
-ln -s %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal
-ln -s %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so
-#install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal
 
 install -d $RPM_BUILD_ROOT%{gem_dir}/gems/io-console-%{io_console_ver}/lib
 install -d $RPM_BUILD_ROOT%{gem_libdir}/io-console-%{io_console_ver}/lib/io
@@ -946,10 +947,6 @@ sed -i '/^end$/ i\
 
 sed -i '/^end$/ i\
   s.require_paths = ["lib"]\
-  s.extensions = ["bigdecimal.so"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
-
-sed -i '/^end$/ i\
-  s.require_paths = ["lib"]\
   s.extensions = ["io/console.so"]' $RPM_BUILD_ROOT%{gem_dir}/specifications/io-console-%{io_console_ver}.gemspec
 
 sed -i '/^end$/ i\
@@ -971,14 +968,13 @@ done
 
 %{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
  	$RPM_BUILD_ROOT%{_bindir}/irb \
-	$RPM_BUILD_ROOT%{ruby_libdir}/abbrev.rb \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/exe/rake \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/exe/{rdoc,ri} \
         $RPM_BUILD_ROOT%{gem_dir}/gems/bundler-%{bundler_ver}/libexec/{bundle,bundler} \
         $RPM_BUILD_ROOT%{gem_dir}/gems/debug-%{debug_ver}/exe/rdbg \
         $RPM_BUILD_ROOT%{gem_dir}/gems/rbs-%{rbs_ver}/exe/rbs \
         $RPM_BUILD_ROOT%{gem_dir}/gems/erb-%{erb_ver}/libexec/erb \
-        $RPM_BUILD_ROOT%{gem_dir}/gems/typeprof-%{typeprof_ver}/exe/typeprof \
+        $RPM_BUILD_ROOT%{gem_dir}/gems/typeprof-%{typeprof_ver}/bin/typeprof \
         $RPM_BUILD_ROOT%{gem_dir}/gems/syntax_suggest-*/exe/syntax_suggest \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper}/*.rb
@@ -995,9 +991,22 @@ done
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/racc-%{racc_ver}/bin $RPM_BUILD_ROOT%{_bindir}/racc # racc binary can be installed from ruby-racc package
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/racc-%{racc_ver}/{bin,doc,ext} $RPM_BUILD_ROOT%{_bindir}/racc # racc binary can be installed from ruby-racc package
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rexml-%{rexml_ver}/{[A-Z]*,doc}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rss-%{rss_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/{[A-Z]*,ext}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/nkf-%{nkf_ver}/{[A-Z]*,ext,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/syslog-%{syslog_ver}/{[A-Z]*,ext}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rbs-%{rbs_ver}/{[A-Z]*,docs,ext,sig,src,core,stdlib,config.yml,goodcheck.yml,*.gemspec}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/csv-%{csv_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/abbrev-%{abbrev_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/base64-%{base64_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/drb-%{drb_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/mutex_m-%{mutex_m_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/getoptlong-%{getoptlong_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/observer-%{observer_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/resolv-replace-%{resolv_replace_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rinda-%{rinda_ver}/[A-Z]*
 
 %if %{without batteries}
 # packaged separately
@@ -1014,7 +1023,6 @@ done
 %if %{with doc}
 # too much .ri
 %{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/cache.ri
-%{__rm} $RPM_BUILD_ROOT%{ruby_ridir}/win32/page-*.ri
 %endif
 
 %clean
@@ -1158,11 +1166,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}
 %dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
-%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
 %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/gem.build_complete
+%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
 %attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
-%{ruby_libdir}/bigdecimal.rb
-%{ruby_libdir}/bigdecimal
 %{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
 
 %files io-console
@@ -1237,6 +1243,68 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/prime-%{prime_ver}/lib
 %{gem_dir}/specifications/prime-%{prime_ver}.gemspec
 
+# Gems moved from default to bundled in 3.4
+%dir %{gem_dir}/gems/abbrev-%{abbrev_ver}
+%{gem_dir}/gems/abbrev-%{abbrev_ver}/lib
+%{gem_dir}/specifications/abbrev-%{abbrev_ver}.gemspec
+
+%dir %{gem_dir}/gems/base64-%{base64_ver}
+%{gem_dir}/gems/base64-%{base64_ver}/lib
+%{gem_dir}/specifications/base64-%{base64_ver}.gemspec
+
+%dir %{gem_dir}/gems/csv-%{csv_ver}
+%{gem_dir}/gems/csv-%{csv_ver}/lib
+%{gem_dir}/specifications/csv-%{csv_ver}.gemspec
+
+%dir %{gem_dir}/gems/drb-%{drb_ver}
+%{gem_dir}/gems/drb-%{drb_ver}/lib
+%{gem_dir}/specifications/drb-%{drb_ver}.gemspec
+
+%dir %{gem_dir}/gems/getoptlong-%{getoptlong_ver}
+%{gem_dir}/gems/getoptlong-%{getoptlong_ver}/lib
+%{gem_dir}/specifications/getoptlong-%{getoptlong_ver}.gemspec
+
+%dir %{gem_dir}/gems/mutex_m-%{mutex_m_ver}
+%{gem_dir}/gems/mutex_m-%{mutex_m_ver}/lib
+%{gem_dir}/specifications/mutex_m-%{mutex_m_ver}.gemspec
+
+%dir %{gem_dir}/gems/nkf-%{nkf_ver}
+%{gem_dir}/gems/nkf-%{nkf_ver}/lib
+%dir %{gem_libdir}/nkf-%{nkf_ver}
+%{gem_libdir}/nkf-%{nkf_ver}/gem.build_complete
+%attr(755,root,root) %{gem_libdir}/nkf-%{nkf_ver}/nkf.so
+%{gem_dir}/specifications/nkf-%{nkf_ver}.gemspec
+
+%dir %{gem_dir}/gems/observer-%{observer_ver}
+%{gem_dir}/gems/observer-%{observer_ver}/lib
+%{gem_dir}/specifications/observer-%{observer_ver}.gemspec
+
+%dir %{gem_dir}/gems/racc-%{racc_ver}
+%{gem_dir}/gems/racc-%{racc_ver}/lib
+%dir %{gem_libdir}/racc-%{racc_ver}
+%{gem_libdir}/racc-%{racc_ver}/gem.build_complete
+%attr(755,root,root) %{gem_libdir}/racc-%{racc_ver}/cparse.so
+%{gem_dir}/specifications/racc-%{racc_ver}.gemspec
+
+%dir %{gem_dir}/gems/resolv-replace-%{resolv_replace_ver}
+%{gem_dir}/gems/resolv-replace-%{resolv_replace_ver}/lib
+%{gem_dir}/specifications/resolv-replace-%{resolv_replace_ver}.gemspec
+
+%dir %{gem_dir}/gems/rinda-%{rinda_ver}
+%{gem_dir}/gems/rinda-%{rinda_ver}/lib
+%{gem_dir}/specifications/rinda-%{rinda_ver}.gemspec
+
+%dir %{gem_dir}/gems/syslog-%{syslog_ver}
+%{gem_dir}/gems/syslog-%{syslog_ver}/lib
+%dir %{gem_libdir}/syslog-%{syslog_ver}
+%{gem_libdir}/syslog-%{syslog_ver}/gem.build_complete
+%attr(755,root,root) %{gem_libdir}/syslog-%{syslog_ver}/syslog.so
+%{gem_dir}/specifications/syslog-%{syslog_ver}.gemspec
+
+%dir %{gem_dir}/gems/repl_type_completor-%{repl_type_completor_ver}
+%{gem_dir}/gems/repl_type_completor-%{repl_type_completor_ver}/lib
+%{gem_dir}/specifications/repl_type_completor-%{repl_type_completor_ver}.gemspec
+
 
 %files modules
 %defattr(644,root,root,755)
@@ -1244,37 +1312,30 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/syntax_suggest%{ruby_suffix}
 %{ruby_libdir}/cgi
 %{ruby_libdir}/digest
-%{ruby_libdir}/drb
 %{ruby_libdir}/fiddle
 %{ruby_libdir}/io
 %{ruby_libdir}/net
 %{ruby_libdir}/openssl
 %{ruby_libdir}/optparse
-%{ruby_libdir}/racc
-%{ruby_libdir}/rinda
+%{ruby_libdir}/prism
 %{ruby_libdir}/ripper
-%{ruby_libdir}/syslog
 %{ruby_libdir}/test
 %{ruby_libdir}/uri
 %{ruby_libdir}/yaml
 %{ruby_libdir}/English.rb
-%{ruby_libdir}/abbrev.rb
-%{ruby_libdir}/base64.rb
 %{ruby_libdir}/benchmark.rb
 %dir %{ruby_libdir}/benchmark
 %{ruby_libdir}/benchmark/version.rb
+%{ruby_libdir}/bundled_gems.rb
 %{ruby_libdir}/bundler
 %{ruby_libdir}/bundler.rb
 %{ruby_libdir}/cgi.rb
-%{ruby_libdir}/csv.rb
-%{ruby_libdir}/csv
 %{ruby_libdir}/coverage.rb
 %{ruby_libdir}/date.rb
 %{ruby_libdir}/delegate.rb
 %{ruby_libdir}/did_you_mean.rb
 %{ruby_libdir}/did_you_mean
 %{ruby_libdir}/digest.rb
-%{ruby_libdir}/drb.rb
 %{ruby_libdir}/error_highlight.rb
 %dir %{ruby_libdir}/error_highlight
 %{ruby_libdir}/error_highlight/*.rb
@@ -1288,19 +1349,15 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/forwardable.rb
 %dir %{ruby_libdir}/forwardable
 %{ruby_libdir}/forwardable/impl.rb
-%{ruby_libdir}/getoptlong.rb
 %{ruby_libdir}/ipaddr.rb
 %{ruby_libdir}/json.rb
-%{ruby_libdir}/kconv.rb
 %{ruby_libdir}/logger.rb
 %dir %{ruby_libdir}/logger
 %{ruby_libdir}/logger/*.rb
 %{ruby_libdir}/monitor.rb
-%{ruby_libdir}/mutex_m.rb
 %{ruby_libdir}/objspace.rb
 %dir %{ruby_libdir}/objspace
 %{ruby_libdir}/objspace/*.rb
-%{ruby_libdir}/observer.rb
 %{ruby_libdir}/open-uri.rb
 %{ruby_libdir}/open3.rb
 %dir %{ruby_libdir}/open3
@@ -1312,8 +1369,8 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/pathname.rb
 %{ruby_libdir}/pp.rb
 %{ruby_libdir}/prettyprint.rb
+%{ruby_libdir}/prism.rb
 %{ruby_libdir}/pstore.rb
-%{ruby_libdir}/racc.rb
 %dir %{ruby_libdir}/random
 %{ruby_libdir}/random/*.rb
 %{ruby_libdir}/rdoc.rb
@@ -1323,13 +1380,14 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/reline/*.rb
 %dir %{ruby_libdir}/reline/key_actor
 %{ruby_libdir}/reline/key_actor/*.rb
+%dir %{ruby_libdir}/reline/io
+%{ruby_libdir}/reline/io/*.rb
 %dir %{ruby_libdir}/reline/unicode
 %{ruby_libdir}/reline/unicode/*.rb
-%{ruby_libdir}/resolv-replace.rb
 %{ruby_libdir}/resolv.rb
 %{ruby_libdir}/ripper.rb
 %dir %{ruby_libdir}/ruby_vm
-%{ruby_libdir}/ruby_vm/mjit
+%{ruby_libdir}/ruby_vm/rjit
 %{ruby_libdir}/securerandom.rb
 %{ruby_libdir}/set.rb
 %dir %{ruby_libdir}/set
@@ -1360,7 +1418,6 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{ruby_libdir}/mkmf.rb
 
 %{ruby_archdir}/rbconfig.rb
-%attr(755,root,root) %{ruby_archdir}/bigdecimal.so
 %attr(755,root,root) %{ruby_archdir}/continuation.so
 %attr(755,root,root) %{ruby_archdir}/coverage.so
 %attr(755,root,root) %{ruby_archdir}/date_core.so
@@ -1370,17 +1427,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/fcntl.so
 %attr(755,root,root) %{ruby_archdir}/fiddle.so
 %attr(755,root,root) %{ruby_archdir}/monitor.so
-%attr(755,root,root) %{ruby_archdir}/nkf.so
 %attr(755,root,root) %{ruby_archdir}/objspace.so
 %attr(755,root,root) %{ruby_archdir}/openssl.so
 %attr(755,root,root) %{ruby_archdir}/pathname.so
 %attr(755,root,root) %{ruby_archdir}/pty.so
-%attr(755,root,root) %{ruby_archdir}/readline.so
 %attr(755,root,root) %{ruby_archdir}/ripper.so
 %attr(755,root,root) %{ruby_archdir}/socket.so
 %attr(755,root,root) %{ruby_archdir}/stringio.so
 %attr(755,root,root) %{ruby_archdir}/strscan.so
-%attr(755,root,root) %{ruby_archdir}/syslog.so
 %attr(755,root,root) %{ruby_archdir}/zlib.so
 
 %dir %{ruby_archdir}/cgi
@@ -1393,8 +1447,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/enc/trans/*.so
 %dir %{ruby_archdir}/io
 %attr(755,root,root) %{ruby_archdir}/io/*.so
-%dir %{ruby_archdir}/racc
-%attr(755,root,root) %{ruby_archdir}/racc/*.so
 %dir %{ruby_archdir}/rbconfig
 %attr(755,root,root) %{ruby_archdir}/rbconfig/sizeof.so
 
@@ -1416,8 +1468,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %files doc
 %defattr(644,root,root,755)
-%doc ruby_%{doc_version}_stdlib
-%doc ruby_%{doc_version}_core
+%doc ruby_%{doc_version}_complete
 
 %files doc-ri
 %defattr(644,root,root,755)
@@ -1425,7 +1476,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/contributing
 %{ruby_ridir}/fatal
 %{ruby_ridir}/syntax
-%{ruby_ridir}/win32
+%{ruby_ridir}/windows
 %{ruby_ridir}/optparse
 %lang(ja) %{ruby_ridir}/page-COPYING_ja.ri
 %lang(ja) %{ruby_ridir}/page-README_ja_md.ri
