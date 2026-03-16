@@ -14,7 +14,7 @@
 %define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
-%define		doc_version	3_3_0
+%define		doc_version	3_4_1
 %define		unicode_version	15.0.0
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
@@ -36,23 +36,8 @@ Group:		Development/Languages
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
 # Source0-md5:	b58158f56343125bc9a56841f4c2cb35
 Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_complete_rdocs.tgz
-# Source2-md5:	058ec53cf5e9d8805161f1b198616b6d
-%if 0
-Source50:	https://www.unicode.org/Public/%{unicode_version}/ucd/CaseFolding.txt
-# Source50-md5:	e3fbf2f626f10070000fe66f3a2ff5ef
-Source51:	https://www.unicode.org/Public/%{unicode_version}/ucd/CompositionExclusions.txt
-# Source51-md5:	263381d7b4b5e2d52a91e1bbbd4722d4
-Source52:	https://www.unicode.org/Public/%{unicode_version}/ucd/NormalizationTest.txt
-# Source52-md5:	aacb8a8acfc449d09136fe39f3f97cf1
-Source53:	https://www.unicode.org/Public/%{unicode_version}/ucd/SpecialCasing.txt
-# Source53-md5:	fea30f45a2f81ffa474fd984d297e2ea
-Source54:	https://www.unicode.org/Public/%{unicode_version}/ucd/UnicodeData.txt
-# Source54-md5:	dde25b1cf9bbb4ba1140ac12e4128b0b
-%endif
-Source4:	rdoc.1
-Source5:	testrb.1
+# Source2-md5:	a13c63951d5ce47b169935a7208f876d
 Source6:	operating_system.rb
-#Patch3:		mkmf-verbose.patch
 Patch4:		strip-ccache.patch
 Patch5:		ruby-version.patch
 Patch6:		duplicated-paths.patch
@@ -701,11 +686,6 @@ these needs to be listed in Gemfile to be used by Bundler.
 %patch 9 -p1
 %patch 12 -p1
 
-%if 0
-install -d enc/unicode/data/%{unicode_version}
-cp -p %{SOURCE50} %{SOURCE51} %{SOURCE52} %{SOURCE53} %{SOURCE54} enc/unicode/data/%{unicode_version}
-%endif
-
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
 
@@ -851,9 +831,6 @@ done
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}
-cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_mandir}/man1/rdoc%{ruby_suffix}.1
-cp -p %{SOURCE5} $RPM_BUILD_ROOT%{_mandir}/man1/testrb%{ruby_suffix}.1
-
 %{__rm} -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/html
 
 # detect this runtime, "make install" is affected by operating_system.rb what is installed in system!
@@ -1090,7 +1067,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rdoc%{ruby_suffix}
 %attr(755,root,root) %{_bindir}/ri%{ruby_suffix}
-%{_mandir}/man1/rdoc%{ruby_suffix}.1*
 %{ruby_libdir}/rdoc
 %dir %{gem_dir}/gems/rdoc-%{rdoc_ver}
 %{gem_dir}/gems/rdoc-%{rdoc_ver}/lib
@@ -1158,7 +1134,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems/test-unit-%{test_unit_ver}
 %{gem_dir}/gems/test-unit-%{test_unit_ver}/lib
 %{gem_dir}/specifications/test-unit-%{test_unit_ver}.gemspec
-%{_mandir}/man1/testrb%{ruby_suffix}.1*
 
 %files rbs
 %defattr(644,root,root,755)
