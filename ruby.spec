@@ -933,6 +933,12 @@ find $RPM_BUILD_ROOT${gem_dir}/extensions/*-%{_target_os}/%{ruby_version}.*/* -m
   -exec mv '{}' $RPM_BUILD_ROOT%{_libdir}/gems/%{name}/ \; \
   || echo "No gem binary extensions to move."
 
+# Clean up gem cache and leftover directories from gem_dir (outside system paths)
+%{__rm} -rf $RPM_BUILD_ROOT${gem_dir}
+
+# Remove multiarch cross binary (duplicate of /usr/bin/ruby)
+%{__rm} -rf $RPM_BUILD_ROOT%{_prefix}/*-pld-linux-gnu
+
 # replace default irb with its not gemified version
 %{__mv} $RPM_BUILD_ROOT%{gem_dir}/gems/irb-%{irb_ver}/exe/irb $RPM_BUILD_ROOT%{_bindir}/irb%{ruby_suffix}
 # add ruby_suffix to syntax_suggest
@@ -979,34 +985,38 @@ done
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{cal,test,time,uumerge}.rb \
 	$RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}/{drb,logger,openssl,ripper}/*.rb
 
-# gem non library files
+# gem non library files: remove docs, build artifacts, dev scripts, samples
+# For each bundled gem, keep only lib/ (and exe/ where needed)
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/matrix-%{matrix_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,test}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-ftp-%{net_ftp_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-pop-%{net_pop_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-imap-%{net_imap_ver}/{[A-Z]*,docs}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-imap-%{net_imap_ver}/{[A-Z]*,docs,sample}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-smtp-%{net_smtp_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/prime-%{prime_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/debug-%{debug_ver}/{[A-Z]*,misc,ext}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/prime-%{prime_ver}/{[A-Z]*,sig}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/debug-%{debug_ver}/{[A-Z]*,misc,ext,exts.mk}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/test-unit-%{test_unit_ver}/{[A-Z]*,doc,sample}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/racc-%{racc_ver}/{bin,doc,ext} $RPM_BUILD_ROOT%{_bindir}/racc # racc binary can be installed from ruby-racc package
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/racc-%{racc_ver}/{[A-Z]*,bin,doc,ext} $RPM_BUILD_ROOT%{_bindir}/racc
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rexml-%{rexml_ver}/{[A-Z]*,doc}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rss-%{rss_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/{[A-Z]*,ext}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/nkf-%{nkf_ver}/{[A-Z]*,ext,bin}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/syslog-%{syslog_ver}/{[A-Z]*,ext}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rbs-%{rbs_ver}/{[A-Z]*,docs,ext,sig,src,core,stdlib,config.yml,goodcheck.yml}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/csv-%{csv_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/abbrev-%{abbrev_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/{[A-Z]*,ext,sample}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/nkf-%{nkf_ver}/{[A-Z]*,ext,bin,exts.mk}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/syslog-%{syslog_ver}/{[A-Z]*,ext,bin,exts.mk}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rbs-%{rbs_ver}/{[A-Z]*,docs,ext,sig,src,core,stdlib,config.yml,goodcheck.yml,exts.mk}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/csv-%{csv_ver}/{[A-Z]*,doc}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/abbrev-%{abbrev_ver}/{[A-Z]*,bin}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/base64-%{base64_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/drb-%{drb_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/mutex_m-%{mutex_m_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/getoptlong-%{getoptlong_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/observer-%{observer_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/resolv-replace-%{resolv_replace_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rinda-%{rinda_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/mutex_m-%{mutex_m_ver}/{[A-Z]*,sig}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/getoptlong-%{getoptlong_ver}/{[A-Z]*,bin,sample}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/observer-%{observer_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/resolv-replace-%{resolv_replace_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rinda-%{rinda_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/repl_type_completor-%{repl_type_completor_ver}/{[A-Z]*,sig}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/typeprof-%{typeprof_ver}/doc
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/syntax_suggest-*/exe
 
 %if %{without batteries}
 # packaged separately
@@ -1393,6 +1403,7 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/shellwords.rb
 %{ruby_libdir}/singleton.rb
 %{ruby_libdir}/socket.rb
+%{ruby_libdir}/strscan
 %{ruby_libdir}/syntax_suggest.rb
 %dir %{ruby_libdir}/syntax_suggest
 %{ruby_libdir}/syntax_suggest/*.rb
@@ -1473,6 +1484,10 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/[A-Z]*
 %{ruby_ridir}/contributing
 %{ruby_ridir}/fatal
+%{ruby_ridir}/date
+%{ruby_ridir}/regexp
+%{ruby_ridir}/rjit
+%{ruby_ridir}/ruby
 %{ruby_ridir}/syntax
 %{ruby_ridir}/optparse
 %lang(ja) %{ruby_ridir}/page-COPYING_ja.ri
