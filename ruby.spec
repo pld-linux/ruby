@@ -9,7 +9,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		5
+%define		rel		6
 %define		ruby_version	3.4
 %define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
