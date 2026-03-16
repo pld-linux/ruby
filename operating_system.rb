@@ -105,9 +105,15 @@ module Gem
       end
     end
 
+    def default_specifications_dir
+      @default_specifications_dir ||= File.join(Gem.default_dirs[:system][:gem_dir], "specifications", "default")
+    end
+
     def default_path
       path = default_dirs.collect {|location, paths| paths[:gem_dir]}
       path.unshift Gem.user_dir if File.exist? Gem.user_home
+      path << Gem.vendor_dir if Gem.vendor_dir && File.directory?(Gem.vendor_dir)
+      path
     end
 
     def default_bindir
