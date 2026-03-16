@@ -20,20 +20,20 @@ diff --git a/configure.ac b/configure.ac
 index 80b137e380..63cd3b4f8b 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4146,9 +4146,6 @@ AS_CASE(["$target_os"],
+@@ -4315,9 +4315,6 @@ AS_CASE(["$target_os"],
      rubyw_install_name='$(RUBYW_INSTALL_NAME)'
      ])
- 
+
 -rubylibdir='${rubylibprefix}/${ruby_version}'
 -rubyarchdir=${multiarch+'${rubyarchprefix}/${ruby_version}'}${multiarch-'${rubylibdir}/${arch}'}
 -
  rubyarchprefix=${multiarch+'${archlibdir}/${RUBY_BASE_NAME}'}${multiarch-'${rubylibprefix}/${arch}'}
  AC_ARG_WITH(rubyarchprefix,
  	    AS_HELP_STRING([--with-rubyarchprefix=DIR],
-@@ -4171,57 +4168,63 @@ AC_ARG_WITH(ridir,
+@@ -4340,57 +4337,63 @@ AC_ARG_WITH(ridir,
  AC_SUBST(ridir)
  AC_SUBST(RI_BASE_NAME)
- 
+
 -AC_ARG_WITH(ruby-version,
 -	    AS_HELP_STRING([--with-ruby-version=STR], [ruby version string for version specific directories [[full]] (full|minor|STR)]),
 -            [ruby_version=$withval],
@@ -75,7 +75,7 @@ index 80b137e380..63cd3b4f8b 100644
 +
  AC_SUBST(RUBY_LIB_VERSION_STYLE)
  AC_SUBST(RUBY_LIB_VERSION)
- 
+
 +AC_ARG_WITH(ruby-version,
 +	    AS_HELP_STRING([--with-ruby-version=STR], [ruby version string for version specific directories [[full]] (full|STR)]),
 +            [ruby_version_dir_name=$withval],
@@ -98,31 +98,31 @@ index 80b137e380..63cd3b4f8b 100644
              [sitedir='${rubylibprefix}/site_ruby'])
 -sitelibdir='${sitedir}/${ruby_version}'
 +sitelibdir='${sitedir}'${ruby_version_dir}
- 
+
  AC_ARG_WITH(sitearchdir,
  	    AS_HELP_STRING([--with-sitearchdir=DIR],
  			   [architecture dependent site libraries in DIR [[SITEDIR/SITEARCH]], "no" to disable site directory]),
              [sitearchdir=$withval],
 -            [sitearchdir=${multiarch+'${rubysitearchprefix}/site_ruby/${ruby_version}'}${multiarch-'${sitelibdir}/${sitearch}'}])
 +            [sitearchdir=${multiarch+'${rubysitearchprefix}/site_ruby'${ruby_version_dir}}${multiarch-'${sitelibdir}/${sitearch}'}])
- 
+
  AC_ARG_WITH(vendordir,
  	    AS_HELP_STRING([--with-vendordir=DIR], [vendor libraries in DIR [[RUBY_LIB_PREFIX/vendor_ruby]], "no" to disable vendor directory]),
              [vendordir=$withval],
              [vendordir='${rubylibprefix}/vendor_ruby'])
 -vendorlibdir='${vendordir}/${ruby_version}'
 +vendorlibdir='${vendordir}'${ruby_version_dir}
- 
+
  AC_ARG_WITH(vendorarchdir,
  	    AS_HELP_STRING([--with-vendorarchdir=DIR],
  			   [architecture dependent vendor libraries in DIR [[VENDORDIR/SITEARCH]], "no" to disable vendor directory]),
              [vendorarchdir=$withval],
 -            [vendorarchdir=${multiarch+'${rubysitearchprefix}/vendor_ruby/${ruby_version}'}${multiarch-'${vendorlibdir}/${sitearch}'}])
 +            [vendorarchdir=${multiarch+'${rubysitearchprefix}/vendor_ruby'${ruby_version_dir}}${multiarch-'${vendorlibdir}/${sitearch}'}])
- 
+
  AS_IF([test "${LOAD_RELATIVE+set}"], [
      AC_DEFINE_UNQUOTED(LOAD_RELATIVE, $LOAD_RELATIVE)
-@@ -4238,6 +4241,7 @@ AC_SUBST(sitearchincludedir)dnl
+@@ -4407,6 +4410,7 @@ AC_SUBST(sitearchincludedir)dnl
  AC_SUBST(arch)dnl
  AC_SUBST(sitearch)dnl
  AC_SUBST(ruby_version)dnl
@@ -161,18 +161,18 @@ index 970cb91..5bf8230 100644
 @@ -10,7 +10,7 @@ module RDoc::RI::Paths
    #:stopdoc:
    require 'rbconfig'
- 
+
 -  version = RbConfig::CONFIG['ruby_version']
 +  version = RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
- 
+
    BASE    = File.join RbConfig::CONFIG['ridir'], version
- 
+
 diff --git a/tool/rbinstall.rb b/tool/rbinstall.rb
 index d4c110e..d39c9a6 100755
 --- a/tool/rbinstall.rb
 +++ b/tool/rbinstall.rb
-@@ -453,7 +453,7 @@ def CONFIG.[](name, mandatory = false)
- 
+@@ -945,7 +945,7 @@ def (bins = []).add(name)
+
  install?(:doc, :rdoc) do
    if $rdocdir
 -    ridatadir = File.join(CONFIG['ridir'], CONFIG['ruby_version'], "system")
@@ -195,16 +195,16 @@ diff --git a/lib/rubygems/defaults.rb b/lib/rubygems/defaults.rb
 index d4ff4a262c..3f9a5bf590 100644
 --- a/lib/rubygems/defaults.rb
 +++ b/lib/rubygems/defaults.rb
-@@ -34,7 +34,7 @@ def self.default_spec_cache_dir
+@@ -35,7 +35,7 @@ def self.default_spec_cache_dir
    # specified in the environment
- 
+
    def self.default_dir
 -    @default_dir ||= File.join(RbConfig::CONFIG["rubylibprefix"], "gems", RbConfig::CONFIG["ruby_version"])
 +    @default_dir ||= File.join(RbConfig::CONFIG["rubylibprefix"], "gems", RbConfig::CONFIG["ruby_version_dir_name"] || RbConfig::CONFIG["ruby_version"])
    end
- 
+
    ##
-@@ -103,7 +103,8 @@ def self.user_dir
+@@ -104,7 +104,8 @@ def self.user_dir
      gem_dir = File.join(Gem.user_home, ".gem")
      gem_dir = File.join(Gem.data_home, "gem") unless File.exist?(gem_dir)
      parts = [gem_dir, ruby_engine]
@@ -213,37 +213,37 @@ index d4ff4a262c..3f9a5bf590 100644
 +    parts << ruby_version_dir_name unless ruby_version_dir_name.empty?
      File.join parts
    end
- 
-@@ -248,7 +249,7 @@ def self.vendor_dir # :nodoc:
+
+@@ -265,7 +266,7 @@ def self.vendor_dir # :nodoc:
      return nil unless RbConfig::CONFIG.key? "vendordir"
- 
+
      File.join RbConfig::CONFIG["vendordir"], "gems",
 -              RbConfig::CONFIG["ruby_version"]
 +              RbConfig::CONFIG["ruby_version_dir_name"] || RbConfig::CONFIG["ruby_version"]
    end
- 
+
    ##
 diff --git a/test/rubygems/test_gem.rb b/test/rubygems/test_gem.rb
 index b25068405d..e9fef4a311 100644
 --- a/test/rubygems/test_gem.rb
 +++ b/test/rubygems/test_gem.rb
-@@ -1337,7 +1337,8 @@ def test_self_use_paths
- 
+@@ -1365,7 +1365,8 @@ def test_self_use_paths
+
    def test_self_user_dir
      parts = [@userhome, ".gem", Gem.ruby_engine]
 -    parts << RbConfig::CONFIG["ruby_version"] unless RbConfig::CONFIG["ruby_version"].empty?
 +    ruby_version_dir_name = RbConfig::CONFIG["ruby_version_dir_name"] || RbConfig::CONFIG["ruby_version"]
 +    parts << ruby_version_dir_name unless ruby_version_dir_name.empty?
- 
+
      FileUtils.mkdir_p File.join(parts)
- 
-@@ -1413,7 +1414,7 @@ def test_self_vendor_dir
+
+@@ -1441,7 +1442,7 @@ def test_self_vendor_dir
      vendordir(File.join(@tempdir, "vendor")) do
        expected =
          File.join RbConfig::CONFIG["vendordir"], "gems",
 -                  RbConfig::CONFIG["ruby_version"]
 +                  RbConfig::CONFIG["ruby_version_dir_name"] || RbConfig::CONFIG["ruby_version"]
- 
+
        assert_equal expected, Gem.vendor_dir
      end
 
@@ -262,12 +262,12 @@ diff --git a/configure.ac b/configure.ac
 index a00f2b6776..999e2d6d5d 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -124,7 +124,7 @@ RUBY_BASE_NAME=`echo ruby | sed "$program_transform_name"`
+@@ -143,7 +143,7 @@ RUBY_BASE_NAME=`echo ruby | sed "$program_transform_name"`
  RUBYW_BASE_NAME=`echo rubyw | sed "$program_transform_name"`
  AC_SUBST(RUBY_BASE_NAME)
  AC_SUBST(RUBYW_BASE_NAME)
 -AC_SUBST(RUBY_VERSION_NAME, '${RUBY_BASE_NAME}-${ruby_version}')
 +AC_SUBST(RUBY_VERSION_NAME, '${RUBY_BASE_NAME}-${ruby_version_dir_name}')
- 
+
  dnl checks for alternative programs
  AC_CANONICAL_BUILD

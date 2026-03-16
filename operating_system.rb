@@ -88,6 +88,7 @@ module Gem
     # warnings otherwise issued by Ruby.
 
     remove_method :default_dir if method_defined? :default_dir
+    remove_method :default_specifications_dir if method_defined? :default_specifications_dir
     remove_method :default_path if method_defined? :default_path
     remove_method :default_bindir if method_defined? :default_bindir
     remove_method :default_ext_dir_for if method_defined? :default_ext_dir_for
@@ -105,13 +106,20 @@ module Gem
       end
     end
 
+    ##
+    # Path to specification files of default gems.
+
     def default_specifications_dir
       @default_specifications_dir ||= File.join(Gem.default_dirs[:system][:gem_dir], "specifications", "default")
     end
 
+    ##
+    # Default gem load path
+
     def default_path
       path = default_dirs.collect {|location, paths| paths[:gem_dir]}
       path.unshift Gem.user_dir if File.exist? Gem.user_home
+      path
     end
 
     def default_bindir
