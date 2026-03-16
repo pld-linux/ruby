@@ -9,7 +9,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		2
+%define		rel		3
 %define		ruby_version	3.4
 %define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -936,7 +936,12 @@ find $RPM_BUILD_ROOT${gem_dir}/extensions/*-%{_target_os}/%{ruby_version}.*/* -m
 # Clean up gem cache and leftover directories from gem_dir (outside system paths)
 %{__rm} -rf $RPM_BUILD_ROOT${gem_dir}
 
-# Remove multiarch cross binary (duplicate of /usr/bin/ruby)
+# ruby binary is installed in arch-specific dir with symlink from %{_bindir};
+# move it to %{_bindir} directly (https://bugs.ruby-lang.org/issues/20800)
+if [ -L $RPM_BUILD_ROOT%{_bindir}/ruby%{ruby_suffix} ]; then
+	%{__rm} $RPM_BUILD_ROOT%{_bindir}/ruby%{ruby_suffix}
+	%{__mv} $RPM_BUILD_ROOT%{_prefix}/*-pld-linux-gnu/bin/ruby%{ruby_suffix} $RPM_BUILD_ROOT%{_bindir}/ruby%{ruby_suffix}
+fi
 %{__rm} -rf $RPM_BUILD_ROOT%{_prefix}/*-pld-linux-gnu
 
 # replace default irb with its not gemified version
