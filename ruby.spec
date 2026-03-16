@@ -9,7 +9,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		1
+%define		rel		2
 %define		ruby_version	3.4
 %define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -970,7 +970,7 @@ done
  	$RPM_BUILD_ROOT%{_bindir}/irb \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/exe/rake \
 	$RPM_BUILD_ROOT%{gem_dir}/gems/rdoc-%{rdoc_ver}/exe/{rdoc,ri} \
-        $RPM_BUILD_ROOT%{gem_dir}/gems/bundler-%{bundler_ver}/libexec/{bundle,bundler} \
+        $RPM_BUILD_ROOT%{gem_dir}/gems/bundler-%{bundler_ver}/exe/{bundle,bundler} \
         $RPM_BUILD_ROOT%{gem_dir}/gems/debug-%{debug_ver}/exe/rdbg \
         $RPM_BUILD_ROOT%{gem_dir}/gems/rbs-%{rbs_ver}/exe/rbs \
         $RPM_BUILD_ROOT%{gem_dir}/gems/erb-%{erb_ver}/libexec/erb \
@@ -984,9 +984,9 @@ done
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/minitest-%{minitest_ver}/{[A-Z]*,test}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-ftp-%{net_ftp_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-pop-%{net_pop_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-imap-%{net_imap_ver}/{[A-Z]*,docs,benchmarks}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-imap-%{net_imap_ver}/{[A-Z]*,docs}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/net-smtp-%{net_smtp_ver}/[A-Z]*
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/prime-%{prime_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/prime-%{prime_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/debug-%{debug_ver}/{[A-Z]*,misc,ext}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/power_assert-%{power_assert_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rake-%{rake_ver}/{[A-Z]*,doc}
@@ -997,7 +997,7 @@ done
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}/{[A-Z]*,ext}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/nkf-%{nkf_ver}/{[A-Z]*,ext,bin}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/syslog-%{syslog_ver}/{[A-Z]*,ext}
-%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rbs-%{rbs_ver}/{[A-Z]*,docs,ext,sig,src,core,stdlib,config.yml,goodcheck.yml,*.gemspec}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rbs-%{rbs_ver}/{[A-Z]*,docs,ext,sig,src,core,stdlib,config.yml,goodcheck.yml}
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/csv-%{csv_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/abbrev-%{abbrev_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/base64-%{base64_ver}/[A-Z]*
@@ -1167,8 +1167,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/bigdecimal-%{bigdecimal_ver}
 %dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}
 %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/gem.build_complete
-%dir %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib
-%attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/lib/bigdecimal.so
+%attr(755,root,root) %{gem_libdir}/bigdecimal-%{bigdecimal_ver}/bigdecimal.so
 %{gem_dir}/specifications/bigdecimal-%{bigdecimal_ver}.gemspec
 
 %files io-console
@@ -1283,7 +1282,8 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/racc-%{racc_ver}/lib
 %dir %{gem_libdir}/racc-%{racc_ver}
 %{gem_libdir}/racc-%{racc_ver}/gem.build_complete
-%attr(755,root,root) %{gem_libdir}/racc-%{racc_ver}/cparse.so
+%dir %{gem_libdir}/racc-%{racc_ver}/racc
+%attr(755,root,root) %{gem_libdir}/racc-%{racc_ver}/racc/cparse.so
 %{gem_dir}/specifications/racc-%{racc_ver}.gemspec
 
 %dir %{gem_dir}/gems/resolv-replace-%{resolv_replace_ver}
@@ -1298,7 +1298,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gem_dir}/gems/syslog-%{syslog_ver}/lib
 %dir %{gem_libdir}/syslog-%{syslog_ver}
 %{gem_libdir}/syslog-%{syslog_ver}/gem.build_complete
-%attr(755,root,root) %{gem_libdir}/syslog-%{syslog_ver}/syslog.so
+%attr(755,root,root) %{gem_libdir}/syslog-%{syslog_ver}/syslog_ext.so
 %{gem_dir}/specifications/syslog-%{syslog_ver}.gemspec
 
 %dir %{gem_dir}/gems/repl_type_completor-%{repl_type_completor_ver}
@@ -1324,8 +1324,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_libdir}/yaml
 %{ruby_libdir}/English.rb
 %{ruby_libdir}/benchmark.rb
-%dir %{ruby_libdir}/benchmark
-%{ruby_libdir}/benchmark/version.rb
 %{ruby_libdir}/bundled_gems.rb
 %{ruby_libdir}/bundler
 %{ruby_libdir}/bundler.rb
@@ -1476,7 +1474,6 @@ rm -rf $RPM_BUILD_ROOT
 %{ruby_ridir}/contributing
 %{ruby_ridir}/fatal
 %{ruby_ridir}/syntax
-%{ruby_ridir}/windows
 %{ruby_ridir}/optparse
 %lang(ja) %{ruby_ridir}/page-COPYING_ja.ri
 %lang(ja) %{ruby_ridir}/page-README_ja_md.ri
