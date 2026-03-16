@@ -1,5 +1,7 @@
 #!/bin/sh
-# Extract gem versions used in rpm.spec
+# Extract gem versions from unpacked Ruby source for use in ruby.spec.
+# Run from the package directory (where ruby.spec lives).
+# Requires: builder -bp ruby to have been run first (or will run it).
 
 DEST=$(mktemp)
 trap 'rm -rf -- "$DEST"' EXIT
@@ -16,15 +18,17 @@ patchlevel=$(grep -P '%define\s+patchlevel\s+\d' ruby.spec | grep -oP '\d+')
 
 [ -z "$ruby_version" -o -z "$patchlevel" ] && exit 1
 
-BUILD_DIR="$(rpm --eval '%{_builddir}')/ruby-${ruby_version}.${patchlevel}"
-[ ! -d $BUILD_DIR ] && builder -bp ruby
+BUILD_DIR="$(rpm --eval '%{_builddir}')/ruby-${ruby_version}.${patchlevel}-build/ruby-${ruby_version}.${patchlevel}"
+if [ ! -d "$BUILD_DIR" ]; then
+    # try without -build suffix (older rpm-build-macros)
+    BUILD_DIR="$(rpm --eval '%{_builddir}')/ruby-${ruby_version}.${patchlevel}"
+fi
+[ ! -d "$BUILD_DIR" ] && builder -bp ruby
 
 SPEC_DIR=$(pwd)
 cd $BUILD_DIR || exit 1
 
-
-ver=$(grep -P "\w+\.version" ext/bigdecimal/bigdecimal.gemspec | head -1 | grep -oP '\d+\.\d+[\d\.]*')
-puts_version "bigdecimal" $ver
+echo "# Default gems (from ext/ and lib/)" >> $DEST
 
 ver=$(grep "VERSION = " lib/bundler/version.rb | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "bundler" $ver
@@ -32,47 +36,58 @@ puts_version "bundler" $ver
 ver=$(grep "VERSION = " lib/erb/version.rb | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "erb" $ver
 
-ver=$(grep "_VERSION = " ext/io/console/io-console.gemspec | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep 'IO_CONSOLE_VERSION' ext/io/console/console.c | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "io_console" $ver
 
-ver=$(grep -P "\s+VERSION = " lib/irb/version.rb | grep -oP '\d+\.\d+[\d\.]*')
-puts_version "irb" $ver
-
-ver=$(cat ./ext/json/VERSION | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep "VERSION = " ext/json/lib/json/version.rb | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "json" $ver
 
-for i in etc stringio zlib; do
+for i in stringio zlib; do
     iup=$(echo $i | tr '[a-z]' '[A-Z]')
     ver=$(grep "${iup}_VERSION" ext/$i/$i.c | grep -oP '\d+\.\d+[\d\.]*')
     puts_version $i $ver
 done
 
-ver=$(grep -P "\w+\.version\s+" ext/openssl/openssl.gemspec | head -1 | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep -oP 'spec\.version\s*=\s*"\K[^"]+' ext/openssl/openssl.gemspec 2>/dev/null)
 puts_version "openssl" $ver
 
 ver=$(grep "VERSION = " ext/psych/lib/psych/versions.rb | head -1 | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "psych" $ver
 
-ver=$(grep -P "\s+VERSION\s+= " lib/racc/info.rb | grep -oP '\d+\.\d+[\d\.]*')
-puts_version "racc" $ver
-
-ver=$(grep -P "\s+VERSION = " lib/rdoc/version.rb | grep -oP '\d+\.\d+[\d\.]*')
-puts_version "rdoc" $ver
-
-ver=$(grep -P "\w+\.version\s+" ext/readline/readline*.gemspec | head -1 | grep -oP '\d+\.\d+[\d\.]*')
-puts_version "readline" $ver
-
 ver=$(grep "VERSION = " lib/rubygems.rb | head -1 | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "rubygems" $ver
 
-echo "# bundled" >> $DEST
+ver=$(grep -oP 'VERSION\s*=\s*."\K[^"]+' lib/did_you_mean/version.rb 2>/dev/null)
+puts_version "did_you_mean" $ver
+
+echo "" >> $DEST
+echo "# Bundled gems (from .bundle/gems/)" >> $DEST
 find .bundle/gems/ -maxdepth 1 -type d | grep -P '\w\-\d+' | sort | perl -pe  's|\.bundle/gems/(\w.+)\-(\d+\.\d+\.\d+)|%define ${1}_ver\t$2|g; s|\-|_|g' >> $DEST
 
+echo "" >> $DEST
+echo "# Bundler vendored sub-versions" >> $DEST
+ver=$(grep 'VERSION = ' lib/bundler/vendor/connection_pool/lib/connection_pool/version.rb 2>/dev/null | grep -oP '\d+\.\d+[\d\.]*')
+puts_version "bundler_connection_pool" $ver
+ver=$(grep 'VERSION = ' lib/bundler/vendor/fileutils/lib/fileutils.rb 2>/dev/null | grep -oP '\d+\.\d+[\d\.]*')
+puts_version "bundler_fileutils" $ver
+ver=$(grep 'VERSION = ' lib/bundler/vendor/pub_grub/lib/pub_grub/version.rb 2>/dev/null | grep -oP '\d+\.\d+[\d\.]*')
+puts_version "bundler_pub_grub" $ver
+ver=$(grep 'VERSION = ' lib/bundler/vendor/net-http-persistent/lib/net/http/persistent.rb 2>/dev/null | grep -oP '\d+\.\d+[\d\.]*')
+puts_version "bundler_net_http_persistent" $ver
+ver=$(grep 'VERSION = ' lib/bundler/vendor/thor/lib/thor/version.rb 2>/dev/null | grep -oP '\d+\.\d+[\d\.]*')
+puts_version "bundler_thor" $ver
+ver=$(grep 'VERSION = ' lib/bundler/vendor/tsort/lib/tsort.rb 2>/dev/null | grep -oP '\d+\.\d+[\d\.]*')
+puts_version "bundler_tsort" $ver
+ver=$(grep 'VERSION = ' lib/bundler/vendor/uri/lib/uri/version.rb 2>/dev/null | grep -oP '\d+\.\d+[\d\.]*')
+puts_version "bundler_uri" $ver
+
+echo ""
 echo "Determined gem versions:"
 cat $DEST
 
 cd $SPEC_DIR || exit 1
 
+echo ""
 echo "Checking version macros usage:"
 # determine _ver macros usage
 ec=0

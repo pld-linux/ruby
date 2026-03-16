@@ -91,6 +91,7 @@ module Gem
     remove_method :default_path if method_defined? :default_path
     remove_method :default_bindir if method_defined? :default_bindir
     remove_method :default_ext_dir_for if method_defined? :default_ext_dir_for
+    remove_method :default_specifications_dir if method_defined? :default_specifications_dir
 
     ##
     # RubyGems default overrides.
@@ -139,7 +140,7 @@ module Gem
       dir && File.join(dir, RbConfig::CONFIG['RUBY_INSTALL_NAME'])
     end
 
-    # This method should be available since RubyGems 2.2 until RubyGems 3.0.
+    # This method is available since RubyGems 2.2 (still present in 4.0).
     # https://github.com/rubygems/rubygems/issues/749
     if method_defined? :install_extension_in_lib
       remove_method :install_extension_in_lib
