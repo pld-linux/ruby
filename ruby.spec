@@ -908,7 +908,18 @@ ln -s %{gem_dir}/gems/bundler-%{bundler_ver}/lib/bundler.rb $RPM_BUILD_ROOT%{rub
 
 # Move the binary extensions into proper place (if no gem has binary extension,
 # the extensions directory might be empty).
-find $RPM_BUILD_ROOT${gem_dir}/extensions/*-%{_target_os}/%{ruby_version}.*/* -maxdepth 0 \
+
+# if abi contains number ruby strips it in convoluted logic (said
+# logic is already cleaned up in 4.0 so x32 will need to be included
+# too)
+# https://github.com/ruby/ruby/blob/5483bfc/lib/rubygems/platform.rb#L75
+%ifnarch x32
+# https://github.com/ruby/ruby/blob/5483bfc/configure.ac#L280
+if [ -n "%{?_gnu}" ] && [ "%{?_gnu}" != "-gnu" ] && [[ "%{_target_platform}" = *%{?_gnu} ]]; then
+	abi=$(echo "%{?_gnu}" | sed 's/^-gnu/-/')
+fi
+%endif
+find $RPM_BUILD_ROOT${gem_dir}/extensions/*-%{_target_os}$abi/%{ruby_version}.*/* -maxdepth 0 \
   -exec mv '{}' $RPM_BUILD_ROOT%{_libdir}/gems/%{name}/ \; \
   || echo "No gem binary extensions to move."
 
