@@ -12,6 +12,10 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
+%ifarch %{x8664} aarch64
+%define		with_yjit	1
+%endif
+
 %define		rel		1
 %define		ruby_version	3.2
 %define		patchlevel	11
@@ -80,12 +84,12 @@ BuildRequires:	openssl-devel >= 0.9.6
 BuildRequires:	pkgconfig
 BuildRequires:	readline-devel >= 4.2
 BuildRequires:	rpm-build >= 5.4.10-49
-BuildRequires:	rpmbuild(macros) >= 1.527
+BuildRequires:	rpmbuild(macros) >= 2.050
 # which version is minimum now? 1.8.7 is not enough, fails with:
 # ./tool/generic_erb.rb:31: syntax error, unexpected ':', expecting ')'
 # ...O.popen("tput smso", "r", err: IO::NULL, &:read) rescue nil)
 BuildRequires:	ruby >= 1:1.9
-BuildRequires:	rust
+%{?with_yjit:BuildRequires:	rust >= 1.58}
 BuildRequires:	sed >= 4.0
 %{?with_dtrace:BuildRequires:	systemtap-sdt-devel}
 BuildRequires:	tar >= 1:1.22
@@ -98,6 +102,7 @@ BuildRequires:	rpm-rubyprov
 BuildRequires:	ruby-modules
 %endif
 Requires(post,postun):	/sbin/ldconfig
+%{?with_yjit:%{?rust_req}}
 Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread <= 0.6.3
@@ -750,11 +755,8 @@ cp -f /usr/share/automake/config.sub .
 	--with-vendorarchhdrdir='$(vendorhdrdir)/$(arch)' \
 	--without-compress-debug-sections \
         --enable-mkmf-verbose \
-%ifarch %{x8664} aarch64
-        --enable-yjit \
-%endif
+        %{__enable_disable yjit} \
 %ifarch x32
-	--disable-yjit \
 	--with-coroutine=ucontext \
 %endif
 	--enable-multiarch \
