@@ -909,7 +909,11 @@ ln -s %{gem_dir}/gems/bundler-%{bundler_ver}/lib/bundler.rb $RPM_BUILD_ROOT%{rub
 
 # Move the binary extensions into proper place (if no gem has binary extension,
 # the extensions directory might be empty).
-find $RPM_BUILD_ROOT${gem_dir}/extensions/*-%{_target_os}/%{ruby_version}.*/* -maxdepth 0 \
+# https://github.com/ruby/ruby/blob/5483bfc/configure.ac#L280
+if [ -n "%{?_gnu}" ] && [ "%{?_gnu}" != "-gnu" ] && [[ "%{_target_platform}" = *%{?_gnu} ]]; then
+	abi=$(echo "%{?_gnu}" | sed 's/^-gnu/-/')
+fi
+find $RPM_BUILD_ROOT${gem_dir}/extensions/*-%{_target_os}$abi/%{ruby_version}.*/* -maxdepth 0 \
   -exec mv '{}' $RPM_BUILD_ROOT%{_libdir}/gems/%{name}/ \; \
   || echo "No gem binary extensions to move."
 
