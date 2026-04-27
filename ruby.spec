@@ -742,9 +742,11 @@ cp -f /usr/share/automake/config.sub .
         --enable-mkmf-verbose \
 %ifarch %{x8664} aarch64
         --enable-yjit \
+        --enable-zjit \
 %endif
 %ifarch x32
 	--disable-yjit \
+	--disable-zjit \
 	--with-coroutine=ucontext \
 %endif
 	--enable-multiarch \
