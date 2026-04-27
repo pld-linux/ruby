@@ -12,9 +12,9 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build without tests
 
-%define		rel		2
+%define		rel		1
 %define		ruby_version	3.2
-%define		patchlevel	10
+%define		patchlevel	11
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	3_1_2
@@ -37,7 +37,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	48eba639bdc9bfb589450f8a6f91fad1
+# Source0-md5:	04a594c3d8e55ebd307e1996dcdc0c26
 Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_stdlib_rdocs.tgz
 # Source2-md5:	d8b945c2da4f60d9ea2886e163f0203c
 Source3:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_core_rdocs.tgz
@@ -677,7 +677,7 @@ these needs to be listed in Gemfile to be used by Bundler.
 %prep
 %setup -q -n %{oname}-%{pkg_version} -a2 -a3
 %patch 2 -p1
-#%patch3 -p1
+#%%patch3 -p1
 %patch 4 -p1
 %patch 5 -p1
 %patch 6 -p1
@@ -688,7 +688,7 @@ these needs to be listed in Gemfile to be used by Bundler.
 # is not needed anymore.
 ##mkdir .bundle/specifications
 #find .bundle/gems -name '*-[0-9]*.gemspec' -exec cp -t .bundle/specifications/ {} +
-#%patch10 -p1
+#%%patch10 -p1
 %patch 12 -p1
 
 %if 0
