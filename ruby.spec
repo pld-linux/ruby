@@ -13,7 +13,7 @@
 %define		with_yjit	1
 %endif
 
-%define		rel		8
+%define		rel		9
 %define		ruby_version	3.4
 %define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -1425,6 +1425,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{ruby_archdir}/date_core.so
 %attr(755,root,root) %{ruby_archdir}/digest.so
 %attr(755,root,root) %{ruby_archdir}/etc.so
+%dir %{ruby_archdir}/erb
 %attr(755,root,root) %{ruby_archdir}/erb/escape.so
 %attr(755,root,root) %{ruby_archdir}/fcntl.so
 %attr(755,root,root) %{ruby_archdir}/fiddle.so
