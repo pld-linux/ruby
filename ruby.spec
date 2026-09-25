@@ -14,7 +14,7 @@
 
 %define		rel		2
 %define		ruby_version	3.4
-%define		patchlevel	9
+%define		patchlevel	11
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
 %define		unicode_version	12.1.0
@@ -110,7 +110,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # Default gems.
 %define bundler_version 2.6.9
-%define erb_version 4.0.4
+%define erb_version 4.0.4.1
 
 
 %define io_console_version 0.8.1
@@ -118,7 +118,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define json_version 2.9.1
 %define psych_version 5.2.2
 %define rdoc_version 6.14.0
-%define syntax_suggest_version 2.0.2
+%define syntax_suggest_version 2.0.3
 
 # Bundled gems.
 %define abbrev_version 0.1.2
@@ -132,7 +132,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define minitest_version 5.25.4
 %define mutex_m_version 0.3.0
 %define net_ftp_version 0.3.8
-%define net_imap_version 0.5.8
+%define net_imap_version 0.5.15
 %define net_pop_version 0.1.2
 %define net_smtp_version 0.5.1
 %define nkf_version 0.2.0
@@ -1053,7 +1053,7 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS.md LEGAL BSDL README.md README.EXT ChangeLog
+%doc NEWS.md LEGAL BSDL README.md README.EXT
 %attr(755,root,root) %{_bindir}/ruby
 %{_libdir}/libruby.so.*.*.*
 %ghost %{_libdir}/libruby.so.%{ruby_version}
