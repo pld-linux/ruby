@@ -12,7 +12,7 @@
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build with tests
 
-%define		rel		2
+%define		rel		4
 %define		ruby_version	3.4
 %define		patchlevel	11
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -63,6 +63,7 @@ URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake
 BuildRequires:	bison >= 1.875
+BuildRequires:	coreutils
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel >= 1.8.3
 BuildRequires:	gmp-devel
@@ -99,6 +100,15 @@ Conflicts:	rpm-build-macros < 1.695
 Conflicts:	ruby-activesupport < 2.3.11-2
 Conflicts:	ruby-activesupport2 < 2.3.11-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+# relative symlinks
+# usage: %make_rel_symlink <target-in-install-root> [<directory> [<link-name>]]
+# e.g.  %make_rel_symlink %{gem_instdir rdoc}/lib/rdoc %{ruby_libdir}
+# creates <directory>/<link-name> as a symlink holding the shortest relative
+# path to <target>, so that it stays valid after installation.  <link-name>
+# defaults to the basename of <target>.
+%define rel_symlink()  %(realpath -m --relative-to=%{buildroot}%{?2} %{buildroot}%{?1})
+%define make_rel_symlink()  ln -s %{rel_symlink %{?1} %{?2}} %{buildroot}%{?2}/%{?3}%{!?3:%(basename %{?1})}
 
 # hack: skip rubygem(ipaddr)
 %define	_noautoreq	ipaddr
@@ -757,9 +767,9 @@ cp -f /usr/share/automake/config.sub .
 
 %{__autoconf}
 
-# RPM's %%configure runs %%_configure (default: ./configure) in the current
+# The %%configure macro runs %%_configure (default: ./configure) in the current
 # directory. For a VPATH build we are in build/, but the real configure script
-# lives in the source directory. Provide a tiny wrapper so %%configure finds it.
+# lives in the source directory, hence the wrapper created below.
 mkdir -p %{_vpath_builddir}
 cd %{_vpath_builddir}
 rm -f configure
@@ -869,12 +879,13 @@ install -d $RPM_BUILD_ROOT%{gem_dir}
 # packages should go to vendor dirs)%
 install -d $RPM_BUILD_ROOT%{gem_instdir rdoc}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/rdoc* $RPM_BUILD_ROOT%{gem_instdir rdoc}/lib
-ln -sr %{gem_instdir rdoc}/lib/rdoc $RPM_BUILD_ROOT%{ruby_libdir}
-ln -sr %{gem_instdir rdoc}/lib/rdoc.rb $RPM_BUILD_ROOT%{ruby_libdir}
+%make_rel_symlink %{gem_instdir rdoc}/lib/rdoc %{ruby_libdir}
+%make_rel_symlink %{gem_instdir rdoc}/lib/rdoc.rb %{ruby_libdir}
 %{__mv} $RPM_BUILD_ROOT%{gem_spec -d rdoc} $RPM_BUILD_ROOT%{gem_dir}/specifications
 
-ln -sr %{gem_instdir bigdecimal}/lib/bigdecimal $RPM_BUILD_ROOT%{ruby_libdir}/bigdecimal
-ln -sr %{gem_extdir_mri bigdecimal}/lib/bigdecimal.so $RPM_BUILD_ROOT%{ruby_libarchdir}/bigdecimal.so
+%make_rel_symlink %{gem_instdir bigdecimal}/lib/bigdecimal %{ruby_libdir}
+%make_rel_symlink %{gem_instdir bigdecimal}/lib/bigdecimal.rb %{ruby_libdir}
+%make_rel_symlink %{gem_extdir_mri bigdecimal}/bigdecimal.so %{ruby_libarchdir}
 
 install -d $RPM_BUILD_ROOT%{gem_instdir io-console}/lib
 install -d $RPM_BUILD_ROOT%{gem_extdir_mri io-console}/lib/io
@@ -882,8 +893,8 @@ touch $RPM_BUILD_ROOT%{gem_extdir_mri io-console}/gem.build_complete
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/io $RPM_BUILD_ROOT%{gem_instdir io-console}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/io/console.so $RPM_BUILD_ROOT%{gem_extdir_mri io-console}/lib/io
 %{__mv} $RPM_BUILD_ROOT%{gem_spec -d io-console} $RPM_BUILD_ROOT%{gem_dir}/specifications
-ln -sr %{gem_instdir io-console}/lib/io $RPM_BUILD_ROOT%{ruby_libdir}/io
-ln -sr %{gem_extdir_mri io-console}/lib/io/console.so $RPM_BUILD_ROOT%{ruby_libarchdir}/io/console.so
+%make_rel_symlink %{gem_instdir io-console}/lib/io %{ruby_libdir}
+%make_rel_symlink %{gem_extdir_mri io-console}/lib/io/console.so %{ruby_libarchdir}/io
 
 install -d $RPM_BUILD_ROOT%{gem_instdir json}/lib
 install -d $RPM_BUILD_ROOT%{gem_extdir_mri json}/lib
@@ -891,16 +902,16 @@ touch $RPM_BUILD_ROOT%{gem_extdir_mri json}/gem.build_complete
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/json* $RPM_BUILD_ROOT%{gem_instdir json}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/json $RPM_BUILD_ROOT%{gem_extdir_mri json}/lib
 %{__mv} $RPM_BUILD_ROOT%{gem_spec -d json} $RPM_BUILD_ROOT%{gem_dir}/specifications
-ln -sr %{gem_instdir json}/lib/json $RPM_BUILD_ROOT%{ruby_libdir}/json
-ln -sr %{gem_instdir json}/lib/json.rb $RPM_BUILD_ROOT%{ruby_libdir}/json.rb
+%make_rel_symlink %{gem_instdir json}/lib/json %{ruby_libdir}
+%make_rel_symlink %{gem_instdir json}/lib/json.rb %{ruby_libdir}
 install -d $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
-ln -sr %{gem_extdir_mri json}/lib/json/ext/parser.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
-ln -sr %{gem_extdir_mri json}/lib/json/ext/generator.so $RPM_BUILD_ROOT%{ruby_libarchdir}/json/ext
+%make_rel_symlink %{gem_extdir_mri json}/lib/json/ext/parser.so %{ruby_libarchdir}/json/ext
+%make_rel_symlink %{gem_extdir_mri json}/lib/json/ext/generator.so %{ruby_libarchdir}/json/ext
 
-ln -sr %{gem_instdir minitest}/lib/minitest $RPM_BUILD_ROOT%{ruby_libdir}
+%make_rel_symlink %{gem_instdir minitest}/lib/minitest %{ruby_libdir}
 
 install -d $RPM_BUILD_ROOT%{ruby_libdir}/test
-ln -sr %{gem_instdir test-unit}/lib/test/unit $RPM_BUILD_ROOT%{ruby_libdir}/test
+%make_rel_symlink %{gem_instdir test-unit}/lib/test/unit %{ruby_libdir} test/unit
 
 install -d $RPM_BUILD_ROOT%{gem_instdir psych}/lib
 install -d $RPM_BUILD_ROOT%{gem_extdir_mri psych}/lib
@@ -908,9 +919,9 @@ touch $RPM_BUILD_ROOT%{gem_extdir_mri psych}/gem.build_complete
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/psych* $RPM_BUILD_ROOT%{gem_instdir psych}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libarchdir}/psych.so $RPM_BUILD_ROOT%{gem_extdir_mri psych}/lib/
 %{__mv} $RPM_BUILD_ROOT%{gem_spec -d psych} $RPM_BUILD_ROOT%{gem_dir}/specifications
-ln -sr %{gem_instdir psych}/lib/psych $RPM_BUILD_ROOT%{ruby_libdir}/psych
-ln -sr %{gem_instdir psych}/lib/psych.rb $RPM_BUILD_ROOT%{ruby_libdir}/psych.rb
-ln -sr %{gem_extdir_mri psych}/lib/psych.so $RPM_BUILD_ROOT%{ruby_archdir}/psych.so
+%make_rel_symlink %{gem_instdir psych}/lib/psych %{ruby_libdir}
+%make_rel_symlink %{gem_instdir psych}/lib/psych.rb %{ruby_libdir}
+%make_rel_symlink %{gem_extdir_mri psych}/lib/psych.so %{ruby_archdir}
 
 #install -d $RPM_BUILD_ROOT%{gem_libdir bundler}
 #%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/bundler.rb $RPM_BUILD_ROOT%{gem_libdir bundler}
@@ -921,8 +932,8 @@ install -d $RPM_BUILD_ROOT%{gem_instdir bundler}/lib
 install -d $RPM_BUILD_ROOT%{gem_extdir_mri bundler}/lib
 %{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/bundler* $RPM_BUILD_ROOT%{gem_instdir bundler}/lib
 %{__mv} $RPM_BUILD_ROOT%{gem_spec -d bundler} $RPM_BUILD_ROOT%{gem_dir}/specifications
-ln -sr %{gem_instdir bundler}/lib/bundler $RPM_BUILD_ROOT%{ruby_libdir}/bundler
-ln -sr %{gem_instdir bundler}/lib/bundler.rb $RPM_BUILD_ROOT%{ruby_libdir}/bundler.rb
+%make_rel_symlink %{gem_instdir bundler}/lib/bundler %{ruby_libdir}
+%make_rel_symlink %{gem_instdir bundler}/lib/bundler.rb %{ruby_libdir}
 
 # Move the binary extensions into proper place (if no gem has binary extension,
 # the extensions directory might be empty).
@@ -1197,6 +1208,7 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %{gem_extdir_mri bigdecimal}
 %{gem_spec bigdecimal}
 %{ruby_libdir}/bigdecimal
+%{ruby_libdir}/bigdecimal.rb
 %{ruby_archdir}/bigdecimal.so
 
 %files io-console
