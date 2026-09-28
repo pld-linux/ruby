@@ -1,4 +1,3 @@
-From 07c666ba5c3360dd6f43605a8ac7c85c99c1721f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?V=C3=ADt=20Ondruch?= <vondruch@redhat.com>
 Date: Tue, 1 Oct 2013 12:22:40 +0200
 Subject: [PATCH] Allow to configure libruby.so placement.
@@ -8,10 +7,9 @@ Subject: [PATCH] Allow to configure libruby.so placement.
  1 file changed, 5 insertions(+)
 
 diff --git a/configure.ac b/configure.ac
-index 11fc237552..b77e88fc37 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3085,6 +3085,11 @@ AS_IF([test ${multiarch+set}], [
+@@ -3553,6 +3553,11 @@ AS_IF([test ${multiarch+set}], [
  ])
  
  archlibdir='${libdir}/${arch}'
@@ -23,6 +21,3 @@ index 11fc237552..b77e88fc37 100644
  sitearchlibdir='${libdir}/${sitearch}'
  archincludedir='${includedir}/${arch}'
  sitearchincludedir='${includedir}/${sitearch}'
--- 
-1.8.3.1
-

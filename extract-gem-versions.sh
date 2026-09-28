@@ -50,19 +50,19 @@ cd "$BUILD_DIR" || exit 1
 ver=$(grep -P "\w+\.version" .bundle/gems/bigdecimal-*/.bundled.bigdecimal-*.gemspec | head -1 | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "bigdecimal" "$ver"
 
-ver=$(grep "VERSION = " lib/bundler/version.rb | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep -oP 'VERSION\s*=\s*["\x27]\K[\d.]+' lib/bundler/version.rb | head -1)
 puts_version "bundler" "$ver"
 
-ver=$(grep "VERSION = " lib/erb/version.rb | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep -oP 'VERSION\s*=\s*["\x27]\K[\d.]+' lib/erb/version.rb | head -1)
 puts_version "erb" "$ver"
 
 ver=$(grep IO_CONSOLE_VERSION ext/io/console/console.c | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "io_console" "$ver"
 
-ver=$(grep -P "\s+VERSION = " lib/irb/version.rb | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep -oP 'VERSION\s*=\s*["\x27]\K[\d.]+' .bundle/gems/irb-*/lib/irb/version.rb | head -1)
 puts_version "irb" "$ver"
 
-ver=$(cat ext/json/lib/json/version.rb | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep -oP 'VERSION\s*=\s*["\x27]\K[\d.]+' ext/json/lib/json/version.rb | head -1)
 puts_version "json" "$ver"
 
 for i in etc stringio zlib; do
@@ -77,10 +77,10 @@ puts_version "openssl" "$ver"
 ver=$(grep "VERSION = " ext/psych/lib/psych/versions.rb | head -1 | grep -oP '\d+\.\d+[\d\.]*')
 puts_version "psych" "$ver"
 
-ver=$(grep -P "\s+VERSION\s+=\s+" lib/rdoc/version.rb | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep -oP 'VERSION\s*=\s*["\x27]\K[\d.]+' .bundle/gems/rdoc-*/lib/rdoc/version.rb | head -1)
 puts_version "rdoc" "$ver"
 
-ver=$(grep -P "\w+\.version\s+" lib/readline*.gemspec | head -1 | grep -oP '\d+\.\d+[\d\.]*')
+ver=$(grep -oP 's\.version\s*=\s*["\x27]\K[\d.]+' .bundle/specifications/readline-*.gemspec | head -1)
 puts_version "readline" "$ver"
 
 ver=$(grep "VERSION = " lib/rubygems.rb | head -1 | grep -oP '\d+\.\d+[\d\.]*')

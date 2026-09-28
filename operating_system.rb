@@ -101,6 +101,18 @@ module Gem
         Gem.default_dirs[:system][:gem_dir]
       elsif Process.uid == 0
         Gem.default_dirs[:local][:gem_dir]
+      elsif ENV['RPM_PACKAGE_NAME'] == 'ruby'
+        # PLD builds ruby with --with-rubygemsdir pointing at the Ruby
+        # library directory, so the gems have to be laid down in the Ruby
+        # tree first; the spec's %install moves them to %gem_dir afterwards.
+        # Without this the whole tree would end up below the invoking
+        # user's ~/.local, which is neither the packager's nor the end
+        # user's intent.
+        #
+        # Guarded on the package name on purpose: this file also lands in
+        # every other ruby-based package, and rerouting default_dir for
+        # those would move their gems as well.
+        File.join(RbConfig::CONFIG['rubylibdir'], 'gems')
       else
         Gem.user_dir
       end

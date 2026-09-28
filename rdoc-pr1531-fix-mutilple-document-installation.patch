@@ -1,0 +1,28 @@
+From 994ee4c17fb8c217ab0335df55620c6bdb5d5cbe Mon Sep 17 00:00:00 2001
+From: tompng <tomoyapenguin@gmail.com>
+Date: Fri, 26 Dec 2025 04:57:12 +0900
+Subject: [PATCH] Fix comment_location for merged ClassModule
+
+---
+ lib/rdoc/code_object/class_module.rb       | 7 ++++++-
+ test/rdoc/code_object/class_module_test.rb | 6 ++++++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/lib/rdoc/code_object/class_module.rb b/lib/rdoc/code_object/class_module.rb
+index b6bed352a2..d7ee36f950 100644
+--- a/lib/rdoc/code_object/class_module.rb
++++ b/lib/rdoc/code_object/class_module.rb
+@@ -477,7 +477,12 @@ def merge(class_module)
+       document = document.merge other_document
+ 
+       @comment = RDoc::Comment.from_document(document)
+-      @comment_location = document
++
++      @comment_location = if document.parts.first.is_a?(RDoc::Markup::Document)
++                            document.parts.map { |doc| [doc, doc.file] }
++                          else
++                            [[document, document.file]]
++                          end
+     end
+ 
+     cm = class_module

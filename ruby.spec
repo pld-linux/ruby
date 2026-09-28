@@ -1,23 +1,17 @@
-# TODO:
-#	- include ext/ in docs
-#	- replace ri with fastri
-#	- patch ri to search multiple indexes (one per package), so RPMs can install ri docs
-#	- gemify irb (?)
-#
 # Conditional build:
 %bcond_without	doc		# skip (time-consuming) docs generating; intended for speed up test builds
 %bcond_without	batteries	# Don't include rubygems, json, rake, minitest
 %bcond_without	default_ruby	# use this Ruby as default system Ruby
-%bcond_with	dtrace		# disable tracing with dtrace
+%bcond_without	dtrace		# disable tracing with dtrace
 %bcond_with	bootstrap	# build bootstrap version
 %bcond_with	tests		# build with tests
 
-%define		rel		4
-%define		ruby_version	3.4
-%define		patchlevel	11
+%define		rel		1
+%define		ruby_version	4.0
+%define		patchlevel	7
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
-%define		unicode_version	12.1.0
+%define		unicode_version	17.0.0
 %define		oname	ruby
 Summary:	Ruby - interpreted scripting language
 Summary(ja.UTF-8):	オブジェクト指向言語Rubyインタプリタ
@@ -55,10 +49,15 @@ Patch4:		%{name}-2.1.0-custom-rubygems-location.patch
 Patch6:		%{name}-2.7.0-Initialize-ABRT-hook.patch
 # Disable syntax_suggest test suite, which tries to download its dependencies.
 # https://bugs.ruby-lang.org/issues/19297
-Patch9:		%{name}-3.3.0-Disable-syntax-suggest-test-case.patch
-# Fix the tests using SHA-1 Probabilistic Signature Scheme (PSS) parameters.
-# https://github.com/ruby/openssl/pull/879
-Patch10:	%{name}-3.4.2-openssl-Fix-SHA-1-PSS-tests.patch
+Patch7:		%{name}-3.3.0-Disable-syntax-suggest-test-case.patch
+# Allow the rustc flags used for YJIT to be overridden.
+Patch10:	%{name}-4.0.1-Support-customizable-rustc_flags-for-rustc-builds.patch
+# Add ruby_version_dir_name support for RDoc (patched inside the bundled gem).
+Patch11:	%{name}-2.3.0-ruby_version-Add-ruby_version_dir_name-support-for-RDoc.patch
+# rdoc PR 1531: fix installation of multiple documents.
+Patch12:	rdoc-pr1531-fix-mutilple-document-installation.patch
+# Stop vendoring resolv for two regexps (ruby/rubygems PR 9877).
+Patch13:	%{name}-4.0.7-rubygems-pr9877-stop-vendoring-resolv.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake
@@ -103,7 +102,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # relative symlinks
 # usage: %make_rel_symlink <target-in-install-root> [<directory> [<link-name>]]
-# e.g.  %make_rel_symlink %{gem_instdir rdoc}/lib/rdoc %{ruby_libdir}
+# e.g.  %%make_rel_symlink %%{gem_instdir rdoc}/lib/rdoc %%{ruby_libdir}
 # creates <directory>/<link-name> as a symlink holding the shortest relative
 # path to <target>, so that it stays valid after installation.  <link-name>
 # defaults to the basename of <target>.
@@ -112,54 +111,62 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # hack: skip rubygem(ipaddr)
 %define	_noautoreq	ipaddr
+# ruby(abi) replaced by ruby(release)
 %{expand:%%global _noautoreq %{_noautoreq} 'ruby\\(abi\\)'}
 %{expand:%%global _noautoprov %{?nil} 'ruby\\(abi\\)'}
 
 # Bundled libraries versions
-%define rubygems_version 3.6.9
+%define rubygems_version 4.0.20
 
 # Default gems.
-%define bundler_version 2.6.9
-%define erb_version 4.0.4.1
+%define bundler_version 4.0.20
+%define erb_version 6.0.7
 
 
-%define io_console_version 0.8.1
-%define irb_version 1.14.3
-%define json_version 2.9.1
-%define psych_version 5.2.2
-%define rdoc_version 6.14.0
+%define io_console_version 0.8.2
+%define irb_version 1.16.0
+%define json_version 2.18.0
+%define psych_version 5.3.1
+%define rdoc_version 7.0.4
 %define syntax_suggest_version 2.0.3
 
+%define benchmark_version 0.5.0
+%define fiddle_version 1.1.8
+%define logger_version 1.7.0
+%define ostruct_version 0.6.3
+%define pstore_version 0.2.1
+%define readline_version 0.0.4
+%define reline_version 0.6.3
 # Bundled gems.
 %define abbrev_version 0.1.2
-%define base64_version 0.2.0
-%define bigdecimal_version 3.1.8
-%define csv_version 3.3.2
-%define debug_version 1.11.0
-%define drb_version 2.2.1
+%define base64_version 0.3.0
+%define bigdecimal_version 4.0.1
+%define csv_version 3.3.5
+%define debug_version 1.11.1
+%define drb_version 2.2.3
 %define getoptlong_version 0.2.1
-%define matrix_version 0.4.2
-%define minitest_version 5.25.4
+%define matrix_version 0.4.3
+%define minitest_version 6.0.0
 %define mutex_m_version 0.3.0
-%define net_ftp_version 0.3.8
-%define net_imap_version 0.5.15
+%define net_ftp_version 0.3.9
+%define net_imap_version 0.6.4.1
 %define net_pop_version 0.1.2
 %define net_smtp_version 0.5.1
 %define nkf_version 0.2.0
 %define observer_version 0.1.2
-%define power_assert_version 2.0.5
-%define prime_version 0.1.3
+%define power_assert_version 3.0.1
+%define prime_version 0.1.4
 %define racc_version 1.8.1
-%define rake_version 13.2.1
-%define rbs_version 3.8.0
-%define repl_type_completor_version 0.1.9
+%define rake_version 13.3.1
+%define rbs_version 3.10.0
+%define repl_type_completor_version 0.1.12
 %define resolv_replace_version 0.1.1
 %define rexml_version 3.4.4
 %define rinda_version 0.2.0
-%define rss_version 0.3.1
-%define syslog_version 0.2.0
-%define test_unit_version 3.6.7
-%define typeprof_version 0.30.1
+%define rss_version 0.3.2
+%define syslog_version 0.3.0
+%define test_unit_version 3.7.5
+%define typeprof_version 0.31.1
 
 # Bundled nkf version
 %global bundled_nkf_version 2.1.5
@@ -726,8 +733,15 @@ these needs to be listed in Gemfile to be used by Bundler.
 %patch 3 -p1
 %patch 4 -p1
 %patch 6 -p1
-%patch 9 -p1
+%patch 7 -p1
 %patch 10 -p1
+%patch 13 -p1
+
+# The bundled rdoc is a gem, so it has to be patched in place.
+cd .bundle/gems/rdoc-%{rdoc_version}
+%patch 11 -p1
+%patch 12 -p1
+cd %{builddir}/%{buildsubdir}
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
@@ -737,6 +751,12 @@ these needs to be listed in Gemfile to be used by Bundler.
 #%{__rm} -r ext/fiddle/libffi*
 
 # Install custom operating_system.rb.
+#
+# "make install" runs "require 'rubygems/defaults/operating_system'".  Without
+# this file that require falls through to /usr/share/ruby/%{ruby_version} and
+# happily picks up the copy from an already installed RubyGems, which then
+# points Gem.default_dir at the per-user gem directory.  Since -I../lib comes
+# first on the load path, the copy in the tree always wins.
 install -d lib/rubygems/defaults
 cp -p %{SOURCE6} lib/rubygems/defaults
 
@@ -757,7 +777,7 @@ if [ $rubygems_version != %{rubygems_version} ]; then
 	echo "Set %%define rubygems_version to $rubygems_version and re-run."
 	exit 1
 fi
-rdoc_version=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' lib/rdoc/version.rb | xargs)
+rdoc_version=$(awk '/VERSION =/ && $1 == "VERSION" {print $3}' .bundle/gems/rdoc-%{rdoc_version}/lib/rdoc/version.rb | xargs)
 if [ "$rdoc_version" != %{rdoc_version} ]; then
 	echo "Set %%define rdoc_version to $rdoc_version and re-run."
 	exit 1
@@ -806,7 +826,6 @@ chmod +x configure
 	--enable-yjit \
 %endif
 	--disable-install-doc \
-	--disable-rubygems \
 
 cd ..
 
@@ -823,6 +842,7 @@ install -d $RPM_BUILD_ROOT{%{ruby_rdocdir},%{ruby_ridir}} \
 	$RPM_BUILD_ROOT%{ruby_vendorarchdir} \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/net \
 	$RPM_BUILD_ROOT%{ruby_vendorlibdir}/data
+
 
 
 %make_install -C %{_vpath_builddir}
@@ -844,31 +864,34 @@ rm -rd ${CONFIG_TARGET_DIR}
 sed -i 's/Version: \${ruby_version}/Version: %{ruby_version}/' %{buildroot}%{_libdir}/pkgconfig/%{name}.pc
 
 # Kill bundled certificates, as they should be part of ca-certificates.
+# Newer RubyGems releases no longer ship them, hence the -f.
 for cert in GlobalSignRootCA.pem GlobalSignRootCA_R3.pem; do \
-    %{__rm} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/*/$cert
+    %{__rm} -f $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/*/$cert
 done
 # Ensure there is not forgotten any certificate.
 ##test ! "$(ls -A $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/ssl_certs/ 2>/dev/null)"
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}
 cp -Rf sample/* $RPM_BUILD_ROOT%{_examplesdir}/%{oname}-%{pkg_version}
+
+# "make install" no longer installs the top level documentation.
+install -d $RPM_BUILD_ROOT%{_docdir}/%{name}-%{pkg_version}
+cp -p NEWS.md LEGAL BSDL README.md README.EXT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{pkg_version}/
 cp -p %{SOURCE4} %{buildroot}%{_mandir}/man1/rdoc.1
 cp -p %{SOURCE5} %{buildroot}%{_mandir}/man1/testrb.1
 
 %{__rm} -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/html
 
-# detect this runtime, "make install" is affected by operating_system.rb what is installed in system!
-gem_dir=$( \
-  %{_vpath_builddir}/miniruby -Ilib -I. -I%{_vpath_builddir}/.ext/common \
-    tool/runruby.rb --archdir=%{_vpath_builddir} -- --disable-gems \
-    -r$(basename %{_vpath_builddir}/*-linux*-fake.rb .rb) -r rubygems \
-    -e 'puts Gem.default_dir' \
-)
-
 # Move gems root into common directory, out of Ruby directory structure.
-install -d $RPM_BUILD_ROOT%{gem_dir}
-%{__mv} $RPM_BUILD_ROOT${gem_dir}/{gems,specifications} $RPM_BUILD_ROOT%{gem_dir}
-%{__rm} $RPM_BUILD_ROOT${gem_dir}/cache/*.gem
+# "make install" already lays it out as %{gem_dir}/{gems,specifications,extensions}.
+# The bundled gem cache is not packaged.
+%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/gems $RPM_BUILD_ROOT%{gem_dir}
+%{__rm} -f $RPM_BUILD_ROOT%{gem_dir}/cache/*.gem
+
+# Install the packager overrides for RubyGems.  This has to happen after the
+# gems have been moved, so that Gem.default_dirs[:system] points at %{gem_dir}.
+install -d $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/defaults
+cp -p %{SOURCE6} $RPM_BUILD_ROOT%{rubygems_dir}/rubygems/defaults
 
 # Move bundled rubygems to %gem_dir
 # make symlinks for io-console and bigdecimal, which are considered to be part of stdlib by other Gems
@@ -877,11 +900,12 @@ install -d $RPM_BUILD_ROOT%{gem_dir}
 # as there may came files from other packages as well. actually, unlikely as
 # the links to got system dir and only ruby may package there (other distro
 # packages should go to vendor dirs)%
-install -d $RPM_BUILD_ROOT%{gem_instdir rdoc}/lib
-%{__mv} $RPM_BUILD_ROOT%{ruby_libdir}/rdoc* $RPM_BUILD_ROOT%{gem_instdir rdoc}/lib
+# Since Ruby 4.0 "make install" already places the bundled gems below
+# %{gem_dir}, so nothing has to be moved out of %{ruby_libdir} here.
+[ -d $RPM_BUILD_ROOT%{gem_spec -d rdoc} ] && \
+    %{__mv} $RPM_BUILD_ROOT%{gem_spec -d rdoc} $RPM_BUILD_ROOT%{gem_dir}/specifications
 %make_rel_symlink %{gem_instdir rdoc}/lib/rdoc %{ruby_libdir}
 %make_rel_symlink %{gem_instdir rdoc}/lib/rdoc.rb %{ruby_libdir}
-%{__mv} $RPM_BUILD_ROOT%{gem_spec -d rdoc} $RPM_BUILD_ROOT%{gem_dir}/specifications
 
 %make_rel_symlink %{gem_instdir bigdecimal}/lib/bigdecimal %{ruby_libdir}
 %make_rel_symlink %{gem_instdir bigdecimal}/lib/bigdecimal.rb %{ruby_libdir}
@@ -937,9 +961,16 @@ install -d $RPM_BUILD_ROOT%{gem_extdir_mri bundler}/lib
 
 # Move the binary extensions into proper place (if no gem has binary extension,
 # the extensions directory might be empty).
-find ${RPM_BUILD_ROOT}${gem_dir}/extensions/*-%{_target_os}/%{ruby_version}.*/* -maxdepth 0 \
-  -exec mv '{}' $RPM_BUILD_ROOT%{_libdir}/gems/%{name}/ \; \
-    || echo "No gem binary extensions to move."
+for extdir in "$RPM_BUILD_ROOT"%{gem_dir}/extensions \
+              "$RPM_BUILD_ROOT"/../%{oname}-%{pkg_version}/build/.bundle/extensions; do
+    [ -d "$extdir" ] || continue
+    find "$extdir"/*-%{_target_os}/%{ruby_version}.*/* -maxdepth 0 \
+        -exec mv '{}' $RPM_BUILD_ROOT%{_libdir}/gems/%{name}/ \; \
+        || echo "No gem binary extensions to move."
+done
+# Only the leftovers in the build root; the source tree must stay intact for
+# the "gem build_complete" stamps and for subsequent extension builds.
+rm -rf "$RPM_BUILD_ROOT"%{gem_dir}/extensions
 
 # Remove the extension sources and library copies from `lib` dir.
 find $RPM_BUILD_ROOT%{gem_dir}/gems/*/ext -maxdepth 0 -exec rm -rf '{}' +
@@ -981,8 +1012,11 @@ for s in rake-%{rake_version}.gemspec rdoc-%{rdoc_version}.gemspec json-%{json_v
 	-e \"File.write '$s', spec.to_ruby\""
 done
 
-%{__sed} -i -e '1s,/usr/bin/env ruby,/usr/bin/ruby,' \
-        $(find $RPM_BUILD_ROOT -type f | xargs grep '%{_bindir}/env ruby' 2>/dev/null | cut -f1 -d:)
+# Rewrite gem shebangs.  Newer gems may use the "#!/usr/bin/env -S ruby"
+# form, which rpm's shebang check rejects.
+%{__sed} -i -e '1s,/usr/bin/env -S ruby,%{_bindir}/ruby,' \
+        -e '1s,/usr/bin/env ruby,%{_bindir}/ruby,' \
+        $(find $RPM_BUILD_ROOT -type f | xargs grep -l -E '%{_bindir}/env (-S )?ruby' 2>/dev/null)
 
 # gem non library files
 rm -rf $RPM_BUILD_ROOT%{gem_instdir debug}/{[A-Z]*,misc,exts.mk}
@@ -1021,6 +1055,7 @@ rm -f $RPM_BUILD_ROOT%{ruby_ridir}/cache.ri 2>/dev/null || :
 
 %check
 %if %{with tests}
+
 # unset these, as testsuite does "git commit" somewhere, which points to pld .spec repo. doh
 unset GIT_DIR GIT_WORK_TREE
 
@@ -1064,7 +1099,11 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS.md LEGAL BSDL README.md README.EXT
+%doc %{_docdir}/%{name}-%{pkg_version}/NEWS.md
+%doc %{_docdir}/%{name}-%{pkg_version}/LEGAL
+%doc %{_docdir}/%{name}-%{pkg_version}/BSDL
+%doc %{_docdir}/%{name}-%{pkg_version}/README.md
+%doc %{_docdir}/%{name}-%{pkg_version}/README.EXT
 %attr(755,root,root) %{_bindir}/ruby
 %{_libdir}/libruby.so.*.*.*
 %ghost %{_libdir}/libruby.so.%{ruby_version}
@@ -1079,8 +1118,8 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %dir %{ruby_vendorlibdir}
 %dir %{ruby_vendorarchdir}
 
-%dir %{dirname:%{ruby_ridir}}
-%dir %{ruby_ridir}
+# Since RDoc 7 the ri data is versioned below %%{_datadir}/ri/%%{ruby_version} and
+# is packaged by ruby-doc-ri, so the old unversioned %%{ruby_ridir} is gone.
 %dir %{ruby_rdocdir}
 
 # common dirs for ruby vendor modules
@@ -1097,23 +1136,34 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %files irb
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/irb
-%{ruby_libdir}/irb.rb
-%{ruby_libdir}/irb
-%{gem_spec -d irb}
-%{_mandir}/man1/irb.1*
+%{gem_instdir irb}
+%{gem_spec irb}
 
 %files rdoc
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rdoc
 %attr(755,root,root) %{_bindir}/ri
 %{_mandir}/man1/rdoc.1*
+%{gem_instdir rdoc}/man/ri.1*
 %{ruby_libdir}/rdoc
 %dir %{gem_instdir rdoc}
 %{gem_instdir rdoc}/lib
 %{gem_spec rdoc}
+%{gem_instdir rdoc}/rdoc.gemspec
 %dir %{gem_instdir rdoc}/exe
 %{gem_instdir rdoc}/exe/rdoc
 %{gem_instdir rdoc}/exe/ri
+%{gem_plugin rdoc}
+%doc %{gem_instdir rdoc}/CONTRIBUTING.md
+%doc %{gem_instdir rdoc}/CVE-2013-0256.rdoc
+%doc %{gem_instdir rdoc}/ExampleMarkdown.md
+%doc %{gem_instdir rdoc}/ExampleRDoc.rdoc
+%doc %{gem_instdir rdoc}/History.rdoc
+%license %{gem_instdir rdoc}/LEGAL.rdoc
+%license %{gem_instdir rdoc}/LICENSE.rdoc
+%doc %{gem_instdir rdoc}/README.md
+%doc %{gem_instdir rdoc}/RI.md
+%doc %{gem_instdir rdoc}/TODO.rdoc
 
 %if %{with batteries}
 %files rubygems
@@ -1135,6 +1185,7 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %dir %{gem_instdir rake}
 %{gem_instdir rake}/lib
 %{gem_spec rake}
+%{gem_instdir rake}/rake.gemspec
 %dir %{gem_instdir rake}/exe
 %attr(755,root,root) %{gem_instdir rake}/exe/rake
 
@@ -1165,13 +1216,16 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 
 %files minitest
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/minitest
 %{ruby_libdir}/minitest
 %{gem_instdir minitest}
 %{gem_spec minitest}
 
 %files test-unit
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/test-unit
 %dir %{gem_instdir test-unit}
+%{gem_instdir test-unit}/bin
 %{gem_instdir test-unit}/lib
 %{gem_spec test-unit}
 %{_mandir}/man1/testrb.1*
@@ -1179,8 +1233,11 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %files racc
 %defattr(644,root,root,755)
 %dir %{gem_instdir racc}
+%dir %{gem_extdir_mri racc}
+%{gem_extdir_mri racc}/gem.build_complete
+%dir %{gem_extdir_mri racc}/racc
+%attr(755,root,root) %{gem_extdir_mri racc}/racc/cparse.so
 %attr(755,root,root) %{_bindir}/racc
-%{gem_extdir_mri racc}
 %{gem_instdir racc}/bin
 %{gem_instdir racc}/lib
 %{gem_spec racc}
@@ -1259,10 +1316,67 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 
 # base64
 %dir %{gem_instdir base64}
-%doc %{gem_instdir base64}/LICENSE.txt
+%license %{gem_instdir base64}/BSDL
+%license %{gem_instdir base64}/COPYING
+%license %{gem_instdir base64}/LEGAL
 %{gem_instdir base64}/lib
 %{gem_spec base64}
 %doc %{gem_instdir base64}/README.md
+%doc %{gem_instdir base64}/sig
+
+# benchmark
+%dir %{gem_instdir benchmark}
+%license %{gem_instdir benchmark}/BSDL
+%license %{gem_instdir benchmark}/COPYING
+%{gem_instdir benchmark}/bin
+%{gem_instdir benchmark}/lib
+%{gem_spec benchmark}
+%{gem_instdir benchmark}/Gemfile
+%doc %{gem_instdir benchmark}/README.md
+%{gem_instdir benchmark}/Rakefile
+
+# fiddle
+%dir %{gem_instdir fiddle}
+%dir %{gem_extdir_mri fiddle}
+%{gem_extdir_mri fiddle}/gem.build_complete
+%attr(755,root,root) %{gem_extdir_mri fiddle}/fiddle.so
+%{gem_instdir fiddle}/lib
+%{gem_spec fiddle}
+%{gem_instdir fiddle}/fiddle.gemspec
+%doc %{gem_instdir fiddle}/LICENSE.txt
+%doc %{gem_instdir fiddle}/README.md
+%{gem_instdir fiddle}/Rakefile
+
+# logger
+%dir %{gem_instdir logger}
+%license %{gem_instdir logger}/BSDL
+%license %{gem_instdir logger}/COPYING
+%{gem_instdir logger}/lib
+%{gem_spec logger}
+%doc %{gem_instdir logger}/README.md
+
+# ostruct
+%dir %{gem_instdir ostruct}
+%license %{gem_instdir ostruct}/BSDL
+%license %{gem_instdir ostruct}/COPYING
+%{gem_instdir ostruct}/bin
+%{gem_instdir ostruct}/lib
+%{gem_spec ostruct}
+%{gem_instdir ostruct}/ostruct.gemspec
+%{gem_instdir ostruct}/Gemfile
+%doc %{gem_instdir ostruct}/README.md
+%{gem_instdir ostruct}/Rakefile
+
+# pstore
+%dir %{gem_instdir pstore}
+%license %{gem_instdir pstore}/BSDL
+%license %{gem_instdir pstore}/COPYING
+%{gem_instdir pstore}/bin
+%{gem_instdir pstore}/lib
+%{gem_spec pstore}
+%{gem_instdir pstore}/Gemfile
+%doc %{gem_instdir pstore}/README.md
+%{gem_instdir pstore}/Rakefile
 
 # csv
 %dir %{gem_instdir csv}
@@ -1278,6 +1392,7 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %doc %{gem_instdir drb}/LICENSE.txt
 %{gem_instdir drb}/lib
 %{gem_spec drb}
+%{gem_instdir drb}/drb.gemspec
 
 # getoptlong
 %dir %{gem_instdir getoptlong}
@@ -1294,6 +1409,7 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %dir %{gem_instdir matrix}
 %{gem_instdir matrix}/lib
 %{gem_spec matrix}
+%{gem_instdir matrix}/matrix.gemspec
 
 # mutex_m
 %dir %{gem_instdir mutex_m}
@@ -1347,11 +1463,29 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %doc %{gem_instdir observer}/README.md
 %{gem_instdir observer}/Rakefile
 
+# readline
+%dir %{gem_instdir readline}
+%license %{gem_instdir readline}/BSDL
+%license %{gem_instdir readline}/COPYING
+%{gem_instdir readline}/lib
+%{gem_spec readline}
+%doc %{gem_instdir readline}/README.md
+
+# reline
+%dir %{gem_instdir reline}
+%license %{gem_instdir reline}/BSDL
+%license %{gem_instdir reline}/COPYING
+%{gem_instdir reline}/lib
+%{gem_spec reline}
+%doc %{gem_instdir reline}/README.md
+%{gem_instdir reline}/license_of_rb-readline
+
 # prime
 %dir %{gem_instdir prime}
 %{gem_instdir prime}/lib
 %{gem_instdir prime}/sig
 %{gem_spec prime}
+%{gem_instdir prime}/prime.gemspec
 
 # rdbg
 %attr(755,root,root) %{_bindir}/rdbg
@@ -1410,7 +1544,6 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %{ruby_libdir}/bundled_gems.rb
 %{ruby_libdir}/cgi
 %{ruby_libdir}/digest
-%{ruby_libdir}/fiddle
 %{ruby_libdir}/io
 %{ruby_libdir}/net
 %{ruby_libdir}/openssl
@@ -1420,7 +1553,6 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %{ruby_libdir}/uri
 %{ruby_libdir}/yaml
 %{ruby_libdir}/English.rb
-%{ruby_libdir}/benchmark.rb
 %{ruby_libdir}/bundler
 %{ruby_libdir}/bundler.rb
 %{ruby_libdir}/cgi.rb
@@ -1437,7 +1569,6 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %dir %{ruby_libdir}/erb
 %{ruby_libdir}/erb/*.rb
 %{ruby_libdir}/expect.rb
-%{ruby_libdir}/fiddle.rb
 %{ruby_libdir}/fileutils.rb
 %{ruby_libdir}/find.rb
 %{ruby_libdir}/forwardable.rb
@@ -1445,9 +1576,6 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %{ruby_libdir}/forwardable/impl.rb
 %{ruby_libdir}/ipaddr.rb
 %{ruby_libdir}/json.rb
-%{ruby_libdir}/logger.rb
-%dir %{ruby_libdir}/logger
-%{ruby_libdir}/logger/*.rb
 %{ruby_libdir}/monitor.rb
 %{ruby_libdir}/objspace.rb
 %dir %{ruby_libdir}/objspace
@@ -1459,34 +1587,19 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %{ruby_libdir}/openssl.rb
 %{ruby_libdir}/optionparser.rb
 %{ruby_libdir}/optparse.rb
-%{ruby_libdir}/ostruct.rb
 %{ruby_libdir}/pathname.rb
 %{ruby_libdir}/pp.rb
 %{ruby_libdir}/prettyprint.rb
 %{ruby_libdir}/prism*
-%{ruby_libdir}/pstore.rb
 %dir %{ruby_libdir}/random
 %{ruby_libdir}/random/*.rb
 %{ruby_libdir}/rdoc.rb
-%{ruby_libdir}/readline.rb
-%{ruby_libdir}/reline.rb
-%dir %{ruby_libdir}/reline
-%{ruby_libdir}/reline/*.rb
-%dir %{ruby_libdir}/reline/io
-%{ruby_libdir}/reline/io/*.rb
-%dir %{ruby_libdir}/reline/key_actor
-%{ruby_libdir}/reline/key_actor/*.rb
-%dir %{ruby_libdir}/reline/unicode
-%{ruby_libdir}/reline/unicode/*.rb
+
 %{ruby_libdir}/resolv.rb
 %{ruby_libdir}/ripper.rb
-%dir %{ruby_libdir}/ruby_vm
-%dir %{ruby_libdir}/ruby_vm/rjit
-%{ruby_libdir}/ruby_vm/rjit/*.rb
 %{ruby_libdir}/securerandom.rb
-%{ruby_libdir}/set.rb
 %dir %{ruby_libdir}/set
-%{ruby_libdir}/set/*.rb
+%{ruby_libdir}/set/subclass_compatible.rb
 %{ruby_libdir}/shellwords.rb
 %{ruby_libdir}/singleton.rb
 %{ruby_libdir}/socket.rb
@@ -1511,7 +1624,6 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %if %{with batteries}
 %exclude %{ruby_libdir}/rubygems.rb
 %endif
-%exclude %{ruby_libdir}/irb.rb
 %exclude %{ruby_libdir}/mkmf.rb
 
 %{ruby_archdir}/rbconfig.rb
@@ -1522,11 +1634,9 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %attr(755,root,root) %{ruby_archdir}%{_sysconfdir}.so
 %attr(755,root,root) %{ruby_archdir}/erb/escape.so
 %attr(755,root,root) %{ruby_archdir}/fcntl.so
-%attr(755,root,root) %{ruby_archdir}/fiddle.so
 %attr(755,root,root) %{ruby_archdir}/monitor.so
 %attr(755,root,root) %{ruby_archdir}/objspace.so
 %attr(755,root,root) %{ruby_archdir}/openssl.so
-%attr(755,root,root) %{ruby_archdir}/pathname.so
 %attr(755,root,root) %{ruby_archdir}/pty.so
 %attr(755,root,root) %{ruby_archdir}/ripper.so
 %attr(755,root,root) %{ruby_archdir}/socket.so
@@ -1560,28 +1670,14 @@ sed -i '/def test_ctx_server_session_cb$/,/^  end$/ s/^/#/' test/openssl/test_ss
 %{gem_dir}/specifications/default/*.gemspec
 
 %{_mandir}/man1/erb.1*
-%{_mandir}/man1/ri.1*
 
 %if %{with doc}
+# Since RDoc 7 the ri data is versioned below %%{_datadir}/ri/%%{ruby_version},
+# so take the whole tree rather than listing individual files.  The empty
+# %%{_datadir}/rdoc is already owned by the main ruby package.
 %files doc-ri
 %defattr(644,root,root,755)
-%{ruby_ridir}/[A-Z]*
-%{ruby_ridir}/contributing
-%{ruby_ridir}/date
-%{ruby_ridir}/fatal
-%{ruby_ridir}/syntax
-%{ruby_ridir}/optparse
-%lang(ja) %{ruby_ridir}/page-COPYING_ja.ri
-%lang(ja) %{ruby_ridir}/page-README_ja_md.ri
-%{ruby_ridir}/page-COPYING.ri
-%{ruby_ridir}/page-LEGAL.ri
-%{ruby_ridir}/page-NEWS_md.ri
-%{ruby_ridir}/page-README_md.ri
-%{ruby_ridir}/page-[a-z]*.ri
-%{ruby_ridir}/regexp
-%{ruby_ridir}/rjit
-%{ruby_ridir}/ruby
-%{ruby_ridir}/yjit
+%{_datadir}/ri
 %endif
 
 %files examples

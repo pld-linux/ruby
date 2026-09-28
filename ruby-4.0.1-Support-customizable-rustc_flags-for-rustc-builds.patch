@@ -1,0 +1,117 @@
+From 1cfb11bc8d01e4fc1ff47807721e29b250f0f19f Mon Sep 17 00:00:00 2001
+From: Jarek Prokop <jprokop@redhat.com>
+Date: Mon, 22 Dec 2025 10:13:34 +0100
+Subject: [PATCH] Support customizable rustc_flags for rustc builds.
+
+Add `rustc_flags` option for configure that appends to RUSTC_FLAGS
+flags used when compiling with rustc for customizable build flags.
+It appends to existing defaults in RUSTC_FLAGS.
+
+Co-authored-by: Alan Wu <XrXr@users.noreply.github.com>
+---
+ common.mk            | 10 ++--------
+ configure.ac         |  8 ++++++++
+ defs/jit.mk          |  2 ++
+ template/Makefile.in |  1 +
+ 4 files changed, 13 insertions(+), 8 deletions(-)
+
+diff --git a/common.mk b/common.mk
+index 08fee9119a..9ac5ae919f 100644
+--- a/common.mk
++++ b/common.mk
+@@ -270,21 +270,15 @@ MAKE_LINK = $(MINIRUBY) -rfileutils -e "include FileUtils::Verbose" \
+ # For release builds
+ YJIT_RUSTC_ARGS = --crate-name=yjit \
+ 	$(JIT_RUST_FLAGS) \
++	$(RUSTC_FLAGS) \
+ 	--edition=2021 \
+-	-g \
+-	-C lto=thin \
+-	-C opt-level=3 \
+-	-C overflow-checks=on \
+ 	'--out-dir=$(CARGO_TARGET_DIR)/release/' \
+ 	'$(top_srcdir)/yjit/src/lib.rs'
+ 
+ ZJIT_RUSTC_ARGS = --crate-name=zjit \
+ 	$(JIT_RUST_FLAGS) \
++	$(RUSTC_FLAGS) \
+ 	--edition=2024 \
+-	-g \
+-	-C lto=thin \
+-	-C opt-level=3 \
+-	-C overflow-checks=on \
+ 	'--out-dir=$(CARGO_TARGET_DIR)/release/' \
+ 	'$(top_srcdir)/zjit/src/lib.rs'
+ 
+diff --git a/configure.ac b/configure.ac
+index 2bbce78fd0..a3aa6dc383 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -69,6 +69,7 @@ dnl 93(bright yellow) is copied from .github/workflows/mingw.yml
+ AC_ARG_VAR([cflags], [additional CFLAGS (ignored when CFLAGS is given)])dnl
+ AC_ARG_VAR([cppflags], [additional CPPFLAGS (ignored when CPPFLAGS is given)])dnl
+ AC_ARG_VAR([cxxflags], [additional CXXFLAGS (ignored when CXXFLAGS is given)])dnl
++AC_ARG_VAR([rustc_flags], [additional RUSTC_FLAGS])dnl
+ 
+ [begin]_group "environment section" && {
+ HAVE_BASERUBY=yes
+@@ -4051,6 +4054,11 @@ AS_CASE(["${ZJIT_SUPPORT}"],
+     AC_DEFINE(USE_ZJIT, 0)
+ ])
+ 
++RUSTC_FLAGS='-g -C lto=thin -C opt-level=3 -C overflow-checks=on'
++AS_IF([test -n "${rustc_flags}"], [
++    RUSTC_FLAGS="${RUSTC_FLAGS} ${rustc_flags}"
++])
++
+ JIT_RUST_FLAGS='--crate-type=staticlib --cfg feature=\"stats_allocator\"'
+ RLIB_DIR=
+ AS_CASE(["$JIT_CARGO_SUPPORT:$YJIT_SUPPORT:$ZJIT_SUPPORT"],
+@@ -4108,6 +4114,7 @@ AS_IF([test -n "$RUST_LIB"], [
+ dnl These variables end up in ::RbConfig::CONFIG
+ AC_SUBST(RUSTC)dnl Rust compiler command
+ AC_SUBST(JIT_RUST_FLAGS)dnl the common rustc flags for JIT crates such as zjit
++AC_SUBST(RUSTC_FLAGS)dnl user-configurable rustc compiler flags
+ AC_SUBST(CARGO)dnl Cargo command for Rust builds
+ AC_SUBST(CARGO_BUILD_ARGS)dnl for selecting Rust build profiles
+ AC_SUBST(YJIT_SUPPORT)dnl what flavor of YJIT the Ruby build includes
+@@ -4852,6 +4859,7 @@ config_summary "strip command"       "$STRIP"
+ config_summary "install doc"         "$DOCTARGETS"
+ config_summary "YJIT support"        "$YJIT_SUPPORT"
+ config_summary "ZJIT support"        "$ZJIT_SUPPORT"
++config_summary "RUSTC_FLAGS"         "$RUSTC_FLAGS"
+ config_summary "man page type"       "$MANTYPE"
+ config_summary "search path"         "$search_path"
+ config_summary "static-linked-ext"   ${EXTSTATIC:+"yes"}
+diff --git a/defs/jit.mk b/defs/jit.mk
+index 42b56c4cd9..27b14e7a07 100644
+--- a/defs/jit.mk
++++ b/defs/jit.mk
+@@ -40,6 +40,7 @@ else ifneq ($(strip $(RLIB_DIR)),) # combo build
+ $(RUST_LIB): $(srcdir)/ruby.rs
+ 	$(ECHO) 'building $(@F)'
+ 	$(gnumake_recursive)$(Q) $(RUSTC) --edition=2024 \
++	    $(RUSTC_FLAGS) \
+ 	    '-L$(@D)' \
+ 	    --extern=yjit \
+ 	    --extern=zjit \
+@@ -58,6 +59,7 @@ $(JIT_RLIB):
+ 	$(gnumake_recursive)$(Q) $(RUSTC) --crate-name=jit \
+ 	    --edition=2024 \
+ 	    $(JIT_RUST_FLAGS) \
++	    $(RUSTC_FLAGS) \
+ 	    '--out-dir=$(@D)' \
+ 	    '$(top_srcdir)/jit/src/lib.rs'
+ endif # ifneq ($(JIT_CARGO_SUPPORT),no)
+diff --git a/template/Makefile.in b/template/Makefile.in
+index 443c394cb4..0b7b50e3aa 100644
+--- a/template/Makefile.in
++++ b/template/Makefile.in
+@@ -115,6 +115,7 @@ CARGO_TARGET_DIR=@abs_top_builddir@/target
+ CARGO_BUILD_ARGS=@CARGO_BUILD_ARGS@
+ ZJIT_TEST_FEATURES=@ZJIT_TEST_FEATURES@
+ JIT_RUST_FLAGS=@JIT_RUST_FLAGS@
++RUSTC_FLAGS=@RUSTC_FLAGS@
+ RLIB_DIR=@RLIB_DIR@
+ RUST_LIB=@RUST_LIB@
+ RUST_LIBOBJ = $(RUST_LIB:.a=.@OBJEXT@)

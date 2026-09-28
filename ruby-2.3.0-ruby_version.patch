@@ -1,7 +1,7 @@
 From 4fc1be3af3f58621bb751c9e63c208b15c0e8d16 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?V=C3=ADt=20Ondruch?= <vondruch@redhat.com>
 Date: Tue, 31 Mar 2015 16:21:04 +0200
-Subject: [PATCH 1/4] Use ruby_version_dir_name for versioned directories.
+Subject: [PATCH 1/3] Use ruby_version_dir_name for versioned directories.
 
 This disallows changing the ruby_version constant by --with-ruby-version
 configuration options. The two places version numbers are disallowed as
@@ -144,47 +144,10 @@ index 8a2c066..c81b211 100644
  arch=@arch@
 
 
-From 518850aba6eee76de7715aae8d37330e34b01983 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?V=C3=ADt=20Ondruch?= <vondruch@redhat.com>
-Date: Tue, 31 Mar 2015 16:37:26 +0200
-Subject: [PATCH 2/4] Add ruby_version_dir_name support for RDoc.
-
----
- lib/rdoc/ri/paths.rb | 2 +-
- tool/rbinstall.rb    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/lib/rdoc/ri/paths.rb b/lib/rdoc/ri/paths.rb
-index 970cb91..5bf8230 100644
---- a/lib/rdoc/ri/paths.rb
-+++ b/lib/rdoc/ri/paths.rb
-@@ -10,7 +10,7 @@ module RDoc::RI::Paths
-   #:stopdoc:
-   require 'rbconfig'
-
--  version = RbConfig::CONFIG['ruby_version']
-+  version = RbConfig::CONFIG['ruby_version_dir_name'] || RbConfig::CONFIG['ruby_version']
-
-   BASE    = File.join RbConfig::CONFIG['ridir'], version
-
-diff --git a/tool/rbinstall.rb b/tool/rbinstall.rb
-index d4c110e..d39c9a6 100755
---- a/tool/rbinstall.rb
-+++ b/tool/rbinstall.rb
-@@ -945,7 +945,7 @@ def (bins = []).add(name)
-
- install?(:doc, :rdoc) do
-   if $rdocdir
--    ridatadir = File.join(CONFIG['ridir'], CONFIG['ruby_version'], "system")
-+    ridatadir = File.join(CONFIG['ridir'], CONFIG['ruby_version_dir_name'] || CONFIG['ruby_version'], "system")
-     prepare "rdoc", ridatadir
-     install_recursive($rdocdir, ridatadir, :no_install => rdoc_noinst, :mode => $data_mode)
-   end
-
 From 9f0ec0233f618cbb862629816b22491c3df79578 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?V=C3=ADt=20Ondruch?= <vondruch@redhat.com>
 Date: Tue, 31 Mar 2015 16:37:44 +0200
-Subject: [PATCH 3/4] Add ruby_version_dir_name support for RubyGems.
+Subject: [PATCH 2/3] Add ruby_version_dir_name support for RubyGems.
 
 ---
  lib/rubygems/defaults.rb  | 7 ++++---
@@ -251,7 +214,7 @@ index b25068405d..e9fef4a311 100644
 From 88c38a030c22dbf9422ece847bdfbf87d6659313 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?V=C3=ADt=20Ondruch?= <vondruch@redhat.com>
 Date: Wed, 1 Apr 2015 14:55:37 +0200
-Subject: [PATCH 4/4] Let headers directories follow the configured version
+Subject: [PATCH 3/3] Let headers directories follow the configured version
  name.
 
 ---

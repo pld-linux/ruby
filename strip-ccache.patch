@@ -1,6 +1,9 @@
---- ruby-2.2.5/tool/mkconfig.rb.orig	2016-09-19 13:53:05.152982868 +0200
-+++ ruby-2.2.5/tool/mkconfig.rb	2016-09-19 14:01:04.182988081 +0200
-@@ -79,6 +79,7 @@
+Do not pass ccache wrappers down to libruby.so compilation; the wrapper
+path recorded in rbconfig would leak into the installed rbconfig.rb.
+
+--- a/tool/mkconfig.rb.orig	2016-09-19 13:53:05.152982868 +0200
++++ b/tool/mkconfig.rb	2016-09-19 14:01:04.182988081 +0200
+@@ -68,6 +68,7 @@
      when /^LIBRUBY_D?LD/; next
      when /^RUBY_INSTALL_NAME$/; next vars[name] = (install_name = val).dup if $install_name
      when /^RUBY_SO_NAME$/; next vars[name] = (so_name = val).dup if $so_name
