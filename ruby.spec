@@ -30,6 +30,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{version}.tar.xz
+# Source0-md5:	5865f54502e2e12f7a763ae470166ad6
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
