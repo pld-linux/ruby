@@ -110,11 +110,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define rel_symlink()  %(realpath -m --relative-to=%{buildroot}%{?2} %{buildroot}%{?1})
 %define make_rel_symlink()  ln -s %{rel_symlink %{?1} %{?2}} %{buildroot}%{?2}/%{?3}%{!?3:%(basename %{?1})}
 
-# hack: skip rubygem(ipaddr)
-%define	_noautoreq	ipaddr
-# ruby(abi) replaced by ruby(release)
-%{expand:%%global _noautoreq %{_noautoreq} 'ruby\\(abi\\)'}
-%{expand:%%global _noautoprov %{?nil} 'ruby\\(abi\\)'}
+# hack: skip rubygem(ipaddr) and ruby(abi) (replaced with manual ruby(release))
+%define	_noautoreq	ipaddr abi
+%define	_noautoprov	abi
 
 # Bundled libraries versions
 %define rubygems_version 4.0.20
