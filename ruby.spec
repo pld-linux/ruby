@@ -8,7 +8,7 @@
 
 %define		rel		1
 %define		ruby_version	4.0
-%define		patchlevel	7
+%define		patchlevel	8
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
 %define		unicode_version	17.0.0
@@ -30,7 +30,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{version}.tar.xz
-# Source0-md5:	5865f54502e2e12f7a763ae470166ad6
+# Source0-md5:	7cdf4834914b13a0a5fcc009b20240ac
 Source4:	rdoc.1
 Source5:	testrb.1
 Source6:	operating_system.rb
@@ -93,6 +93,7 @@ BuildRequires:	ruby-modules
 %endif
 Requires(post,postun):	/sbin/ldconfig
 Provides:	ruby(release) = %{ruby_version}
+Provides:	ruby(abi) = %{ruby_version}
 Obsoletes:	ruby-REXML <= 2.4.0-2
 Obsoletes:	ruby-doc < 1.8.4
 Obsoletes:	ruby-fastthread <= 0.6.3
