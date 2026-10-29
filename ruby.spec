@@ -13,9 +13,9 @@
 %define		with_yjit	1
 %endif
 
-%define		rel		9
+%define		rel		1
 %define		ruby_version	3.4
-%define		patchlevel	9
+%define		patchlevel	12
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	3_4_1
@@ -38,7 +38,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	b58158f56343125bc9a56841f4c2cb35
+# Source0-md5:	db791b0520a57d2dbab52fd07a266f7c
 Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_complete_rdocs.tgz
 # Source2-md5:	a13c63951d5ce47b169935a7208f876d
 Source6:	operating_system.rb
@@ -47,6 +47,7 @@ Patch5:		ruby-version.patch
 Patch6:		duplicated-paths.patch
 Patch9:		custom-rubygems-location.patch
 Patch12:	archlibdir.patch
+Patch13:	CVE-2026-54696.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake
@@ -54,7 +55,6 @@ BuildRequires:  gcc-c++
 BuildRequires:	gmp-devel
 BuildRequires:	libffi-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.6
 BuildRequires:	pkgconfig
 BuildRequires:	rpm-build >= 5.4.10-49
@@ -104,11 +104,11 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define bundler_uri_ver 1.0.4
 
 %define did_you_mean_ver 2.0.0
-%define erb_ver 4.0.4
+%define erb_ver 4.0.4.1
 %define io_console_ver 0.8.1
 %define irb_ver 1.14.3
 %define json_ver 2.9.1
-%define openssl_ver 3.3.1
+%define openssl_ver 3.3.3
 %define psych_ver 5.2.2
 %define rdoc_ver 6.14.0
 %define stringio_ver 3.1.2
@@ -122,7 +122,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define rexml_ver 3.4.4
 %define rss_ver 0.3.1
 %define net_ftp_ver 0.3.8
-%define net_imap_ver 0.5.8
+%define net_imap_ver 0.5.15
 %define net_pop_ver 0.1.2
 %define net_smtp_ver 0.5.1
 %define matrix_ver 0.4.2
@@ -642,6 +642,7 @@ don't get access to features such as XPath.
 %package rss
 Summary:	Family of libraries that support various formats of XML "feeds"
 Version:	%{rss_ver}
+Epoch:		2
 License:	BSD
 URL:		https://github.com/ruby/rss
 BuildArch:	noarch
@@ -690,6 +691,7 @@ these needs to be listed in Gemfile to be used by Bundler.
 %patch 6 -p1
 %patch 9 -p1
 %patch 12 -p1
+%patch 13 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
@@ -1038,7 +1040,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS.md LEGAL BSDL README.md README.EXT ChangeLog
+%doc NEWS.md LEGAL BSDL README.md README.EXT
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
