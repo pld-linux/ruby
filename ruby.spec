@@ -13,7 +13,7 @@
 %define		with_yjit	1
 %endif
 
-%define		rel		1
+%define		rel		2
 %define		ruby_version	3.4
 %define		patchlevel	12
 %define		pkg_version	%{ruby_version}.%{patchlevel}
@@ -642,7 +642,9 @@ don't get access to features such as XPath.
 %package rss
 Summary:	Family of libraries that support various formats of XML "feeds"
 Version:	%{rss_ver}
-Epoch:		2
+# own Release: %{rel} restarts with each ruby Version, 0.3.1-9 was shipped
+# with ruby 3.4.9; bump it on every ruby release while rss_ver stays
+Release:	10
 License:	BSD
 URL:		https://github.com/ruby/rss
 BuildArch:	noarch
