@@ -14,9 +14,9 @@
 %define		with_zjit	1
 %endif
 
-%define		rel		0.1
+%define		rel		1
 %define		ruby_version	4.0
-%define		patchlevel	1
+%define		patchlevel	9
 %define		pkg_version	%{ruby_version}.%{patchlevel}
 %define		ruby_suffix	%{!?with_default_ruby:%{ruby_version}}
 %define		doc_version	3_4_1
@@ -39,7 +39,7 @@ License:	(Ruby or BSD) and Public Domain and MIT and CC0 and zlib and UCD
 Group:		Development/Languages
 # https://www.ruby-lang.org/en/downloads/
 Source0:	https://cache.ruby-lang.org/pub/ruby/%{ruby_version}/%{oname}-%{pkg_version}.tar.xz
-# Source0-md5:	693837ccd6cbbca625742e642989796a
+# Source0-md5:	bfcbb1f74060e9201e9fd154c85176f3
 Source2:	https://ruby-doc.org/downloads/%{oname}_%{doc_version}_complete_rdocs.tgz
 # Source2-md5:	a13c63951d5ce47b169935a7208f876d
 Source6:	operating_system.rb
@@ -48,6 +48,8 @@ Patch5:		ruby-version.patch
 Patch6:		duplicated-paths.patch
 Patch9:		custom-rubygems-location.patch
 Patch12:	archlibdir.patch
+Patch13:	CVE-2026-33210.patch
+Patch14:	CVE-2026-54696.patch
 URL:		http://www.ruby-lang.org/
 BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake
@@ -55,7 +57,6 @@ BuildRequires:  gcc-c++
 BuildRequires:	gmp-devel
 BuildRequires:	libffi-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel >= 0.9.6
 BuildRequires:	pkgconfig
 BuildRequires:	rpm-build >= 5.4.10-49
@@ -93,13 +94,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # hack: skip rubygem(ipaddr)
 %define	_noautoreq	ipaddr
 
-%define rubygems_ver 4.0.3
+%define rubygems_ver 4.0.20
 %define rubygems_molinillo_ver 0.8.0
 %define rubygems_optparse_ver 0.6.0
 %define rubygems_tsort_ver 0.2.0
 
 # Default gems.
-%define bundler_ver 4.0.3
+%define bundler_ver 4.0.20
 %define bundler_connection_pool_ver 2.5.4
 %define bundler_fileutils_ver 1.8.0
 %define bundler_pub_grub_ver 0.5.0
@@ -109,13 +110,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define bundler_uri_ver 1.1.1
 
 %define did_you_mean_ver 2.0.0
-%define erb_ver 6.0.1
+%define erb_ver 6.0.7
 %define io_console_ver 0.8.2
 %define irb_ver 1.16.0
 %define json_ver 2.18.0
-%define openssl_ver 4.0.0
+%define openssl_ver 4.0.2
 %define psych_ver 5.3.1
-%define rdoc_ver 7.0.3
+%define rdoc_ver 7.0.4
 %define stringio_ver 3.2.0
 
 # Bundled gems.
@@ -127,7 +128,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define rexml_ver 3.4.4
 %define rss_ver 0.3.2
 %define net_ftp_ver 0.3.9
-%define net_imap_ver 0.6.2
+%define net_imap_ver 0.6.4.1
 %define net_pop_ver 0.1.2
 %define net_smtp_ver 0.5.1
 %define matrix_ver 0.4.3
@@ -148,6 +149,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define resolv_replace_ver 0.1.1
 %define rinda_ver 0.2.0
 %define repl_type_completor_ver 0.1.12
+%define benchmark_ver 0.5.0
+%define fiddle_ver 1.1.8
+%define logger_ver 1.7.0
+%define ostruct_ver 0.6.3
+%define pstore_ver 0.2.1
+%define readline_ver 0.0.4
+%define reline_ver 0.6.3
 
 
 %define	ruby_ridir		%{_datadir}/ri/system
@@ -664,10 +672,13 @@ Requires:	ruby-rubygems >= %{rubygems_ver}
 Recommends:	rubygem(irb) >= %{irb_ver}
 Provides:	rubygem(abbrev) = %{abbrev_ver}
 Provides:	rubygem(base64) = %{base64_ver}
+Provides:	rubygem(benchmark) = %{benchmark_ver}
 Provides:	rubygem(csv) = %{csv_ver}
 Provides:	rubygem(debug) = %{debug_ver}
 Provides:	rubygem(drb) = %{drb_ver}
+Provides:	rubygem(fiddle) = %{fiddle_ver}
 Provides:	rubygem(getoptlong) = %{getoptlong_ver}
+Provides:	rubygem(logger) = %{logger_ver}
 Provides:	rubygem(matrix) = %{matrix_ver}
 Provides:	rubygem(mutex_m) = %{mutex_m_ver}
 Provides:	rubygem(net-ftp) = %{net_ftp_ver}
@@ -676,8 +687,12 @@ Provides:	rubygem(net-pop) = %{net_pop_ver}
 Provides:	rubygem(net-smtp) = %{net_smtp_ver}
 Provides:	rubygem(nkf) = %{nkf_ver}
 Provides:	rubygem(observer) = %{observer_ver}
+Provides:	rubygem(ostruct) = %{ostruct_ver}
 Provides:	rubygem(prime) = %{prime_ver}
+Provides:	rubygem(pstore) = %{pstore_ver}
 Provides:	rubygem(racc) = %{racc_ver}
+Provides:	rubygem(readline) = %{readline_ver}
+Provides:	rubygem(reline) = %{reline_ver}
 Provides:	rubygem(resolv-replace) = %{resolv_replace_ver}
 Provides:	rubygem(repl_type_completor) = %{repl_type_completor_ver}
 Provides:	rubygem(rinda) = %{rinda_ver}
@@ -695,6 +710,8 @@ these needs to be listed in Gemfile to be used by Bundler.
 %patch 6 -p1
 %patch 9 -p1
 %patch 12 -p1
+%patch 13 -p1
+%patch 14 -p1
 
 # must be regenerated with new bison
 %{__rm} parse.{c,h}
@@ -1002,6 +1019,13 @@ done
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/observer-%{observer_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/resolv-replace-%{resolv_replace_ver}/[A-Z]*
 %{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/rinda-%{rinda_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/benchmark-%{benchmark_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/fiddle-%{fiddle_ver}/{[A-Z]*,ext,exts.mk,fiddle.gemspec}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/logger-%{logger_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/ostruct-%{ostruct_ver}/{[A-Z]*,bin,ostruct.gemspec}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/pstore-%{pstore_ver}/{[A-Z]*,bin}
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/readline-%{readline_ver}/[A-Z]*
+%{__rm} -r $RPM_BUILD_ROOT%{gem_dir}/gems/reline-%{reline_ver}/{[A-Z]*,license_of_rb-readline}
 
 %if %{without batteries}
 # packaged separately
@@ -1028,7 +1052,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS.md LEGAL BSDL README.md README.EXT ChangeLog
+%doc NEWS.md LEGAL BSDL README.md README.EXT
 %attr(755,root,root) %{_bindir}/ruby%{ruby_suffix}
 %attr(755,root,root) %{_libdir}/libruby.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libruby.so.%{ruby_version}
@@ -1290,6 +1314,38 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gem_dir}/gems/repl_type_completor-%{repl_type_completor_ver}
 %{gem_dir}/gems/repl_type_completor-%{repl_type_completor_ver}/lib
 %{gem_dir}/specifications/repl_type_completor-%{repl_type_completor_ver}.gemspec
+
+# Gems moved from default to bundled in 4.0
+%dir %{gem_dir}/gems/benchmark-%{benchmark_ver}
+%{gem_dir}/gems/benchmark-%{benchmark_ver}/lib
+%{gem_dir}/specifications/benchmark-%{benchmark_ver}.gemspec
+
+%dir %{gem_dir}/gems/fiddle-%{fiddle_ver}
+%{gem_dir}/gems/fiddle-%{fiddle_ver}/lib
+%dir %{gem_libdir}/fiddle-%{fiddle_ver}
+%{gem_libdir}/fiddle-%{fiddle_ver}/gem.build_complete
+%attr(755,root,root) %{gem_libdir}/fiddle-%{fiddle_ver}/fiddle.so
+%{gem_dir}/specifications/fiddle-%{fiddle_ver}.gemspec
+
+%dir %{gem_dir}/gems/logger-%{logger_ver}
+%{gem_dir}/gems/logger-%{logger_ver}/lib
+%{gem_dir}/specifications/logger-%{logger_ver}.gemspec
+
+%dir %{gem_dir}/gems/ostruct-%{ostruct_ver}
+%{gem_dir}/gems/ostruct-%{ostruct_ver}/lib
+%{gem_dir}/specifications/ostruct-%{ostruct_ver}.gemspec
+
+%dir %{gem_dir}/gems/pstore-%{pstore_ver}
+%{gem_dir}/gems/pstore-%{pstore_ver}/lib
+%{gem_dir}/specifications/pstore-%{pstore_ver}.gemspec
+
+%dir %{gem_dir}/gems/readline-%{readline_ver}
+%{gem_dir}/gems/readline-%{readline_ver}/lib
+%{gem_dir}/specifications/readline-%{readline_ver}.gemspec
+
+%dir %{gem_dir}/gems/reline-%{reline_ver}
+%{gem_dir}/gems/reline-%{reline_ver}/lib
+%{gem_dir}/specifications/reline-%{reline_ver}.gemspec
 
 
 %files modules
